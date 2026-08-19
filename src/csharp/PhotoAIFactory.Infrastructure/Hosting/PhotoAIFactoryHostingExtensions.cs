@@ -2,9 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PhotoAIFactory.Application;
+using PhotoAIFactory.Application.Ingestion;
 using PhotoAIFactory.Application.Projects;
 using PhotoAIFactory.Application.Runtime;
+using PhotoAIFactory.Infrastructure.Ingestion;
 using PhotoAIFactory.Infrastructure.Logging;
+using PhotoAIFactory.Infrastructure.Persistence.Ingestion;
 using PhotoAIFactory.Infrastructure.Persistence.Repositories;
 
 namespace PhotoAIFactory.Infrastructure.Hosting;
@@ -51,6 +54,18 @@ public static class PhotoAIFactoryHostingExtensions
             services.GetRequiredService<JsonLinesLoggerProvider>());
 
         builder.Services.AddSingleton<IProjectStoreFactory, SqliteProjectStoreFactory>();
+        builder.Services
+            .AddOptions<IngestionRuntimeOptions>()
+            .Bind(builder.Configuration.GetSection(IngestionRuntimeOptions.SectionName))
+            .Validate(IngestionRuntimeOptions.IsValid,
+                "Ingestion runtime options are outside supported safe ranges.")
+            .ValidateOnStart();
+        builder.Services.AddSingleton<IIngestionStoreFactory, SqliteIngestionStoreFactory>();
+        builder.Services.AddSingleton<IFileStabilityProbe, DefaultFileStabilityProbe>();
+        builder.Services.AddSingleton<IManagedOriginalArchive, ManagedOriginalArchive>();
+        builder.Services.AddSingleton<IRawSupportClassifier, SonyArwSupportClassifier>();
+        builder.Services.AddSingleton<IIngestionSessionFactory, IngestionSessionFactory>();
+        builder.Services.AddSingleton<ProjectIngestionManager>();
         builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
         builder.Services.AddSingleton<IProjectWorkStatus, NoActiveProjectWorkStatus>();
         builder.Services.AddTransient<ProjectService>();

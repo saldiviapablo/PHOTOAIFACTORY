@@ -18,7 +18,8 @@ public static class MigrationCatalog
     public static IReadOnlyList<SqliteMigration> All { get; } =
     [
         new(1, "initial_project_config", ReadEmbedded("001_initial_project_config.sql")),
-        new(2, "project_lifecycle", ReadEmbedded("002_project_lifecycle.sql"))
+        new(2, "project_lifecycle", ReadEmbedded("002_project_lifecycle.sql")),
+        new(3, "ingestion", ReadEmbedded("003_ingestion.sql"))
     ];
 
     private static string ReadEmbedded(string fileName)

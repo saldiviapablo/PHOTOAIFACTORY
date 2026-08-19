@@ -2,7 +2,7 @@
 
 **Baseline:** 2026-08-12  
 **Última actualización:** 2026-08-19  
-**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO
+**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO
 
 ## Documentos congelados como baseline
 
@@ -48,10 +48,9 @@ PHASE 1 = NEXT
 
 ## Lo siguiente
 
-Phase 1 Foundation está cerrada y validada. Phase 2 no comenzó. El repositorio
-queda listo para iniciar Phase 2 — Ingestion sólo después de autorización
-explícita; no promover automáticamente PoCs ni iniciar watcher, QueueDispatcher,
-Jobs o lifecycle de motores.
+Phase 2 Ingestion está cerrada y validada en el PC Windows de referencia. El
+repositorio queda listo para Phase 3 sólo después de autorización explícita; esta
+actualización no inicia Analysis, AI/modelos, Jobs ni lifecycle de motores.
 
 ## Phase 1 Foundation
 
@@ -71,5 +70,24 @@ Decisión de closeout:
 
 ```text
 PHASE 1 — FOUNDATION = CLOSED / GO
-PHASE 2 = NOT STARTED
+PHASE 2 — INGESTION = CLOSED / GO
+PHASE 3 = NOT STARTED
 ```
+
+## Phase 2 Ingestion
+
+- Watcher NTFS, estabilidad de archivo, reconciliación de startup/periódica y
+  recuperación ante presión del channel: `PASS`.
+- RAW/JPEG, RAW-only, JPEG-only, RAW tardío sin Jobs, duplicados exactos y source
+  generations: `PASS`.
+- Managed originals content-addressed, SHA-256, cancelación/partial safety y
+  recuperación archive-before-SQLite: `PASS`.
+- Migration 003 desde DB nueva y fixture Phase 1 (002), backup, drift,
+  idempotencia, WAL/FULL/FK e integrity check: `PASS`.
+- Tests C# estándar acumulados: 136/136 PASS (112 Foundation + 24 Simulation;
+  17 de los Simulation tests son Phase 2).
+- FR-FS-002/008, FR-ING-003/005 permanecen parciales en los límites documentados:
+  composición operacional/UI, EXIF completo y Jobs activos son trabajo futuro.
+- FR-ING-009 (similitud visual) queda fuera de Phase 2.
+
+Informe: `docs/phase2/PHASE2_INGESTION_REPORT.md`.
