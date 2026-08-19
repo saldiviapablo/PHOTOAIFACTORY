@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Baseline:** 2026-08-12  
-**Última actualización:** 2026-08-18  
-**Estado:** PHASE 0 CLOSED / GO — PHASE 1 SLICES 1–3 PASS
+**Última actualización:** 2026-08-19  
+**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO
 
 ## Documentos congelados como baseline
 
@@ -48,10 +48,10 @@ PHASE 1 = NEXT
 
 ## Lo siguiente
 
-Revisar Phase 1 Slice 3. La foundation dispone ahora de Project/ConfigVersion
-durable, Generic Host/DI/logging, lifecycle Project persistente y ConfigService
-protegido por `PAUSED`. No comenzar WinUI, watcher, QueueDispatcher, Jobs ni
-lifecycle de motores sin autorización del slice siguiente.
+Phase 1 Foundation está cerrada y validada. Phase 2 no comenzó. El repositorio
+queda listo para iniciar Phase 2 — Ingestion sólo después de autorización
+explícita; no promover automáticamente PoCs ni iniciar watcher, QueueDispatcher,
+Jobs o lifecycle de motores.
 
 ## Phase 1 Foundation
 
@@ -59,8 +59,17 @@ lifecycle de motores sin autorización del slice siguiente.
 - Slice 2 — Host composition + DI + runtime configuration + structured logging:
   `PASS`.
 - Slice 3 — Project lifecycle + ConfigService + PAUSED guard: `PASS`, listo para
-  revisión.
-- Tests C# estándar acumulados: 112/112 PASS.
+  cierre.
+- Virtual Factory base — reloj determinístico, fault plan concurrente, scenario
+  recorder y escenarios Foundation con SQLite productivo real: `PASS`.
+- Tests C# estándar acumulados: 119/119 PASS (112 Foundation + 7 Simulation).
 - FR-FS-007 y FR-CFG-001/002 son funcionales. Pause/stop/dispatch quedan
   correctamente clasificados entre functional y foundation; FR-CFG-003/004/005,
   Jobs, queue y reconciliation continúan pendientes.
+
+Decisión de closeout:
+
+```text
+PHASE 1 — FOUNDATION = CLOSED / GO
+PHASE 2 = NOT STARTED
+```

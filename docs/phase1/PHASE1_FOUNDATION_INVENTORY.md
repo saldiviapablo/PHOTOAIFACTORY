@@ -1,8 +1,8 @@
 # Phase 1 Foundation Inventory
 
-**Fecha:** 2026-08-18  
-**Alcance:** inventario técnico con actualizaciones de implementación de los
-Slices 1–3; no promueve código de PoCs.
+**Fecha:** 2026-08-19  
+**Alcance:** inventario técnico con closeout de Phase 1 Foundation; no promueve
+código de PoCs ni inicia Phase 2.
 
 ## Slice 1 implementation update
 
@@ -73,6 +73,32 @@ el 2026-08-18:
 Trazabilidad actual: FR-PAU-001/003/005 y FR-FS-007 funcionales;
 FR-PAU-002/004 y FR-STOP-001/002 permanecen foundation/partial hasta Jobs y
 QueueDispatcher; FR-CFG-001/002 funcionales y FR-CFG-003/004/005 pendientes.
+
+## Phase 1 closeout update
+
+`PHASE 1 — FOUNDATION = CLOSED / GO` quedó auditado en el PC Windows real el
+2026-08-19:
+
+- la solución canónica `src/csharp/PhotoAIFactory.sln` integra los seis proyectos
+  C# existentes y los dos proyectos MSTest;
+- Generic Host, DI/options, paths, logging JSONL, SQLite, migrations, single
+  writer, Domain state machines, ProjectService, ConfigVersion, lifecycle durable
+  y PAUSED guard conservan sus resultados de Slices 1–3;
+- `PhotoAIFactory.Simulation.Tests` agrega únicamente infraestructura de test:
+  `TimeProvider` determinístico, fault plan thread-safe, scenario event recorder,
+  work status scripted y escenarios Foundation con SQLite productivo real;
+- Release build: 0 errores / 0 warnings;
+- C#: 119/119 PASS (112 Foundation + 7 Simulation); self-tests: 6/6 PASS;
+  Python aislado: 4/4 PASS;
+- smoke liviano Phase 0 PASS y 8/8 proyectos sin paquetes NuGet vulnerables
+  reportados, incluidos transitivos;
+- la simulación usa sandboxes temporales, los elimina y no inicia Python,
+  Darktable, ComfyUI ni GPU.
+
+Phase 2 — Ingestion permanece `NOT STARTED`. El detalle de auditoría está en
+`docs/phase1/PHASE1_CLOSEOUT_REPORT.md`. Las secciones históricas del inventario
+que siguen deben leerse como fotografía previa, supersedida por las actualizaciones
+de Slices 1–3 y este closeout.
 
 ## Current repository state
 
