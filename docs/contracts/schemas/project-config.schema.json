@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "photo-ai-factory/project-config/v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "reveal_mode",
+    "semantic_mode",
+    "comfyui"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "reveal_mode": {
+      "enum": [
+        "PRE_AI",
+        "DT_AUTO",
+        "FEEDBACK"
+      ]
+    },
+    "semantic_mode": {
+      "enum": [
+        "OFF",
+        "STANDARD",
+        "FULL"
+      ]
+    },
+    "comfyui": {
+      "type": "object",
+      "required": [
+        "mode",
+        "allowed_tasks"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "OFF",
+            "ON",
+            "AUTO"
+          ]
+        },
+        "allowed_tasks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "preselection": {
+      "type": "object"
+    },
+    "export": {
+      "type": "object"
+    }
+  }
+}

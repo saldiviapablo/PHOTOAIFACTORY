@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "job_id",
+    "photo_id",
+    "project_id",
+    "config",
+    "timeline",
+    "outputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "job_id": {
+      "type": "string"
+    },
+    "photo_id": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "config": {
+      "type": "object"
+    },
+    "originals": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "analysis": {
+      "type": "object"
+    },
+    "passes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "qa": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "decision",
+    "findings"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "decision": {
+      "enum": [
+        "QA_PASS",
+        "QA_REVIEW",
+        "QA_REPROCESS",
+        "QA_TECH_RETRY",
+        "QA_FATAL"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "suggested_correction": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  }
+}

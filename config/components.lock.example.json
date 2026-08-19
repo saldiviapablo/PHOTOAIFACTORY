@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "generated_at": "TBD_AT_BOOTSTRAP",
+  "components": [
+    {
+      "id": "dotnet",
+      "version": "TBD_STABLE",
+      "source": "official",
+      "sha256": null,
+      "license": "TBD_PACKAGE_TERMS"
+    },
+    {
+      "id": "windows-app-sdk",
+      "version": "TBD_STABLE",
+      "source": "official",
+      "sha256": null,
+      "license": "TBD_PACKAGE_TERMS"
+    },
+    {
+      "id": "python-runtime",
+      "version": "TBD_COMPATIBLE",
+      "source": "python.org",
+      "sha256": null,
+      "license": "PSF"
+    },
+    {
+      "id": "darktable",
+      "version": "5.6.0-reference",
+      "source": "darktable.org",
+      "sha256": null,
+      "license": "GPL-3.0"
+    },
+    {
+      "id": "comfyui",
+      "version": "TBD_PINNED",
+      "source": "official-repo",
+      "sha256": null,
+      "license": "GPL-3.0"
+    },
+    {
+      "id": "qwen3-vl-2b-instruct",
+      "version": "TBD_PINNED",
+      "source": "official-model",
+      "sha256": null,
+      "license": "Apache-2.0"
+    }
+  ]
+}

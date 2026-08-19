@@ -1,0 +1,16 @@
+{
+  "python_ai": {
+    "base_url": "http://127.0.0.1:8765/",
+    "token_env": "PAF_AI_TOKEN"
+  },
+  "comfyui": {
+    "base_url": "http://127.0.0.1:8188/",
+    "ws_base_url": "ws://127.0.0.1:8188/"
+  },
+  "darktable": {
+    "cli_path": "FROM_components.lock.local.json"
+  },
+  "gpu": {
+    "max_heavy_leases": 1
+  }
+}

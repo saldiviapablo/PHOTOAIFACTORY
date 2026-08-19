@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "execute",
+    "tasks"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "execute": {
+      "type": "boolean"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "task",
+          "execute",
+          "reason"
+        ],
+        "properties": {
+          "task": {
+            "type": "string"
+          },
+          "execute": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "workflow_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

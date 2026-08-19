@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "api_version",
+    "request_id",
+    "success"
+  ],
+  "properties": {
+    "api_version": {
+      "const": "v1"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "success": {
+      "type": "boolean"
+    },
+    "result": {},
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "timings": {
+      "type": "object"
+    }
+  }
+}

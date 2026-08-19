@@ -1,0 +1,50 @@
+schema_version: 1
+status: baseline
+models:
+  - id: opencv
+    task: technical_vision
+    status: BASELINE
+  - id: rf-detr-medium
+    task: object_detection
+    status: BASELINE
+    restriction: "Do not use XL/2XL Plus under the same license assumption."
+  - id: mediapipe-face-landmarker
+    task: face_landmarks
+    status: BASELINE
+    artifact_license_gate: true
+  - id: mediapipe-pose-landmarker
+    task: pose
+    status: BASELINE
+    artifact_license_gate: true
+  - id: florence-2-large
+    task: structured_vision
+    status: BASELINE
+  - id: qwen3-vl-2b-instruct
+    task: semantic_vlm
+    status: BASELINE
+  - id: dinov2-s-standard
+    task: embeddings
+    status: BASELINE
+    restriction: "Use standard DINOv2 assets, not specialty X-Ray/Cell variants."
+  - id: rawdenoise-nind
+    task: raw_denoise
+    status: BASELINE
+  - id: nafnet
+    task: rgb_denoise
+    status: BASELINE
+  - id: image-adaptive-3dlut
+    task: color_tone
+    status: BASELINE
+  - id: bisenet-face-parsing
+    task: face_masking
+    status: REVIEW_REQUIRED
+  - id: retinexformer
+    task: low_light
+    status: OPTIONAL
+  - id: realplksr
+    task: upscale
+    status: OPTIONAL
+    note: "Prefer darktable-ai packaged artifact if approved by license gate."
+  - id: llf-lut
+    task: color_tone_benchmark
+    status: OPTIONAL

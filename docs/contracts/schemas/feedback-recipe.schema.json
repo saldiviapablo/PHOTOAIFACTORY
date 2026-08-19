@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "recipe_id",
+    "corrections",
+    "darktable_ai"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "recipe_id": {
+      "type": "string"
+    },
+    "corrections": {
+      "type": "object"
+    },
+    "darktable_ai": {
+      "type": "object",
+      "properties": {
+        "raw_denoise": {
+          "type": "boolean"
+        },
+        "rgb_denoise": {
+          "type": "boolean"
+        },
+        "upscale": {
+          "type": "boolean"
+        }
+      }
+    },
+    "reasoning_summary": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

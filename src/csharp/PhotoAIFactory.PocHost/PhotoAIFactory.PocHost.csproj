@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoAIFactory.Domain\PhotoAIFactory.Domain.csproj" />
+    <ProjectReference Include="..\PhotoAIFactory.Contracts\PhotoAIFactory.Contracts.csproj" />
+    <ProjectReference Include="..\PhotoAIFactory.Application\PhotoAIFactory.Application.csproj" />
+    <ProjectReference Include="..\PhotoAIFactory.Infrastructure\PhotoAIFactory.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

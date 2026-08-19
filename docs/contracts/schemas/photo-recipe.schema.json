@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "recipe_id",
+    "adjustments"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "recipe_id": {
+      "type": "string"
+    },
+    "adjustments": {
+      "type": "object"
+    },
+    "darktable_ai": {
+      "type": "object"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}

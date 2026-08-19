@@ -1,0 +1,10 @@
+{
+  "1": {
+    "class_type": "PafGpu01CudaProbe",
+    "inputs": {
+      "megabytes": 8,
+      "hold_ms": 10,
+      "nonce": "gpu01"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+# PHOTO AI FACTORY Phase 0 AI runtime — Windows x64 / NVIDIA CUDA 13.0
+# Top-level pins validated together on 2026-08-15. The generated lock file fixes
+# transitive dependencies. RF-DETR Plus is intentionally not installed.
+torch==2.13.0+cu130
+torchvision==0.28.0+cu130
+onnxruntime-gpu[cuda,cudnn]==1.28.0
+transformers==5.15.0
+# Required by Transformers fine-grained FP8 checkpoints on Windows.
+kernels==0.16.0
+triton-windows==3.7.1.post27
+accelerate==1.14.0
+huggingface-hub==1.27.0
+qwen-vl-utils==0.0.14
+rfdetr==1.9.2
+mediapipe==1.0.1
+opencv-contrib-python==5.0.0.93
+safetensors==0.8.0
+pillow==12.3.0

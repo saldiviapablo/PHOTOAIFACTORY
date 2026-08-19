@@ -1,0 +1,29 @@
+{
+  "1": {
+    "class_type": "PafCui01Delay",
+    "inputs": {
+      "delay_ms": 1000,
+      "width": 64,
+      "height": 48,
+      "color": 6724044,
+      "nonce": "template"
+    },
+    "_meta": {
+      "title": "CUI-01 isolated delay instrumentation"
+    }
+  },
+  "2": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "1",
+        0
+      ],
+      "filename_prefix": "CUI01/delay"
+    },
+    "_meta": {
+      "title": "CUI-01 diagnostic output"
+    }
+  }
+}
+

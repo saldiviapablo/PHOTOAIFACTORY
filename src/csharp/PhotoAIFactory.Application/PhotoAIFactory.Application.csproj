@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoAIFactory.Domain\PhotoAIFactory.Domain.csproj" />
+    <ProjectReference Include="..\PhotoAIFactory.Contracts\PhotoAIFactory.Contracts.csproj" />
+  </ItemGroup>
+</Project>
