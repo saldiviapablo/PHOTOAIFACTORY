@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using PhotoAIFactory.Application;
 using PhotoAIFactory.Application.Analysis;
 using PhotoAIFactory.Application.Ingestion;
+using PhotoAIFactory.Application.Processing;
 using PhotoAIFactory.Application.Projects;
 using PhotoAIFactory.Application.Runtime;
 using PhotoAIFactory.Infrastructure.Analysis;
@@ -11,7 +12,9 @@ using PhotoAIFactory.Infrastructure.Ingestion;
 using PhotoAIFactory.Infrastructure.Logging;
 using PhotoAIFactory.Infrastructure.Persistence.Analysis;
 using PhotoAIFactory.Infrastructure.Persistence.Ingestion;
+using PhotoAIFactory.Infrastructure.Persistence.Processing;
 using PhotoAIFactory.Infrastructure.Persistence.Repositories;
+using PhotoAIFactory.Infrastructure.Processing;
 
 namespace PhotoAIFactory.Infrastructure.Hosting;
 
@@ -30,78 +33,141 @@ public static class PhotoAIFactoryHost
 
 public static class PhotoAIFactoryHostingExtensions
 {
-    public static IHostApplicationBuilder AddPhotoAIFactoryFoundation(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddPhotoAIFactoryFoundation(
+        this IHostApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        if (builder.Services.Any(descriptor => descriptor.ServiceType == typeof(FoundationRegistrationMarker)))
+
+        if (builder.Services.Any(
+                descriptor =>
+                    descriptor.ServiceType ==
+                    typeof(FoundationRegistrationMarker)))
         {
             return builder;
         }
 
         builder.Services.AddSingleton<FoundationRegistrationMarker>();
+
         builder.Services
             .AddOptions<PhotoAIFactoryRuntimeOptions>()
-            .Bind(builder.Configuration.GetSection(PhotoAIFactoryRuntimeOptions.SectionName))
-            .Validate(PhotoAIFactoryRuntimeOptions.IsValid,
-                "Runtime RootPath must be an absolute path and LogFileName must be a .jsonl leaf filename.")
+            .Bind(builder.Configuration.GetSection(
+                PhotoAIFactoryRuntimeOptions.SectionName))
+            .Validate(
+                PhotoAIFactoryRuntimeOptions.IsValid,
+                "Runtime RootPath must be an absolute path and " +
+                "LogFileName must be a .jsonl leaf filename.")
             .ValidateOnStart();
 
         builder.Services
             .AddOptions<AnalysisRuntimeOptions>()
-            .Bind(builder.Configuration.GetSection(AnalysisRuntimeOptions.SectionName))
-            .Validate(AnalysisRuntimeOptions.IsValid,
+            .Bind(builder.Configuration.GetSection(
+                AnalysisRuntimeOptions.SectionName))
+            .Validate(
+                AnalysisRuntimeOptions.IsValid,
                 "Analysis runtime options contain an invalid path or timeout.")
             .ValidateOnStart();
 
         builder.Services.AddSingleton<IRuntimeSession, RuntimeSession>();
         builder.Services.AddSingleton<IAppPaths, WindowsAppPaths>();
-        builder.Services.AddSingleton<IRuntimeDirectoryInitializer, RuntimeDirectoryInitializer>();
+        builder.Services.AddSingleton<
+            IRuntimeDirectoryInitializer,
+            RuntimeDirectoryInitializer>();
 
         builder.Logging.ClearProviders();
         builder.Logging.SetMinimumLevel(LogLevel.Information);
         builder.Services.AddSingleton<JsonLinesLoggerProvider>();
-        builder.Services.AddSingleton<ILoggerProvider>(services =>
-            services.GetRequiredService<JsonLinesLoggerProvider>());
+        builder.Services.AddSingleton<ILoggerProvider>(
+            services =>
+                services.GetRequiredService<JsonLinesLoggerProvider>());
 
-        builder.Services.AddSingleton<IProjectStoreFactory, SqliteProjectStoreFactory>();
+        builder.Services.AddSingleton<
+            IProjectStoreFactory,
+            SqliteProjectStoreFactory>();
 
         builder.Services
             .AddOptions<IngestionRuntimeOptions>()
-            .Bind(builder.Configuration.GetSection(IngestionRuntimeOptions.SectionName))
-            .Validate(IngestionRuntimeOptions.IsValid,
+            .Bind(builder.Configuration.GetSection(
+                IngestionRuntimeOptions.SectionName))
+            .Validate(
+                IngestionRuntimeOptions.IsValid,
                 "Ingestion runtime options are outside supported safe ranges.")
             .ValidateOnStart();
-        builder.Services.AddSingleton<IIngestionStoreFactory, SqliteIngestionStoreFactory>();
-        builder.Services.AddSingleton<IFileStabilityProbe, DefaultFileStabilityProbe>();
-        builder.Services.AddSingleton<IManagedOriginalArchive, ManagedOriginalArchive>();
-        builder.Services.AddSingleton<IRawSupportClassifier, SonyArwSupportClassifier>();
-        builder.Services.AddSingleton<IIngestionSessionFactory, IngestionSessionFactory>();
+
+        builder.Services.AddSingleton<
+            IIngestionStoreFactory,
+            SqliteIngestionStoreFactory>();
+        builder.Services.AddSingleton<
+            IFileStabilityProbe,
+            DefaultFileStabilityProbe>();
+        builder.Services.AddSingleton<
+            IManagedOriginalArchive,
+            ManagedOriginalArchive>();
+        builder.Services.AddSingleton<
+            IRawSupportClassifier,
+            SonyArwSupportClassifier>();
+        builder.Services.AddSingleton<
+            IIngestionSessionFactory,
+            IngestionSessionFactory>();
         builder.Services.AddSingleton<ProjectIngestionManager>();
 
-        builder.Services.AddSingleton<IAnalysisStoreFactory, SqliteAnalysisStoreFactory>();
-        builder.Services.AddSingleton<IAnalysisPreviewProvider, DarktableAnalysisPreviewProvider>();
-        builder.Services.AddSingleton<IAnalysisInputResolver, AnalysisInputResolver>();
+        builder.Services.AddSingleton<
+            IAnalysisStoreFactory,
+            SqliteAnalysisStoreFactory>();
+        builder.Services.AddSingleton<
+            IAnalysisPreviewProvider,
+            DarktableAnalysisPreviewProvider>();
+        builder.Services.AddSingleton<
+            IAnalysisInputResolver,
+            AnalysisInputResolver>();
         builder.Services.AddSingleton<PythonWorkerSupervisor>();
-        builder.Services.AddSingleton<IPythonAiClient>(services =>
-            services.GetRequiredService<PythonWorkerSupervisor>());
+        builder.Services.AddSingleton<IPythonAiClient>(
+            services =>
+                services.GetRequiredService<PythonWorkerSupervisor>());
         builder.Services.AddTransient<AnalysisOrchestrator>();
         builder.Services.AddTransient<ProjectAnalysisManager>();
 
-        builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
-        builder.Services.AddSingleton<IProjectWorkStatus, NoActiveProjectWorkStatus>();
+        builder.Services.AddSingleton<
+            IProcessingStoreFactory,
+            SqliteProcessingStoreFactory>();
+        builder.Services.AddSingleton<RevealExecutionCoordinator>();
+        builder.Services.AddSingleton<
+            IDarktableRecipeCompiler,
+            DarktableRecipeCompiler>();
+        builder.Services.AddSingleton<
+            IBasicRevealExecutor,
+            DarktableBasicRevealExecutor>();
+        builder.Services.AddSingleton<
+            IProcessingHistoryWriter,
+            ProcessingHistoryWriter>();
+        builder.Services.AddTransient<BasicRevealOrchestrator>();
+        builder.Services.AddTransient<ProjectRevealManager>();
+
+        builder.Services.AddSingleton<TimeProvider>(
+            TimeProvider.System);
+        builder.Services.AddSingleton<
+            IProjectWorkStatus,
+            NoActiveProjectWorkStatus>();
         builder.Services.AddTransient<ProjectService>();
         builder.Services.AddTransient<ProjectLifecycleService>();
         builder.Services.AddTransient<ConfigService>();
+
         builder.Services.AddSingleton<ProcessRunner>();
         builder.Services.AddSingleton<ComponentLockReader>();
-        builder.Services.AddSingleton<IGpuResourceCoordinator, GpuResourceCoordinator>();
+        builder.Services.AddSingleton<
+            IGpuResourceCoordinator,
+            GpuResourceCoordinator>();
 
-        builder.Services.AddHostedService<RuntimeInitializationHostedService>();
-        builder.ConfigureContainer(new DefaultServiceProviderFactory(new ServiceProviderOptions
-        {
-            ValidateOnBuild = true,
-            ValidateScopes = true
-        }));
+        builder.Services.AddHostedService<
+            RuntimeInitializationHostedService>();
+
+        builder.ConfigureContainer(
+            new DefaultServiceProviderFactory(
+                new ServiceProviderOptions
+                {
+                    ValidateOnBuild = true,
+                    ValidateScopes = true
+                }));
+
         return builder;
     }
 
@@ -114,19 +180,30 @@ internal sealed class RuntimeInitializationHostedService(
     ILogger<RuntimeInitializationHostedService> logger,
     IRuntimeSession session) : IHostedService
 {
-    private static readonly EventId ReadyEvent = new(1000, "RuntimeReady");
-    private static readonly EventId StoppingEvent = new(1001, "RuntimeStopping");
+    private static readonly EventId ReadyEvent =
+        new(1000, "RuntimeReady");
+    private static readonly EventId StoppingEvent =
+        new(1001, "RuntimeStopping");
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(
+        CancellationToken cancellationToken)
     {
-        await directories.InitializeAsync(cancellationToken).ConfigureAwait(false);
+        await directories.InitializeAsync(cancellationToken)
+            .ConfigureAwait(false);
         loggerProvider.Activate();
-        logger.LogInformation(ReadyEvent, "Runtime foundation ready for session {SessionId}", session.SessionId);
+
+        logger.LogInformation(
+            ReadyEvent,
+            "Runtime foundation ready for session {SessionId}",
+            session.SessionId);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation(StoppingEvent, "Runtime foundation stopping for session {SessionId}", session.SessionId);
+        logger.LogInformation(
+            StoppingEvent,
+            "Runtime foundation stopping for session {SessionId}",
+            session.SessionId);
         loggerProvider.Flush();
         return Task.CompletedTask;
     }

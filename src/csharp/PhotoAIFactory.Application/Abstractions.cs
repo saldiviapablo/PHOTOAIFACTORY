@@ -11,7 +11,9 @@ public interface IPythonAiClient
 public interface IDarktableCli
 {
     Task<string> GetVersionAsync(CancellationToken cancellationToken = default);
-    Task<ProcessExecutionResult> ExportAsync(DarktableExportRequest request, CancellationToken cancellationToken = default);
+    Task<ProcessExecutionResult> ExportAsync(
+        DarktableExportRequest request,
+        CancellationToken cancellationToken = default);
 }
 
 public interface IComfyUiClient
@@ -31,15 +33,26 @@ public sealed record DarktableExportRequest(
     string? Style = null,
     int? MaxWidth = null,
     int? MaxHeight = null,
-    bool HighQuality = true);
+    bool HighQuality = true,
+    bool? ApplyCustomPresets = null,
+    int? JpegQuality = null,
+    string? ConfigDirectory = null,
+    string? CacheDirectory = null,
+    string? LibraryPath = null);
 
-public sealed record ProcessExecutionResult(int ExitCode, string StdOut, string StdErr, TimeSpan Duration)
+public sealed record ProcessExecutionResult(
+    int ExitCode,
+    string StdOut,
+    string StdErr,
+    TimeSpan Duration)
 {
     public bool Success => ExitCode == 0;
 }
 
 public interface IGpuResourceCoordinator
 {
-    Task<IAsyncDisposable> AcquireAsync(string owner, CancellationToken cancellationToken = default);
+    Task<IAsyncDisposable> AcquireAsync(
+        string owner,
+        CancellationToken cancellationToken = default);
     string? CurrentOwner { get; }
 }

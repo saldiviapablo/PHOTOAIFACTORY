@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PhotoAIFactory.Application;
+using PhotoAIFactory.Application.Processing;
 using PhotoAIFactory.Application.Projects;
 using PhotoAIFactory.Application.Runtime;
 using PhotoAIFactory.Domain;
@@ -59,6 +60,9 @@ public sealed class HostCompositionTests
         Assert.IsNotNull(services.GetRequiredService<ProcessRunner>());
         Assert.IsNotNull(services.GetRequiredService<ComponentLockReader>());
         Assert.IsNotNull(services.GetRequiredService<IGpuResourceCoordinator>());
+        Assert.IsNotNull(services.GetRequiredService<RevealExecutionCoordinator>());
+        Assert.IsNotNull(services.GetRequiredService<BasicRevealOrchestrator>());
+        Assert.IsNotNull(services.GetRequiredService<ProjectRevealManager>());
     }
 
     [TestMethod]

@@ -36,7 +36,24 @@ def test_analyze():
         assert data["result"]["technical"]["width"]==100
     finally: p.unlink(missing_ok=True)
 
-def test_recipe_blocked_until_gate():
-    r=client.post("/v1/recipe/pre-ai",headers=HEAD,json={"api_version":"v1","request_id":"r2","job_id":"j1","operation":"recipe","input_paths":[],"config":{}})
-    assert r.json()["success"] is False
-    assert r.json()["error"]["code"]=="MODEL_PIPELINE_NOT_READY"
+def test_phase4_recipe_contract_is_conservative():
+    r=client.post(
+        "/v1/recipe/pre-ai",
+        headers=HEAD,
+        json={
+            "api_version":"v1",
+            "request_id":"r2",
+            "job_id":"j1",
+            "operation":"recipe.pre-ai",
+            "input_paths":[],
+            "config":{
+                "schema_version":1,
+                "analysis":{"schema_version":1,"technical":{}},
+            },
+        },
+    )
+    data=r.json()
+    assert data["success"] is True
+    assert data["request_id"]=="r2"
+    assert data["result"]["recipe_version"]=="phase4-pre-ai-v1"
+    assert data["result"]["operations"]==[]

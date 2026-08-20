@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Baseline:** 2026-08-12  
-**Última actualización:** 2026-08-19  
-**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS
+**Última actualización:** 2026-08-20
+**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS
 
 ## Documentos congelados como baseline
 
@@ -48,9 +48,9 @@ PHASE 1 = NEXT
 
 ## Lo siguiente
 
-Phase 3 Analysis / Preselection está cerrada con las limitaciones documentadas. La
-siguiente etapa del Implementation Plan es Phase 4 — Revelado básico: DT_AUTO, PRE_AI,
-normalized recipe, XMP/history y export. No se inició trabajo de Phase 4.
+Phase 4 Basic Reveal está cerrada con las limitaciones documentadas. La siguiente
+etapa del Implementation Plan es Phase 5 — FEEDBACK. No se inició trabajo de
+Phase 5.
 
 ## Phase 1 Foundation
 
@@ -72,7 +72,7 @@ Decisión de closeout:
 PHASE 1 — FOUNDATION = CLOSED / GO
 PHASE 2 — INGESTION = CLOSED / GO
 PHASE 3 — ANALYSIS / PRESELECTION = CLOSED / GO WITH DOCUMENTED LIMITATIONS
-PHASE 4 = NOT STARTED
+PHASE 4 — BASIC REVEAL = CLOSED / GO WITH DOCUMENTED LIMITATIONS
 ```
 
 ## Phase 2 Ingestion
@@ -112,3 +112,24 @@ Informe: `docs/phase2/PHASE2_INGESTION_REPORT.md`.
 - No se inició Phase 4.
 
 Informe: `docs/phase3/PHASE3_ANALYSIS_PRESELECTION_REPORT.md`.
+
+## Phase 4 Basic Reveal
+
+- Migration 005, DB nueva y upgrade 004 → 005, backup, checksum, drift,
+  idempotencia, rollback, WAL/FULL/FK e integrity check: `PASS`.
+- DT_AUTO sobre RAW y JPEG-only con Darktable 5.6.0: `PASS`.
+- PRE_AI v1 (`phase4-pre-ai-v1`) conserva una receta normalizada
+  `CONSERVATIVE_BASELINE`, `NOT_CALIBRATED`, `operations=[]` y
+  `DEFAULT_PIPELINE`: `PASS / BENCHMARK_REQUIRED`.
+- Historial JSON portable e inmutable: `PASS`.
+- Preservación de XMP auténtico de Darktable, reapplication a RAW y equivalencia
+  pixel a pixel: `PASS`.
+- `BASIC_REVEAL_COMPLETE` es el límite durable aceptado por ADR-020; el Job pasa
+  de `PROCESSING` a `QA` para esperar en la estación siguiente.
+- ADR-020: `Accepted`.
+- Tests finales: C# 163/163; Python 15/15 con runtime aislado.
+- Phase 4 no ejecuta QA, no escribe `OUTPUT_PUBLISHED`, no publica `FINAL`, no
+  usa ComfyUI y no implementa FEEDBACK.
+- No se inició Phase 5.
+
+Informe: `docs/phase4/PHASE4_BASIC_REVEAL_REPORT.md`.

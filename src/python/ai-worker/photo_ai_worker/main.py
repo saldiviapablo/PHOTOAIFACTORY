@@ -11,6 +11,7 @@ from .auth import require_token
 from .contracts import AiError, AiRequest, AiResponse
 from .model_registry import registry
 from .preselection import preselect_from_analysis
+from .recipes import build_pre_ai_recipe
 from .settings import settings
 from .technical import ImageReadError, analyze_image, qa_from_technical
 
@@ -72,10 +73,10 @@ def capabilities():
             "models/release",
             "analyze:phase3-v1",
             "preselect:phase3-v1",
+            "recipe/pre-ai:phase4-v1",
             "qa:technical",
         ],
         "planned": [
-            "pre-ai-recipe",
             "feedback-inspection",
         ],
     }
@@ -203,13 +204,25 @@ def qa(req: AiRequest):
 
 @app.post("/v1/recipe/pre-ai", response_model=AiResponse, dependencies=[Depends(require_token)])
 def pre_ai_recipe(req: AiRequest):
-    return err(
-        req,
-        "MODEL_PIPELINE_NOT_READY",
-        "capability",
-        "PRE-AI recipe generation belongs to Phase 4 and remains intentionally blocked",
-        False,
-    )
+    start = time.perf_counter()
+    try:
+        result = build_pre_ai_recipe(req.config)
+        return AiResponse(
+            request_id=req.request_id,
+            success=True,
+            result=result,
+            timings={"total_ms": (time.perf_counter() - start) * 1000},
+        )
+    except ValueError as exc:
+        return err(
+            req,
+            "INVALID_PRE_AI_RECIPE_INPUT",
+            "validation",
+            str(exc),
+            False,
+        )
+    except Exception as exc:
+        return err(req, "PRE_AI_RECIPE_ERROR", "runtime", str(exc), False)
 
 
 @app.post("/v1/feedback/inspect", response_model=AiResponse, dependencies=[Depends(require_token)])
