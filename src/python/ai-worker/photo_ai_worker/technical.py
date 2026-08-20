@@ -7,7 +7,8 @@ class ImageReadError(RuntimeError): pass
 def analyze_image(path: str) -> dict:
     p=Path(path)
     if not p.exists(): raise FileNotFoundError(path)
-    image=cv2.imread(str(p), cv2.IMREAD_COLOR)
+    encoded=np.frombuffer(p.read_bytes(), dtype=np.uint8)
+    image=cv2.imdecode(encoded, cv2.IMREAD_COLOR)
     if image is None: raise ImageReadError(f"OpenCV could not decode {path}")
     gray=cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     h,w=gray.shape

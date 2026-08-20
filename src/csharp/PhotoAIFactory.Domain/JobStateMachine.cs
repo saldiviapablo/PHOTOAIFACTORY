@@ -13,7 +13,7 @@ public static class JobStateMachine
             [JobState.Processing] = [JobState.Qa, JobState.CancelRequested, JobState.Retrying, JobState.Error, JobState.Interrupted],
             [JobState.CancelRequested] = [JobState.Cancelled, JobState.Error],
             [JobState.Retrying] = [JobState.Processing, JobState.Analyzing, JobState.Error, JobState.Interrupted],
-            [JobState.Interrupted] = [JobState.Queued, JobState.Processing, JobState.Error, JobState.Cancelled],
+            [JobState.Interrupted] = [JobState.Analyzing, JobState.Queued, JobState.Processing, JobState.Error, JobState.Cancelled],
             [JobState.Qa] = [JobState.Completed, JobState.ReviewFinal, JobState.Error, JobState.Retrying, JobState.Processing],
             [JobState.ReviewFinal] = [JobState.Completed, JobState.RejectedFinal],
         };
@@ -24,7 +24,9 @@ public static class JobStateMachine
     public static void EnsureTransition(JobState from, JobState to)
     {
         if (!CanTransition(from, to))
+        {
             throw new InvalidOperationException($"Invalid Job transition: {from} -> {to}");
+        }
     }
 
     public static bool IsTerminal(JobState state) => state is

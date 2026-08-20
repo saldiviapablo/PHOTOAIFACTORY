@@ -21,9 +21,9 @@ public sealed class DarktableCliAdapter(string darktableCliPath, ProcessRunner r
         if (r.XmpPath is not null && !File.Exists(r.XmpPath)) throw new FileNotFoundException("XMP not found", r.XmpPath);
 
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(r.OutputPath))!);
-        var args = new List<string> { r.InputPath };
-        if (!string.IsNullOrWhiteSpace(r.XmpPath)) args.Add(r.XmpPath!);
-        args.Add(r.OutputPath);
+        var args = new List<string> { NormalizePath(r.InputPath) };
+        if (!string.IsNullOrWhiteSpace(r.XmpPath)) args.Add(NormalizePath(r.XmpPath!));
+        args.Add(NormalizePath(r.OutputPath));
         args.Add("--hq"); args.Add(r.HighQuality ? "true" : "false");
         if (r.MaxWidth is not null) { args.Add("--width"); args.Add(r.MaxWidth.Value.ToString()); }
         if (r.MaxHeight is not null) { args.Add("--height"); args.Add(r.MaxHeight.Value.ToString()); }
@@ -31,4 +31,7 @@ public sealed class DarktableCliAdapter(string darktableCliPath, ProcessRunner r
         args.Add("--verbose");
         return _runner.RunAsync(_path, args, TimeSpan.FromMinutes(3), cancellationToken);
     }
+
+    private static string NormalizePath(string path) =>
+        Path.GetFullPath(path).Replace('\\', '/');
 }

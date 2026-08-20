@@ -2,11 +2,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PhotoAIFactory.Application;
+using PhotoAIFactory.Application.Analysis;
 using PhotoAIFactory.Application.Ingestion;
 using PhotoAIFactory.Application.Projects;
 using PhotoAIFactory.Application.Runtime;
+using PhotoAIFactory.Infrastructure.Analysis;
 using PhotoAIFactory.Infrastructure.Ingestion;
 using PhotoAIFactory.Infrastructure.Logging;
+using PhotoAIFactory.Infrastructure.Persistence.Analysis;
 using PhotoAIFactory.Infrastructure.Persistence.Ingestion;
 using PhotoAIFactory.Infrastructure.Persistence.Repositories;
 
@@ -43,6 +46,13 @@ public static class PhotoAIFactoryHostingExtensions
                 "Runtime RootPath must be an absolute path and LogFileName must be a .jsonl leaf filename.")
             .ValidateOnStart();
 
+        builder.Services
+            .AddOptions<AnalysisRuntimeOptions>()
+            .Bind(builder.Configuration.GetSection(AnalysisRuntimeOptions.SectionName))
+            .Validate(AnalysisRuntimeOptions.IsValid,
+                "Analysis runtime options contain an invalid path or timeout.")
+            .ValidateOnStart();
+
         builder.Services.AddSingleton<IRuntimeSession, RuntimeSession>();
         builder.Services.AddSingleton<IAppPaths, WindowsAppPaths>();
         builder.Services.AddSingleton<IRuntimeDirectoryInitializer, RuntimeDirectoryInitializer>();
@@ -54,6 +64,7 @@ public static class PhotoAIFactoryHostingExtensions
             services.GetRequiredService<JsonLinesLoggerProvider>());
 
         builder.Services.AddSingleton<IProjectStoreFactory, SqliteProjectStoreFactory>();
+
         builder.Services
             .AddOptions<IngestionRuntimeOptions>()
             .Bind(builder.Configuration.GetSection(IngestionRuntimeOptions.SectionName))
@@ -66,12 +77,21 @@ public static class PhotoAIFactoryHostingExtensions
         builder.Services.AddSingleton<IRawSupportClassifier, SonyArwSupportClassifier>();
         builder.Services.AddSingleton<IIngestionSessionFactory, IngestionSessionFactory>();
         builder.Services.AddSingleton<ProjectIngestionManager>();
+
+        builder.Services.AddSingleton<IAnalysisStoreFactory, SqliteAnalysisStoreFactory>();
+        builder.Services.AddSingleton<IAnalysisPreviewProvider, DarktableAnalysisPreviewProvider>();
+        builder.Services.AddSingleton<IAnalysisInputResolver, AnalysisInputResolver>();
+        builder.Services.AddSingleton<PythonWorkerSupervisor>();
+        builder.Services.AddSingleton<IPythonAiClient>(services =>
+            services.GetRequiredService<PythonWorkerSupervisor>());
+        builder.Services.AddTransient<AnalysisOrchestrator>();
+        builder.Services.AddTransient<ProjectAnalysisManager>();
+
         builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
         builder.Services.AddSingleton<IProjectWorkStatus, NoActiveProjectWorkStatus>();
         builder.Services.AddTransient<ProjectService>();
         builder.Services.AddTransient<ProjectLifecycleService>();
         builder.Services.AddTransient<ConfigService>();
-
         builder.Services.AddSingleton<ProcessRunner>();
         builder.Services.AddSingleton<ComponentLockReader>();
         builder.Services.AddSingleton<IGpuResourceCoordinator, GpuResourceCoordinator>();

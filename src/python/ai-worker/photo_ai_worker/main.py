@@ -1,78 +1,237 @@
-import os, time
-from fastapi import FastAPI, Depends
+import os
+import time
+
+from fastapi import Depends, FastAPI
 import uvicorn
+
 from . import __version__
+from .analysis_models import ModelExecutionError, ModelIntegrityError, ModelMissingError
+from .analysis_pipeline import pipeline
 from .auth import require_token
-from .contracts import AiRequest, AiResponse, AiError
-from .settings import settings
+from .contracts import AiError, AiRequest, AiResponse
 from .model_registry import registry
-from .technical import analyze_image, preselect_from_technical, qa_from_technical, ImageReadError
+from .preselection import preselect_from_analysis
+from .settings import settings
+from .technical import ImageReadError, analyze_image, qa_from_technical
 
-app=FastAPI(title="PHOTO AI FACTORY AI Worker", version=__version__, docs_url=None, redoc_url=None)
+app = FastAPI(
+    title="PHOTO AI FACTORY AI Worker",
+    version=__version__,
+    docs_url=None,
+    redoc_url=None,
+)
 
-def err(req: AiRequest, code: str, category: str, message: str, retryable: bool=False, details=None):
-    return AiResponse(request_id=req.request_id, success=False, error=AiError(code=code,category=category,retryable=retryable,message=message,details=details))
+
+def err(
+    req: AiRequest,
+    code: str,
+    category: str,
+    message: str,
+    retryable: bool = False,
+    details=None,
+):
+    return AiResponse(
+        request_id=req.request_id,
+        success=False,
+        error=AiError(
+            code=code,
+            category=category,
+            retryable=retryable,
+            component="python-ai-worker",
+            message=message,
+            details=details,
+        ),
+    )
+
 
 @app.get("/v1/health", dependencies=[Depends(require_token)])
 def health():
-    device="cpu"
+    device = "cpu"
     try:
         import torch
-        if torch.cuda.is_available(): device=torch.cuda.get_device_name(0)
+        if torch.cuda.is_available():
+            device = torch.cuda.get_device_name(0)
     except Exception:
         pass
-    return {"status":"HEALTHY","api_version":"v1","worker_version":__version__,"device":device,"models_loaded":sorted(registry.loaded)}
+    return {
+        "status": "HEALTHY",
+        "api_version": "v1",
+        "worker_version": __version__,
+        "device": device,
+        "models_loaded": sorted(registry.loaded),
+    }
+
 
 @app.get("/v1/capabilities", dependencies=[Depends(require_token)])
 def capabilities():
-    return {"api_version":"v1","implemented":["health","models/status","analyze:technical","preselect:technical","qa:technical"],"planned":["rf-detr","mediapipe","florence","qwen","dinov2","pre-ai-recipe","feedback-inspection"]}
+    return {
+        "api_version": "v1",
+        "implemented": [
+            "health",
+            "models/status",
+            "models/release",
+            "analyze:phase3-v1",
+            "preselect:phase3-v1",
+            "qa:technical",
+        ],
+        "planned": [
+            "pre-ai-recipe",
+            "feedback-inspection",
+        ],
+    }
+
 
 @app.get("/v1/models/status", dependencies=[Depends(require_token)])
-def models_status(): return {"models":registry.status()}
+def models_status():
+    return {"models": registry.status()}
+
+
+@app.post("/v1/models/release", response_model=AiResponse, dependencies=[Depends(require_token)])
+def models_release(req: AiRequest):
+    start = time.perf_counter()
+    try:
+        pipeline.release()
+        return AiResponse(
+            request_id=req.request_id,
+            success=True,
+            result={"released": True, "models_loaded": sorted(registry.loaded)},
+            timings={"total_ms": (time.perf_counter() - start) * 1000},
+        )
+    except Exception as exc:
+        return err(req, "MODEL_RELEASE_ERROR", "resource", str(exc), True)
+
 
 @app.post("/v1/analyze", response_model=AiResponse, dependencies=[Depends(require_token)])
 def analyze(req: AiRequest):
-    start=time.perf_counter()
-    if not req.input_paths: return err(req,"MISSING_INPUT","validation","No input path supplied")
+    start = time.perf_counter()
+    if not req.input_paths:
+        return err(req, "MISSING_INPUT", "validation", "No input path supplied")
     try:
-        metrics=analyze_image(req.input_paths[0])
-        return AiResponse(request_id=req.request_id,success=True,result={"technical":metrics},timings={"total_ms":(time.perf_counter()-start)*1000})
-    except (FileNotFoundError,ImageReadError) as e:
-        return err(req,"INPUT_READ_ERROR","input",str(e),False)
-    except Exception as e:
-        return err(req,"ANALYSIS_ERROR","runtime",str(e),True)
+        if req.config.get("schema_version") == 1:
+            result = pipeline.analyze(req.input_paths[0], req.config)
+        else:
+            # Preserve the Phase 0 technical-analysis contract for callers that
+            # do not opt into the versioned Phase 3 envelope.
+            result = {"technical": analyze_image(req.input_paths[0])}
+        return AiResponse(
+            request_id=req.request_id,
+            success=True,
+            result=result,
+            timings={"total_ms": (time.perf_counter() - start) * 1000},
+        )
+    except FileNotFoundError as exc:
+        return err(req, "INPUT_OR_MODEL_MISSING", "input", str(exc), False)
+    except ImageReadError as exc:
+        return err(req, "INPUT_READ_ERROR", "input", str(exc), False)
+    except ModelMissingError as exc:
+        return err(
+            req, "MODEL_MISSING", "model", str(exc), False,
+            {"model_id": exc.model_id})
+    except ModelIntegrityError as exc:
+        return err(
+            req, "MODEL_INTEGRITY_ERROR", "model", str(exc), False,
+            {"model_id": exc.model_id})
+    except ModelExecutionError as exc:
+        message = str(exc)
+        oom = "out of memory" in message.lower() or "cuda oom" in message.lower()
+        return err(
+            req,
+            "GPU_OOM" if oom else "MODEL_EXECUTION_ERROR",
+            "resource" if oom else "model_runtime",
+            message,
+            True,
+            {"model_id": exc.model_id},
+        )
+    except ValueError as exc:
+        return err(req, "INVALID_ANALYSIS_CONFIG", "validation", str(exc), False)
+    except Exception as exc:
+        message = str(exc)
+        oom = "out of memory" in message.lower() or "cuda oom" in message.lower()
+        return err(
+            req,
+            "GPU_OOM" if oom else "ANALYSIS_ERROR",
+            "resource" if oom else "runtime",
+            message,
+            True,
+        )
+
 
 @app.post("/v1/preselect", response_model=AiResponse, dependencies=[Depends(require_token)])
 def preselect(req: AiRequest):
-    start=time.perf_counter()
-    if not req.input_paths: return err(req,"MISSING_INPUT","validation","No input path supplied")
+    start = time.perf_counter()
     try:
-        metrics=analyze_image(req.input_paths[0])
-        result=preselect_from_technical(metrics,req.config)
-        return AiResponse(request_id=req.request_id,success=True,result=result,timings={"total_ms":(time.perf_counter()-start)*1000})
-    except Exception as e:
-        return err(req,"PRESELECT_ERROR","runtime",str(e),False)
+        analysis = req.config.get("analysis")
+        if not isinstance(analysis, dict):
+            # Compatibility path for focused worker tests; full C# Phase 3 passes the persisted Analysis.
+            if not req.input_paths:
+                return err(req, "MISSING_ANALYSIS", "validation", "No persisted Analysis supplied")
+            analysis = {
+                "technical": analyze_image(req.input_paths[0]),
+                "faces": {"face_count": 0, "faces": []},
+                "embedding": {},
+            }
+        result = preselect_from_analysis(analysis, req.config)
+        return AiResponse(
+            request_id=req.request_id,
+            success=True,
+            result=result,
+            timings={"total_ms": (time.perf_counter() - start) * 1000},
+        )
+    except (FileNotFoundError, ImageReadError) as exc:
+        return err(req, "INPUT_READ_ERROR", "input", str(exc), False)
+    except Exception as exc:
+        return err(req, "PRESELECT_ERROR", "runtime", str(exc), False)
+
 
 @app.post("/v1/qa", response_model=AiResponse, dependencies=[Depends(require_token)])
 def qa(req: AiRequest):
-    start=time.perf_counter()
-    if not req.input_paths: return err(req,"MISSING_INPUT","validation","No input path supplied")
+    start = time.perf_counter()
+    if not req.input_paths:
+        return err(req, "MISSING_INPUT", "validation", "No input path supplied")
     try:
-        metrics=analyze_image(req.input_paths[0])
-        result=qa_from_technical(metrics,req.config)
-        return AiResponse(request_id=req.request_id,success=True,result=result,timings={"total_ms":(time.perf_counter()-start)*1000})
-    except Exception as e:
-        return err(req,"QA_ERROR","runtime",str(e),False)
+        metrics = analyze_image(req.input_paths[0])
+        result = qa_from_technical(metrics, req.config)
+        return AiResponse(
+            request_id=req.request_id,
+            success=True,
+            result=result,
+            timings={"total_ms": (time.perf_counter() - start) * 1000},
+        )
+    except Exception as exc:
+        return err(req, "QA_ERROR", "runtime", str(exc), False)
+
 
 @app.post("/v1/recipe/pre-ai", response_model=AiResponse, dependencies=[Depends(require_token)])
 def pre_ai_recipe(req: AiRequest):
-    return err(req,"MODEL_PIPELINE_NOT_READY","capability","PRE-AI recipe generation requires the real model/recipe adapters and Darktable Gate DT-01",False)
+    return err(
+        req,
+        "MODEL_PIPELINE_NOT_READY",
+        "capability",
+        "PRE-AI recipe generation belongs to Phase 4 and remains intentionally blocked",
+        False,
+    )
+
 
 @app.post("/v1/feedback/inspect", response_model=AiResponse, dependencies=[Depends(require_token)])
 def feedback(req: AiRequest):
-    return err(req,"MODEL_PIPELINE_NOT_READY","capability","FEEDBACK inspection is intentionally blocked until DT-01 and real model adapters are validated",False)
+    return err(
+        req,
+        "MODEL_PIPELINE_NOT_READY",
+        "capability",
+        "FEEDBACK inspection belongs to Phase 5 and remains intentionally blocked",
+        False,
+    )
+
 
 def run():
     if not settings.token:
         raise SystemExit("PAF_AI_TOKEN must be set")
-    uvicorn.run(app, host=settings.host, port=settings.port, log_level=os.getenv("PAF_AI_LOG_LEVEL","info"))
+    os.environ.setdefault("HF_HUB_OFFLINE", "1")
+    os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+    os.environ.setdefault("HF_DATASETS_OFFLINE", "1")
+    uvicorn.run(
+        app,
+        host=settings.host,
+        port=settings.port,
+        log_level=os.getenv("PAF_AI_LOG_LEVEL", "info"),
+    )

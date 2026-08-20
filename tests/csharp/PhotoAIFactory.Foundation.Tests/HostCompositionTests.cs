@@ -12,6 +12,7 @@ using PhotoAIFactory.Application.Runtime;
 using PhotoAIFactory.Domain;
 using PhotoAIFactory.Domain.Projects;
 using PhotoAIFactory.Infrastructure;
+using PhotoAIFactory.Infrastructure.Analysis;
 using PhotoAIFactory.Infrastructure.Hosting;
 using PhotoAIFactory.Infrastructure.Logging;
 using PhotoAIFactory.Infrastructure.Persistence.Repositories;
@@ -211,11 +212,17 @@ public sealed class HostCompositionTests
         await using var fixture = new HostFixture();
         var services = fixture.Host.Services;
         Assert.IsNotNull(services.GetRequiredService<ProcessRunner>());
-        Assert.IsNull(services.GetService<IPythonAiClient>());
+        var python = services.GetRequiredService<IPythonAiClient>();
+        Assert.IsInstanceOfType<PythonWorkerSupervisor>(python);
+        var processField = typeof(PythonWorkerSupervisor).GetField(
+            "process", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.IsNotNull(processField);
+        Assert.IsNull(processField.GetValue(python));
         Assert.IsNull(services.GetService<IComfyUiClient>());
         Assert.IsNull(services.GetService<IDarktableCli>());
         await fixture.StartAsync();
-        Assert.IsNull(services.GetService<IPythonAiClient>());
+        Assert.AreSame(python, services.GetRequiredService<IPythonAiClient>());
+        Assert.IsNull(processField.GetValue(python));
     }
 
     [TestMethod]
@@ -367,9 +374,11 @@ public sealed class HostCompositionTests
         });
         var probe = fixture.Host.Services.GetRequiredService<CancellationProbe>();
         await fixture.StartAsync();
+        await probe.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
         await fixture.StopAsync();
         await probe.Cancelled.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.IsTrue(probe.Execution!.IsCompleted);
+        await probe.Exited.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.IsTrue(probe.Execution?.IsCompletedSuccessfully ?? false);
     }
 
     [TestMethod]
@@ -647,6 +656,7 @@ public sealed class HostCompositionTests
     {
         public TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource Cancelled { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public TaskCompletionSource Exited { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public Task? Execution { get; private set; }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -665,6 +675,10 @@ public sealed class HostCompositionTests
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
                 Cancelled.TrySetResult();
+            }
+            finally
+            {
+                Exited.TrySetResult();
             }
         }
     }

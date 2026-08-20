@@ -2,7 +2,7 @@
 
 **Baseline:** 2026-08-12  
 **Última actualización:** 2026-08-19  
-**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO
+**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS
 
 ## Documentos congelados como baseline
 
@@ -48,9 +48,9 @@ PHASE 1 = NEXT
 
 ## Lo siguiente
 
-Phase 2 Ingestion está cerrada y validada en el PC Windows de referencia. El
-repositorio queda listo para Phase 3 sólo después de autorización explícita; esta
-actualización no inicia Analysis, AI/modelos, Jobs ni lifecycle de motores.
+Phase 3 Analysis / Preselection está cerrada con las limitaciones documentadas. La
+siguiente etapa del Implementation Plan es Phase 4 — Revelado básico: DT_AUTO, PRE_AI,
+normalized recipe, XMP/history y export. No se inició trabajo de Phase 4.
 
 ## Phase 1 Foundation
 
@@ -71,7 +71,8 @@ Decisión de closeout:
 ```text
 PHASE 1 — FOUNDATION = CLOSED / GO
 PHASE 2 — INGESTION = CLOSED / GO
-PHASE 3 = NOT STARTED
+PHASE 3 — ANALYSIS / PRESELECTION = CLOSED / GO WITH DOCUMENTED LIMITATIONS
+PHASE 4 = NOT STARTED
 ```
 
 ## Phase 2 Ingestion
@@ -91,3 +92,23 @@ PHASE 3 = NOT STARTED
 - FR-ING-009 (similitud visual) queda fuera de Phase 2.
 
 Informe: `docs/phase2/PHASE2_INGESTION_REPORT.md`.
+
+## Phase 3 Analysis / Preselection
+
+- C# conserva la autoridad durable y es el único writer SQLite; Python Worker entrega
+  resultados AI estructurados: `PASS`.
+- Migration 004, `ANALYSIS_COMPLETE`, `PRESELECTION_COMPLETE`, FIFO, checkpoints,
+  replay/restart e idempotencia: `PASS`.
+- OFF, STANDARD y FULL: `PASS`; STANDARD midió 11.590 s.
+- FULL midió 41.424 s y queda como
+  `PERFORMANCE_LIMITATION / BENCHMARK_REQUIRED`, no como cumplimiento del target normal.
+- Florence usa `florence-community/Florence-2-large`, revisión
+  `4271c66b88cdbc05735372ec13b2360108de5317`, con SHA-256 de `model.safetensors`
+  `7715423d6549bf1e71188bdd84f4ac960cc0597886af24a5ef7b66f128660685`.
+- Florence permanece `BASELINE` pendiente del benchmark de calidad; no fue promovido a
+  `APPROVED`.
+- ADR-018: `Accepted`. ADR-019: `Accepted`.
+- Tests finales: C# 143/143; Python 11/11 con runtime aislado.
+- No se inició Phase 4.
+
+Informe: `docs/phase3/PHASE3_ANALYSIS_PRESELECTION_REPORT.md`.

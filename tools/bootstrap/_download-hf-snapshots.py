@@ -20,22 +20,20 @@ MODELS = {
         ],
     },
     "florence-2-large": {
-        "repo_id": "microsoft/Florence-2-large",
-        "revision": "21a599d414c4d928c9032694c424fb94458e3594",
+        "repo_id": "florence-community/Florence-2-large",
+        "revision": "4271c66b88cdbc05735372ec13b2360108de5317",
+        "target_dir": "florence-2-large-native-4271c66b88cdbc05735372ec13b2360108de5317",
         "allow_patterns": [
             ".gitattributes",
-            "CODE_OF_CONDUCT.md",
-            "LICENSE",
             "README.md",
-            "SECURITY.md",
-            "SUPPORT.md",
+            "added_tokens.json",
             "config.json",
-            "configuration_florence2.py",
             "generation_config.json",
+            "merges.txt",
             "model.safetensors",
-            "modeling_florence2.py",
             "preprocessor_config.json",
-            "processing_florence2.py",
+            "processor_config.json",
+            "special_tokens_map.json",
             "tokenizer.json",
             "tokenizer_config.json",
             "vocab.json",
@@ -70,7 +68,7 @@ def main() -> None:
     args.models_root.mkdir(parents=True, exist_ok=True)
     results = []
     for model_id, spec in MODELS.items():
-        target = args.models_root / model_id
+        target = args.models_root / spec.get("target_dir", model_id)
         resolved = snapshot_download(
             repo_id=spec["repo_id"],
             revision=spec["revision"],
@@ -91,4 +89,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

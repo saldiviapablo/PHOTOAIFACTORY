@@ -12,16 +12,15 @@ public sealed record SqliteMigration(int Version, string Name, string Sql)
 }
 
 public sealed class MigrationIntegrityException(string message) : IOException(message);
-
 public static class MigrationCatalog
 {
     public static IReadOnlyList<SqliteMigration> All { get; } =
     [
         new(1, "initial_project_config", ReadEmbedded("001_initial_project_config.sql")),
         new(2, "project_lifecycle", ReadEmbedded("002_project_lifecycle.sql")),
-        new(3, "ingestion", ReadEmbedded("003_ingestion.sql"))
+        new(3, "ingestion", ReadEmbedded("003_ingestion.sql")),
+        new(4, "analysis_preselection_queue", ReadEmbedded("004_analysis_preselection_queue.sql"))
     ];
-
     private static string ReadEmbedded(string fileName)
     {
         var assembly = typeof(MigrationCatalog).Assembly;
@@ -33,11 +32,9 @@ public static class MigrationCatalog
         return reader.ReadToEnd();
     }
 }
-
 public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyList<SqliteMigration> migrations)
 {
     public string? LastBackupPath { get; private set; }
-
     public async Task ApplyAsync(CancellationToken cancellationToken = default)
     {
         ValidateMigrationList();
@@ -45,11 +42,9 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
             ?? throw new InvalidOperationException("Database parent path is unavailable.");
         Directory.CreateDirectory(parent);
         var existedWithContent = File.Exists(database.DatabasePath) && new FileInfo(database.DatabasePath).Length > 0;
-
         await using var writerLease = await database.Writer.EnterAsync(cancellationToken).ConfigureAwait(false);
         await using var connection = database.CreateConnection(createIfMissing: true);
         await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
-
         var applied = await ReadAppliedAsync(connection, cancellationToken).ConfigureAwait(false);
         ValidateApplied(applied);
         var pending = migrations.Where(migration => !applied.ContainsKey(migration.Version)).ToArray();
@@ -59,12 +54,10 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
             await EnsureWalAsync(connection, cancellationToken).ConfigureAwait(false);
             return;
         }
-
         if (existedWithContent)
         {
             LastBackupPath = await BackupAsync(connection, cancellationToken).ConfigureAwait(false);
         }
-
         await SqliteProjectDatabase.ConfigureConnectionAsync(connection, cancellationToken).ConfigureAwait(false);
         await EnsureWalAsync(connection, cancellationToken).ConfigureAwait(false);
         await using var transaction = (SqliteTransaction)await connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
@@ -86,7 +79,6 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
                 record.Parameters.AddWithValue("$appliedAtUtc", DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture));
                 await record.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
             }
-
             await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
         }
         catch
@@ -95,21 +87,18 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
             throw;
         }
     }
-
     private void ValidateMigrationList()
     {
         if (migrations.Count == 0 || migrations.Any(item => item.Version <= 0 || string.IsNullOrWhiteSpace(item.Name)))
         {
             throw new InvalidOperationException("At least one valid migration is required.");
         }
-
         var ordered = migrations.OrderBy(item => item.Version).Select(item => item.Version).ToArray();
         if (!ordered.SequenceEqual(migrations.Select(item => item.Version)) || ordered.Distinct().Count() != ordered.Length)
         {
             throw new InvalidOperationException("Migrations must be uniquely ordered by version.");
         }
     }
-
     private void ValidateApplied(IReadOnlyDictionary<int, AppliedMigration> applied)
     {
         foreach (var item in applied)
@@ -123,7 +112,6 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
             }
         }
     }
-
     private static async Task<Dictionary<int, AppliedMigration>> ReadAppliedAsync(
         SqliteConnection connection,
         CancellationToken cancellationToken)
@@ -134,7 +122,6 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
         {
             return [];
         }
-
         var result = new Dictionary<int, AppliedMigration>();
         await using var command = connection.CreateCommand();
         command.CommandText = "SELECT version, name, migration_sha256 FROM schema_migrations ORDER BY version;";
@@ -143,10 +130,8 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
         {
             result.Add(reader.GetInt32(0), new AppliedMigration(reader.GetString(1), reader.GetString(2)));
         }
-
         return result;
     }
-
     private async Task<string> BackupAsync(SqliteConnection source, CancellationToken cancellationToken)
     {
         var backupDirectory = Path.Combine(Path.GetDirectoryName(database.DatabasePath)!, "backups");
@@ -167,7 +152,6 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
         source.BackupDatabase(destination);
         return backupPath;
     }
-
     private static async Task EnsureWalAsync(SqliteConnection connection, CancellationToken cancellationToken)
     {
         await using var command = connection.CreateCommand();
@@ -178,7 +162,6 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
             throw new InvalidOperationException($"SQLite refused WAL mode; reported '{value}'.");
         }
     }
-
     private static async Task ExecuteAsync(
         SqliteConnection connection,
         System.Data.Common.DbTransaction transaction,
@@ -190,7 +173,6 @@ public sealed class MigrationRunner(SqliteProjectDatabase database, IReadOnlyLis
         command.CommandText = sql;
         await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
     }
-
     private sealed record AppliedMigration(string Name, string Sha256);
 
     private const string SchemaMigrationsSql = """

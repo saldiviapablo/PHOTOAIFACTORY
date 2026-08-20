@@ -84,7 +84,7 @@ try {
     $env:PAF_QWEN_MODEL = Join-Path $paths.Models 'qwen3-vl-2b-instruct-fp8\model-00001-of-00001.safetensors'
     $env:PAF_QWEN_DIR = Join-Path $paths.Models 'qwen3-vl-2b-instruct-fp8'
     $env:PAF_RF_MODEL = Join-Path $paths.Models 'rf-detr-medium\model.safetensors'
-    $env:PAF_FLORENCE_MODEL = Join-Path $paths.Models 'florence-2-large\model.safetensors'
+    $env:PAF_FLORENCE_MODEL = Join-Path $paths.Models 'florence-2-large-native-4271c66b88cdbc05735372ec13b2360108de5317\model.safetensors'
     $env:PAF_FACE_MODEL = Join-Path $paths.Models 'mediapipe-face-landmarker\face_landmarker.task'
     $env:PAF_POSE_MODEL = Join-Path $paths.Models 'mediapipe-pose-landmarker-full\pose_landmarker_full.task'
     $probe = @'
@@ -197,7 +197,7 @@ $modelSpecs = @(
     [ordered]@{ Id='rf-detr-medium'; Version='1b5b672408f86dd38e05dd3cf3f2e0834e545a59'; Rel='rf-detr-medium\model.safetensors'; Sha='e52098adc46969794fbdd16e0548a62b81ba0c0f4b14392676edba50be9a69f6'; Source='https://huggingface.co/Roboflow/rf-detr-medium'; License='Apache-2.0' },
     [ordered]@{ Id='mediapipe-face-landmarker'; Version='float16 bundle pinned by SHA-256'; Rel='mediapipe-face-landmarker\face_landmarker.task'; Sha='64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff'; Source='https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker'; License='Apache-2.0 (official model card)' },
     [ordered]@{ Id='mediapipe-pose-landmarker-full'; Version='float16 full bundle pinned by SHA-256'; Rel='mediapipe-pose-landmarker-full\pose_landmarker_full.task'; Sha='4eaa5eb7a98365221087693fcc286334cf0858e2eb6e15b506aa4a7ecdcec4ad'; Source='https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker'; License='Apache-2.0 (official model card)' },
-    [ordered]@{ Id='florence-2-large'; Version='21a599d414c4d928c9032694c424fb94458e3594'; Rel='florence-2-large\model.safetensors'; Sha='4f38ce741c6b71188fe2b3419a55e11917a8a7b321ae2e63c61da0191b0ebad7'; Source='https://huggingface.co/microsoft/Florence-2-large'; License='MIT' },
+    [ordered]@{ Id='florence-2-large'; Version='4271c66b88cdbc05735372ec13b2360108de5317'; Rel='florence-2-large-native-4271c66b88cdbc05735372ec13b2360108de5317\model.safetensors'; Sha='7715423d6549bf1e71188bdd84f4ac960cc0597886af24a5ef7b66f128660685'; Source='https://huggingface.co/florence-community/Florence-2-large'; License='MIT' },
     [ordered]@{ Id='qwen3-vl-2b-instruct-fp8'; Version='46485250d8854c0a9be4f1adbc67ca47e5bb6fa5'; Rel='qwen3-vl-2b-instruct-fp8\model-00001-of-00001.safetensors'; Sha='da14428e061d80e3aa575bbcf911f48fda9be492b5a3e8be6a15e9d54313e57c'; Source='https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct-FP8'; License='Apache-2.0' },
     [ordered]@{ Id='dinov2-vits14-standard'; Version='LVD-142M standard ViT-S/14 pinned by SHA-256'; Rel='dinov2-vits14-standard\dinov2_vits14_pretrain.pth'; Sha='b938bf1bc15cd2ec0feacfe3a1bb553fe8ea9ca46a7e1d8d00217f29aef60cd9'; Source='https://github.com/facebookresearch/dinov2'; License='Apache-2.0' }
 )
