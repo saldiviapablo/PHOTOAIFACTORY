@@ -38,7 +38,10 @@ public sealed record DarktableExportRequest(
     int? JpegQuality = null,
     string? ConfigDirectory = null,
     string? CacheDirectory = null,
-    string? LibraryPath = null);
+    string? LibraryPath = null,
+    string? IccType = null,
+    int? TiffBitsPerSample = null,
+    bool? TiffWriteRgb = null);
 
 public sealed record ProcessExecutionResult(
     int ExitCode,

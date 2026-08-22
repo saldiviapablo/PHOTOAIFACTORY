@@ -9,6 +9,7 @@ from .analysis_models import ModelExecutionError, ModelIntegrityError, ModelMiss
 from .analysis_pipeline import pipeline
 from .auth import require_token
 from .contracts import AiError, AiRequest, AiResponse
+from .feedback import FeedbackInputError, inspect_feedback
 from .model_registry import registry
 from .preselection import preselect_from_analysis
 from .recipes import build_pre_ai_recipe
@@ -74,11 +75,10 @@ def capabilities():
             "analyze:phase3-v1",
             "preselect:phase3-v1",
             "recipe/pre-ai:phase4-v1",
+            "feedback/inspect:phase5-v1",
             "qa:technical",
         ],
-        "planned": [
-            "feedback-inspection",
-        ],
+        "planned": [],
     }
 
 
@@ -227,13 +227,47 @@ def pre_ai_recipe(req: AiRequest):
 
 @app.post("/v1/feedback/inspect", response_model=AiResponse, dependencies=[Depends(require_token)])
 def feedback(req: AiRequest):
-    return err(
-        req,
-        "MODEL_PIPELINE_NOT_READY",
-        "capability",
-        "FEEDBACK inspection belongs to Phase 5 and remains intentionally blocked",
-        False,
-    )
+    start = time.perf_counter()
+    if not req.input_paths:
+        return err(
+            req,
+            "MISSING_INPUT",
+            "validation",
+            "FEEDBACK inspection requires the Pass 1 TIFF path",
+            False,
+        )
+    try:
+        result = inspect_feedback(req.input_paths[0], req.config)
+        return AiResponse(
+            request_id=req.request_id,
+            success=True,
+            result=result,
+            timings={"total_ms": (time.perf_counter() - start) * 1000},
+        )
+    except FeedbackInputError as exc:
+        return err(
+            req,
+            "INVALID_FEEDBACK_INPUT",
+            "validation",
+            str(exc),
+            False,
+        )
+    except FileNotFoundError as exc:
+        return err(
+            req,
+            "FEEDBACK_INPUT_MISSING",
+            "input",
+            str(exc),
+            False,
+        )
+    except Exception as exc:
+        return err(
+            req,
+            "FEEDBACK_INSPECTION_ERROR",
+            "runtime",
+            str(exc),
+            True,
+        )
 
 
 def run():

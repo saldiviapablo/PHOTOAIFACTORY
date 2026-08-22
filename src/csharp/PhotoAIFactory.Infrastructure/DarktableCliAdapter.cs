@@ -52,6 +52,13 @@ public sealed class DarktableCliAdapter(string darktableCliPath, ProcessRunner r
                 nameof(request), "Darktable JPEG quality must be between 5 and 100.");
         }
 
+        if (request.TiffBitsPerSample is int requestedTiffBits &&
+            requestedTiffBits is not (8 or 16 or 32))
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(request), "Darktable TIFF bit depth must be 8, 16 or 32.");
+        }
+
         Directory.CreateDirectory(
             Path.GetDirectoryName(Path.GetFullPath(request.OutputPath))!);
 
@@ -89,6 +96,12 @@ public sealed class DarktableCliAdapter(string darktableCliPath, ProcessRunner r
             args.Add(applyCustomPresets ? "true" : "false");
         }
 
+        if (!string.IsNullOrWhiteSpace(request.IccType))
+        {
+            args.Add("--icc-type");
+            args.Add(request.IccType!);
+        }
+
         args.Add("--verbose");
 
         if (request.JpegQuality is int jpegQuality)
@@ -106,6 +119,40 @@ public sealed class DarktableCliAdapter(string darktableCliPath, ProcessRunner r
             args.Add("--conf");
             args.Add(
                 $"plugins/imageio/format/jpeg/quality={jpegQuality.ToString(CultureInfo.InvariantCulture)}");
+        }
+
+        if (request.JpegQuality is null &&
+            (request.TiffBitsPerSample is not null ||
+             request.TiffWriteRgb is not null ||
+             !string.IsNullOrWhiteSpace(request.ConfigDirectory) ||
+             !string.IsNullOrWhiteSpace(request.CacheDirectory) ||
+             !string.IsNullOrWhiteSpace(request.LibraryPath)))
+        {
+            args.Add("--core");
+            AddCorePath(
+                args, "--configdir", request.ConfigDirectory, createDirectory: true);
+            AddCorePath(
+                args, "--cachedir", request.CacheDirectory, createDirectory: true);
+            if (!string.IsNullOrWhiteSpace(request.LibraryPath))
+            {
+                args.Add("--library");
+                args.Add(string.Equals(
+                        request.LibraryPath, ":memory:", StringComparison.Ordinal)
+                    ? request.LibraryPath
+                    : NormalizePath(request.LibraryPath));
+            }
+            if (request.TiffBitsPerSample is int tiffBits)
+            {
+                args.Add("--conf");
+                args.Add(
+                    $"plugins/imageio/format/tiff/bpp={tiffBits.ToString(CultureInfo.InvariantCulture)}");
+            }
+            if (request.TiffWriteRgb is bool writeRgb)
+            {
+                args.Add("--conf");
+                args.Add(
+                    $"plugins/imageio/format/tiff/shortfile={(writeRgb ? "0" : "1")}");
+            }
         }
 
         try

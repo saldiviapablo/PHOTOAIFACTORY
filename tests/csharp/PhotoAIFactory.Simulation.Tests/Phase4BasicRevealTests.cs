@@ -164,7 +164,9 @@ public sealed class Phase4BasicRevealTests
                 MigrationCatalog.All.Take(4).ToArray());
             await phase3.InitializeAsync();
 
-            var upgraded = new SqliteProjectDatabase(path);
+            var upgraded = new SqliteProjectDatabase(
+                path,
+                MigrationCatalog.All.Take(5).ToArray());
             await upgraded.InitializeAsync();
             Assert.IsNotNull(upgraded.LastMigrationBackupPath);
             Assert.IsTrue(File.Exists(upgraded.LastMigrationBackupPath));

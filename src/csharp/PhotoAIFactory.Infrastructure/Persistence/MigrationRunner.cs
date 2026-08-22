@@ -25,7 +25,8 @@ public static class MigrationCatalog
         new(2, "project_lifecycle", ReadEmbedded("002_project_lifecycle.sql")),
         new(3, "ingestion", ReadEmbedded("003_ingestion.sql")),
         new(4, "analysis_preselection_queue", ReadEmbedded("004_analysis_preselection_queue.sql")),
-        new(5, "basic_reveal", ReadEmbedded("005_basic_reveal.sql"))
+        new(5, "basic_reveal", ReadEmbedded("005_basic_reveal.sql")),
+        new(6, "feedback", ReadEmbedded("006_feedback.sql"))
     ];
 
     private static string ReadEmbedded(string fileName)

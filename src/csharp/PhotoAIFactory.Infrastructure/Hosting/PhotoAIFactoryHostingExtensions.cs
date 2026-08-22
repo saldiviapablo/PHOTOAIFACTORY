@@ -141,6 +141,18 @@ public static class PhotoAIFactoryHostingExtensions
             ProcessingHistoryWriter>();
         builder.Services.AddTransient<BasicRevealOrchestrator>();
         builder.Services.AddTransient<ProjectRevealManager>();
+        builder.Services.AddSingleton<
+            IFeedbackStoreFactory,
+            SqliteFeedbackStoreFactory>();
+        builder.Services.AddSingleton<
+            IDarktableFeedbackExecutor,
+            DarktableFeedbackExecutor>();
+        builder.Services.AddSingleton<
+            IFeedbackHistoryWriter,
+            FeedbackHistoryWriter>();
+        builder.Services.AddTransient<FeedbackOrchestrator>();
+        builder.Services.AddTransient<ProjectFeedbackManager>();
+        builder.Services.AddTransient<ProjectProcessingManager>();
 
         builder.Services.AddSingleton<TimeProvider>(
             TimeProvider.System);

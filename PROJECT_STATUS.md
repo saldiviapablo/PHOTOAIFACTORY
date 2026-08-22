@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Baseline:** 2026-08-12  
-**Última actualización:** 2026-08-20
-**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS
+**Última actualización:** 2026-08-22
+**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 5 CLOSED / GO WITH DOCUMENTED LIMITATIONS
 
 ## Documentos congelados como baseline
 
@@ -48,10 +48,9 @@ PHASE 1 = NEXT
 
 ## Lo siguiente
 
-Phase 4 Basic Reveal está cerrada con las limitaciones documentadas. La siguiente
-etapa del Implementation Plan es Phase 5 — FEEDBACK. No se inició trabajo de
-Phase 5.
-
+Phase 5 FEEDBACK está cerrada con las limitaciones documentadas. La siguiente
+etapa del Implementation Plan es Phase 6 — ComfyUI. No se inició trabajo de
+Phase 6.
 ## Phase 1 Foundation
 
 - Slice 1 — Project + ConfigVersion durable: `PASS / ACCEPTED`.
@@ -73,6 +72,7 @@ PHASE 1 — FOUNDATION = CLOSED / GO
 PHASE 2 — INGESTION = CLOSED / GO
 PHASE 3 — ANALYSIS / PRESELECTION = CLOSED / GO WITH DOCUMENTED LIMITATIONS
 PHASE 4 — BASIC REVEAL = CLOSED / GO WITH DOCUMENTED LIMITATIONS
+PHASE 5 — FEEDBACK = CLOSED / GO WITH DOCUMENTED LIMITATIONS
 ```
 
 ## Phase 2 Ingestion
@@ -133,3 +133,24 @@ Informe: `docs/phase3/PHASE3_ANALYSIS_PRESELECTION_REPORT.md`.
 - No se inició Phase 5.
 
 Informe: `docs/phase4/PHASE4_BASIC_REVEAL_REPORT.md`.
+
+## Phase 5 FEEDBACK
+- Migration 006, DB nueva y upgrade 005 → 006, backup, checksum, drift,
+  idempotencia, rollback, WAL/FULL/FK e integrity check: PASS.
+- FEEDBACK RAW full-size y JPEG-only: PASS.
+- Pass 1 produce TIFF RGB 16-bit + XMP auténtico; la inspección reutiliza
+  Analysis de Phase 3 y genera phase5-feedback-v1: PASS.
+- Pass 2 reinicia siempre desde el original administrado correspondiente y
+  nunca desde el TIFF/JPEG derivado de Pass 1: PASS.
+- DARKTABLE_PASS1_COMPLETE, FEEDBACK_INSPECTION_COMPLETE y
+  DARKTABLE_PASS2_COMPLETE: PASS.
+- Neural Restore continúa NOT_HEADLESS_PROVEN; Raw Denoise, RGB Denoise y
+  Upscale permanecen desactivados. RAW_DENOISE_COMPLETE no se escribió.
+- ADR-021: Accepted.
+- Tests finales del audit: C# 183/183; Python 21/21 con runtime aislado.
+- Performance medida: RAW 36.467 s; JPEG-only 35.548 s:
+  PERFORMANCE_LIMITATION / BENCHMARK_REQUIRED.
+- Receta creativa FEEDBACK: NOT_CALIBRATED / BENCHMARK_REQUIRED.
+- Phase 5 no ejecuta ComfyUI, QA, OUTPUT_PUBLISHED ni publicación FINAL.
+- La siguiente etapa es Phase 6 — ComfyUI; no fue iniciada.
+Informe: docs/phase5/PHASE5_FEEDBACK_REPORT.md.
