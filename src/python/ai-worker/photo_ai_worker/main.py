@@ -9,6 +9,7 @@ from .analysis_models import ModelExecutionError, ModelIntegrityError, ModelMiss
 from .analysis_pipeline import pipeline
 from .auth import require_token
 from .contracts import AiError, AiRequest, AiResponse
+from .comfy_plan import ComfyPlanInputError, build_comfy_plan
 from .feedback import FeedbackInputError, inspect_feedback
 from .model_registry import registry
 from .preselection import preselect_from_analysis
@@ -76,6 +77,7 @@ def capabilities():
             "preselect:phase3-v1",
             "recipe/pre-ai:phase4-v1",
             "feedback/inspect:phase5-v1",
+            "comfy/plan:phase6-v1",
             "qa:technical",
         ],
         "planned": [],
@@ -100,6 +102,21 @@ def models_release(req: AiRequest):
         )
     except Exception as exc:
         return err(req, "MODEL_RELEASE_ERROR", "resource", str(exc), True)
+
+
+@app.post("/v1/comfy/plan", response_model=AiResponse, dependencies=[Depends(require_token)])
+def comfy_plan(req: AiRequest):
+    start = time.perf_counter()
+    try:
+        result = build_comfy_plan(req.config)
+        return AiResponse(
+            request_id=req.request_id,
+            success=True,
+            result=result,
+            timings={"total_ms": (time.perf_counter() - start) * 1000},
+        )
+    except ComfyPlanInputError as exc:
+        return err(req, "INVALID_COMFY_PLAN_CONFIG", "validation", str(exc), False)
 
 
 @app.post("/v1/analyze", response_model=AiResponse, dependencies=[Depends(require_token)])

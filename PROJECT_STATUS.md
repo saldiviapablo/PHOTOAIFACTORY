@@ -152,5 +152,34 @@ Informe: `docs/phase4/PHASE4_BASIC_REVEAL_REPORT.md`.
   PERFORMANCE_LIMITATION / BENCHMARK_REQUIRED.
 - Receta creativa FEEDBACK: NOT_CALIBRATED / BENCHMARK_REQUIRED.
 - Phase 5 no ejecuta ComfyUI, QA, OUTPUT_PUBLISHED ni publicación FINAL.
-- La siguiente etapa es Phase 6 — ComfyUI; no fue iniciada.
-Informe: docs/phase5/PHASE5_FEEDBACK_REPORT.md.
+- Informe: docs/phase5/PHASE5_FEEDBACK_REPORT.md.
+
+## Phase 6 ComfyUI
+
+- Migration 007, DB nueva y upgrade 006 → 007, backup, checksum, drift, idempotencia, rollback, WAL/FULL/FK e integrity check: PASS.
+- Append-only `comfy_plans` y `comfy_executions` con triggers SQLite: PASS.
+- Pinned ComfyUI runtime: `v0.33.1` (commit `72865f4f27eaf5396f8f36370e0a2be3a9a090ee`, embedded Python `3.13.14`): PASS.
+- Runtime core roundtrip model-free (`EmptyImage 64x48 -> SaveImage`, workflow `paf-validation-core-roundtrip-v1`): PASS (279 ms).
+- Process supervisor lifecycle, crash recovery (`Process.Kill()`), health check (`/system_stats`), restart y cero procesos huérfanos: PASS.
+- Política de modos: OFF (durable skip), AUTO (skip conservador `AUTO_POLICY_NOT_CALIBRATED`), ON con 0 tasks (durable no-op), ON con task no aprobada (`COMFY_TASK_NOT_APPROVED`, fail-closed, sin consumo de retries): PASS.
+- Retries técnicos acotados (`comfy_retry_count` entre 0 y 2): PASS.
+- Liberación de modelos Python (`/v1/models/release`) antes de adquirir el lease exclusivo de GPU: PASS.
+- Pre-QA boundary: el Job transiciona `QA -> PROCESSING -> QA` registrando el checkpoint durable `COMFYUI_COMPLETE`: PASS.
+- ADR-022: Accepted.
+- Tests finales del audit: C# 209/209 (112 Foundation + 97 Simulation); Python 29/29 (25 repository + 4 worker); total ejecuciones reportadas: 238/238 PASS (100%).
+- Informe: `docs/phase6/PHASE6_COMFYUI_REPORT.md`.
+
+### Limitaciones documentadas de Phase 6
+1. Los 7 workflows de enhancement fotográfico (`COLOR`, `DENOISE_RGB`, `FACE_MASKS`, `FACE_RETOUCH`, `LOW_LIGHT`, `SHARPNESS`, `UPSCALE`) permanecen `BENCHMARK_AND_LICENSE_REQUIRED`.
+2. Política de AUTO enhancement permanece `AUTO_POLICY_NOT_CALIBRATED`.
+3. El workflow core model-free valida el transporte y runtime, no calidad visual.
+4. `/queue` no fue re-ejecutado en Phase 6; queda respaldado por Phase 0 CUI-01.
+5. El test runtime core no utilizó originales fotográficos.
+6. Phase 7 QA y publicación final permanecen sin implementar.
+
+## Lo siguiente
+
+```text
+PHASE 6 — COMFYUI = CLOSED / GO WITH DOCUMENTED LIMITATIONS
+PHASE 7 — QA = NOT STARTED
+```

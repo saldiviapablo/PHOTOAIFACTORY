@@ -171,7 +171,9 @@ public sealed class Phase5FeedbackTests
                 MigrationCatalog.All.Take(5).ToArray());
             await phase4.InitializeAsync();
 
-            var upgraded = new SqliteProjectDatabase(path);
+            var upgraded = new SqliteProjectDatabase(
+                path,
+                MigrationCatalog.All.Take(6).ToArray());
             await upgraded.InitializeAsync();
 
             Assert.IsNotNull(upgraded.LastMigrationBackupPath);

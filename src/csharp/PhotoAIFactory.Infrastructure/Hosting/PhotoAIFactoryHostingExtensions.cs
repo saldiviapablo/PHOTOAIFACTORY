@@ -67,6 +67,14 @@ public static class PhotoAIFactoryHostingExtensions
                 "Analysis runtime options contain an invalid path or timeout.")
             .ValidateOnStart();
 
+        builder.Services
+            .AddOptions<ComfyRuntimeOptions>()
+            .Bind(builder.Configuration.GetSection(
+                ComfyRuntimeOptions.SectionName))
+            .Validate(
+                ComfyRuntimeOptions.IsValid,
+                "ComfyUI runtime options contain an invalid path or timeout.")
+            .ValidateOnStart();
         builder.Services.AddSingleton<IRuntimeSession, RuntimeSession>();
         builder.Services.AddSingleton<IAppPaths, WindowsAppPaths>();
         builder.Services.AddSingleton<
@@ -152,6 +160,27 @@ public static class PhotoAIFactoryHostingExtensions
             FeedbackHistoryWriter>();
         builder.Services.AddTransient<FeedbackOrchestrator>();
         builder.Services.AddTransient<ProjectFeedbackManager>();
+        builder.Services.AddSingleton<
+            IComfyStoreFactory,
+            SqliteComfyStoreFactory>();
+        builder.Services.AddSingleton<
+            IComfyWorkflowCatalog,
+            ComfyWorkflowCatalog>();
+        builder.Services.AddSingleton<ComfyRuntimeSupervisor>();
+        builder.Services.AddSingleton<IComfyUiRuntime>(
+            services =>
+                services.GetRequiredService<ComfyRuntimeSupervisor>());
+        builder.Services.AddSingleton<IHostedService>(
+            services =>
+                services.GetRequiredService<ComfyRuntimeSupervisor>());
+        builder.Services.AddSingleton<
+            IComfyWorkflowExecutor,
+            ComfyWorkflowExecutor>();
+        builder.Services.AddSingleton<
+            IComfyHistoryWriter,
+            ComfyHistoryWriter>();
+        builder.Services.AddTransient<ComfyOrchestrator>();
+        builder.Services.AddTransient<ProjectComfyManager>();
         builder.Services.AddTransient<ProjectProcessingManager>();
 
         builder.Services.AddSingleton<TimeProvider>(

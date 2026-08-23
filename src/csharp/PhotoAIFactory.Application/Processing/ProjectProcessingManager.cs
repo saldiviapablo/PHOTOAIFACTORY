@@ -8,7 +8,8 @@ public enum ProcessingDispatchStatus
 {
     NoWork,
     BasicRevealCompleted,
-    FeedbackCompleted
+    FeedbackCompleted,
+    ComfyUiCompleted
 }
 
 public sealed record ProcessingDispatchResult(
@@ -25,7 +26,8 @@ public sealed class ProjectProcessingManager(
     IProcessingStoreFactory processingStores,
     IProjectStoreFactory projectStores,
     BasicRevealOrchestrator basicReveal,
-    FeedbackOrchestrator feedback)
+    FeedbackOrchestrator feedback,
+    ComfyOrchestrator comfy)
 {
     public async Task<ProcessingDispatchResult> ProcessNextAsync(
         ProjectId projectId,
@@ -35,6 +37,17 @@ public sealed class ProjectProcessingManager(
             .GetAsync(projectId, cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException(
                 $"Project {projectId.Value} was not found.");
+
+        var comfyResult = await comfy.ProcessNextAsync(
+            projectId, cancellationToken).ConfigureAwait(false);
+        if (comfyResult.Status is
+            ComfyWorkStatus.Skipped or
+            ComfyWorkStatus.Completed)
+        {
+            return new(
+                ProcessingDispatchStatus.ComfyUiCompleted,
+                comfyResult.JobId);
+        }
 
         var store = processingStores.Open(projectId);
         var candidate = await store.GetActiveAsync(
