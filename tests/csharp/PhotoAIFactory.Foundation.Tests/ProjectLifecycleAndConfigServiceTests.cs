@@ -192,8 +192,8 @@ public sealed class ProjectLifecycleAndConfigServiceTests
         var created = await scope.CreateAsync();
         var result = await scope.Lifecycle.RequestPauseAsync(created.Project.Id, "invalid-pause");
         Assert.AreEqual(LifecycleResultStatus.InvalidTransition, result.Status);
-        Assert.IsFalse(ProjectStateMachine.CanTransition(ProjectState.BlockedStorage, ProjectState.Running));
-        Assert.IsFalse(ProjectStateMachine.CanTransition(ProjectState.ComponentUnhealthy, ProjectState.Stopped));
+        Assert.IsFalse(ProjectStateMachine.CanTransition(ProjectState.Stopped, ProjectState.Paused));
+        Assert.IsFalse(ProjectStateMachine.CanTransition(ProjectState.Running, ProjectState.Stopped));
     }
 
     [TestMethod]

@@ -1,6 +1,8 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using PhotoAIFactory.Application.Projects;
+using PhotoAIFactory.Application.Storage;
 using PhotoAIFactory.Domain;
 using PhotoAIFactory.Domain.Ingestion;
 using PhotoAIFactory.Domain.Projects;
@@ -22,6 +24,8 @@ public sealed class IngestionCoordinator
     private readonly IRawSupportClassifier rawClassifier;
     private readonly TimeProvider timeProvider;
     private readonly ILogger<IngestionCoordinator> logger;
+    private readonly IStoragePreflightService? storagePreflight;
+    private readonly ProjectLifecycleService? lifecycleService;
 
     public IngestionCoordinator(
         ProjectConfigV1 config,
@@ -31,7 +35,9 @@ public sealed class IngestionCoordinator
         IManagedOriginalArchive archive,
         IRawSupportClassifier rawClassifier,
         TimeProvider timeProvider,
-        ILogger<IngestionCoordinator>? logger = null)
+        ILogger<IngestionCoordinator>? logger = null,
+        IStoragePreflightService? storagePreflight = null,
+        ProjectLifecycleService? lifecycleService = null)
     {
         this.config = config;
         this.source = source;
@@ -41,6 +47,8 @@ public sealed class IngestionCoordinator
         this.rawClassifier = rawClassifier;
         this.timeProvider = timeProvider;
         this.logger = logger ?? NullLogger<IngestionCoordinator>.Instance;
+        this.storagePreflight = storagePreflight;
+        this.lifecycleService = lifecycleService;
     }
 
     public async Task<IngestAssetResult?> IngestPathAsync(
@@ -70,6 +78,23 @@ public sealed class IngestionCoordinator
                 "Exact duplicate ignored; sha256={Sha256}; existing_asset={AssetId}",
                 firstHash, duplicate.Id.Value);
             return new(IngestAssetStatus.DuplicateExact, duplicatePhoto, duplicate, duplicate.Id);
+        }
+
+        if (storagePreflight is not null)
+        {
+            var requiredBytes = storagePreflight.EstimateRequiredBytes(StageName.OriginalArchive, stable.SizeBytes);
+            var preflight = storagePreflight.CheckAvailableSpace(config.OutputFolder, requiredBytes);
+            if (!preflight.IsSufficient)
+            {
+                if (lifecycleService is not null)
+                {
+                    await lifecycleService.EnterBlockedStorageAsync(
+                        source.ProjectId,
+                        $"ingestion-preflight:{firstHash[..8]}",
+                        cancellationToken: cancellationToken).ConfigureAwait(false);
+                }
+                return null;
+            }
         }
 
         var rawSupport = format == AssetFormat.Raw

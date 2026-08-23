@@ -2,7 +2,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Application.Projects;
+using PhotoAIFactory.Application.Storage;
 using PhotoAIFactory.Contracts;
 using PhotoAIFactory.Domain;
 using PhotoAIFactory.Domain.Processing;
@@ -18,7 +20,10 @@ public sealed class FeedbackOrchestrator(
     IFeedbackHistoryWriter historyWriter,
     RevealExecutionCoordinator executionCoordinator,
     TimeProvider timeProvider,
-    ILogger<FeedbackOrchestrator> logger)
+    ILogger<FeedbackOrchestrator> logger,
+    IStoragePreflightService? storagePreflight = null,
+    ProjectLifecycleService? lifecycleService = null,
+    IComponentHealthTracker? healthTracker = null)
 {
     private const int RetryLimit = 2;
     private static readonly EventId StartedEvent =
@@ -154,6 +159,30 @@ public sealed class FeedbackOrchestrator(
                 "configuration",
                 $"FEEDBACK V1 supports JPEG final staging, not {config.ExportFormat}.",
                 false);
+        }
+
+        if (healthTracker is not null && healthTracker.IsStageBlocked("Darktable"))
+        {
+            logger.LogWarning("FEEDBACK blocked because Darktable component is unhealthy.");
+            return new(FeedbackWorkStatus.NoWork, null, job.Id);
+        }
+
+        if (storagePreflight is not null)
+        {
+            var inputLength = File.Exists(job.InputPath) ? new FileInfo(job.InputPath).Length : 10_000_000L;
+            var requiredBytes = storagePreflight.EstimateRequiredBytes(StageName.DarktablePass1, inputLength);
+            var preflight = storagePreflight.CheckAvailableSpace(config.OutputFolder, requiredBytes);
+            if (!preflight.IsSufficient)
+            {
+                if (lifecycleService is not null)
+                {
+                    await lifecycleService.EnterBlockedStorageAsync(
+                        projectId,
+                        $"feedback-preflight:{job.Id.Value}",
+                        cancellationToken: cancellationToken).ConfigureAwait(false);
+                }
+                return new(FeedbackWorkStatus.NoWork, null, job.Id);
+            }
         }
 
         var retryCount = job.RevealRetryCount;

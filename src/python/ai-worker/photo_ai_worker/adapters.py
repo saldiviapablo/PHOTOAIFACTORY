@@ -344,9 +344,6 @@ class Florence2Adapter(LazyAdapter):
         self.processor: Any = None
 
     def _load(self) -> None:
-        import torch
-        from transformers import AutoProcessor, Florence2ForConditionalGeneration
-
         root = registry.require(self.model_id)
         weight = root / "model.safetensors"
         if not weight.is_file():
@@ -360,6 +357,8 @@ class Florence2Adapter(LazyAdapter):
                 "model.safetensors SHA-256 mismatch: "
                 f"expected {self.artifact_sha256}, got {actual_sha256}",
             )
+        import torch
+        from transformers import AutoProcessor, Florence2ForConditionalGeneration
         self.processor = AutoProcessor.from_pretrained(
             str(root), local_files_only=True, trust_remote_code=False
         )

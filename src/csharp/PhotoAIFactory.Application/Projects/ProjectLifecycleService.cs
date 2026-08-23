@@ -70,10 +70,16 @@ public sealed class ProjectLifecycleService
             return Conflict(current);
         if (current.State == ProjectState.Running)
             return new(LifecycleResultStatus.AlreadyInDesiredState, current);
-        if (current.State is not (ProjectState.Stopped or ProjectState.Paused))
+        if (current.State is not (ProjectState.Stopped or ProjectState.Paused or ProjectState.BlockedStorage or ProjectState.ComponentUnhealthy))
             return new(LifecycleResultStatus.InvalidTransition, current);
 
-        var reason = current.State == ProjectState.Stopped ? "PROJECT_STARTED" : "PROJECT_RESUMED";
+        var reason = current.State switch
+        {
+            ProjectState.Stopped => "PROJECT_STARTED",
+            ProjectState.BlockedStorage => "STORAGE_RESTORED_RESUMED",
+            ProjectState.ComponentUnhealthy => "COMPONENT_HEALTH_RESTORED_RESUMED",
+            _ => "PROJECT_RESUMED"
+        };
         var result = await TransitionAsync(current, ProjectState.Running, reason, operationId, cancellationToken)
             .ConfigureAwait(false);
         if (result.Status == LifecycleResultStatus.Transitioned)
@@ -82,6 +88,88 @@ public sealed class ProjectLifecycleService
                 result.Project!, "Project transitioned to RUNNING");
         }
         return result;
+    }
+
+    public async Task<LifecycleResult> EnterBlockedStorageAsync(
+        ProjectId projectId,
+        string operationId,
+        long? expectedRevision = null,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateOperationId(operationId);
+        var current = await OpenAsync(projectId, cancellationToken).ConfigureAwait(false);
+        if (current is null) return new(LifecycleResultStatus.NotFound, null);
+        if (expectedRevision is not null && current.StateRevision != expectedRevision)
+            return Conflict(current);
+        if (current.State == ProjectState.BlockedStorage)
+            return new(LifecycleResultStatus.AlreadyInDesiredState, current);
+        if (current.State != ProjectState.Running)
+            return new(LifecycleResultStatus.InvalidTransition, current);
+
+        return await TransitionAsync(
+            current, ProjectState.BlockedStorage, "INSUFFICIENT_STORAGE_PREFLIGHT", operationId, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<LifecycleResult> ExitBlockedStorageAsync(
+        ProjectId projectId,
+        string operationId,
+        long? expectedRevision = null,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateOperationId(operationId);
+        var current = await OpenAsync(projectId, cancellationToken).ConfigureAwait(false);
+        if (current is null) return new(LifecycleResultStatus.NotFound, null);
+        if (expectedRevision is not null && current.StateRevision != expectedRevision)
+            return Conflict(current);
+        if (current.State == ProjectState.Running)
+            return new(LifecycleResultStatus.AlreadyInDesiredState, current);
+        if (current.State != ProjectState.BlockedStorage)
+            return new(LifecycleResultStatus.InvalidTransition, current);
+
+        return await TransitionAsync(
+            current, ProjectState.Running, "STORAGE_RESTORED_RESUMED", operationId, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<LifecycleResult> EnterComponentUnhealthyAsync(
+        ProjectId projectId,
+        string componentName,
+        string operationId,
+        long? expectedRevision = null,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateOperationId(operationId);
+        var current = await OpenAsync(projectId, cancellationToken).ConfigureAwait(false);
+        if (current is null) return new(LifecycleResultStatus.NotFound, null);
+        if (expectedRevision is not null && current.StateRevision != expectedRevision)
+            return Conflict(current);
+        if (current.State == ProjectState.ComponentUnhealthy)
+            return new(LifecycleResultStatus.AlreadyInDesiredState, current);
+        if (current.State != ProjectState.Running)
+            return new(LifecycleResultStatus.InvalidTransition, current);
+
+        var reason = $"COMPONENT_UNHEALTHY:{componentName.ToUpperInvariant()}";
+        return await TransitionAsync(
+            current, ProjectState.ComponentUnhealthy, reason, operationId, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<LifecycleResult> ExitComponentUnhealthyAsync(
+        ProjectId projectId,
+        string operationId,
+        long? expectedRevision = null,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateOperationId(operationId);
+        var current = await OpenAsync(projectId, cancellationToken).ConfigureAwait(false);
+        if (current is null) return new(LifecycleResultStatus.NotFound, null);
+        if (expectedRevision is not null && current.StateRevision != expectedRevision)
+            return Conflict(current);
+        if (current.State == ProjectState.Running)
+            return new(LifecycleResultStatus.AlreadyInDesiredState, current);
+        if (current.State != ProjectState.ComponentUnhealthy)
+            return new(LifecycleResultStatus.InvalidTransition, current);
+
+        return await TransitionAsync(
+            current, ProjectState.Running, "COMPONENT_HEALTH_RESTORED_RESUMED", operationId, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<LifecycleResult> RequestPauseAsync(
@@ -97,7 +185,7 @@ public sealed class ProjectLifecycleService
             return Conflict(current);
         if (current.State is ProjectState.Paused or ProjectState.PauseRequested)
             return new(LifecycleResultStatus.AlreadyInDesiredState, current);
-        if (current.State != ProjectState.Running)
+        if (current.State is not (ProjectState.Running or ProjectState.BlockedStorage or ProjectState.ComponentUnhealthy))
             return new(LifecycleResultStatus.InvalidTransition, current);
 
         var requested = await TransitionAsync(
@@ -129,7 +217,7 @@ public sealed class ProjectLifecycleService
             return Conflict(current);
         if (current.State is ProjectState.Stopped or ProjectState.StopRequested)
             return new(LifecycleResultStatus.AlreadyInDesiredState, current);
-        if (current.State is not (ProjectState.Running or ProjectState.PauseRequested or ProjectState.Paused))
+        if (current.State is not (ProjectState.Running or ProjectState.PauseRequested or ProjectState.Paused or ProjectState.BlockedStorage or ProjectState.ComponentUnhealthy))
             return new(LifecycleResultStatus.InvalidTransition, current);
 
         var requested = await TransitionAsync(

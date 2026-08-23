@@ -1,4 +1,7 @@
 using System.Text.Json;
+using PhotoAIFactory.Application.Health;
+using PhotoAIFactory.Application.Projects;
+using PhotoAIFactory.Application.Storage;
 using PhotoAIFactory.Contracts;
 using PhotoAIFactory.Domain;
 using PhotoAIFactory.Domain.Qa;
@@ -8,7 +11,10 @@ namespace PhotoAIFactory.Application.Qa;
 public sealed class QaOrchestrator(
     IQaStoreFactory storeFactory,
     IPythonAiClient pythonClient,
-    IPublishService publishService)
+    IPublishService publishService,
+    IStoragePreflightService? storagePreflight = null,
+    ProjectLifecycleService? lifecycleService = null,
+    IComponentHealthTracker? healthTracker = null)
 {
     public async Task<bool> ProcessJobAsync(
         ProjectId projectId,
@@ -20,6 +26,28 @@ public sealed class QaOrchestrator(
         var job = await store.GetJobAsync(jobId, cancellationToken).ConfigureAwait(false);
         if (job is null)
             return false;
+
+        // Health dependency gate check
+        if (healthTracker is not null && healthTracker.IsStageBlocked("PythonWorker"))
+        {
+            return false;
+        }
+
+        // Storage preflight check
+        if (storagePreflight is not null)
+        {
+            var candidateSize = File.Exists(job.CandidatePath) ? new FileInfo(job.CandidatePath).Length : 10L * 1024 * 1024;
+            var required = storagePreflight.EstimateRequiredBytes(StageName.Publish, candidateSize);
+            var preflight = storagePreflight.CheckAvailableSpace(outputRootFolder, required);
+            if (!preflight.IsSufficient)
+            {
+                if (lifecycleService is not null)
+                {
+                    await lifecycleService.EnterBlockedStorageAsync(projectId, $"qa-preflight:{jobId.Value}", cancellationToken: cancellationToken).ConfigureAwait(false);
+                }
+                return false;
+            }
+        }
 
         var claimed = await store.ClaimJobForQaAsync(jobId, "qa-claim", DateTimeOffset.UtcNow, cancellationToken).ConfigureAwait(false);
         if (!claimed)

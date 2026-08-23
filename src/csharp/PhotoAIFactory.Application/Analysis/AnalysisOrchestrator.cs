@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Contracts;
 using PhotoAIFactory.Domain;
 using PhotoAIFactory.Domain.Analysis;
@@ -12,7 +13,9 @@ public sealed class AnalysisOrchestrator(
     IPythonAiClient python,
     IGpuResourceCoordinator gpu,
     TimeProvider timeProvider,
-    ILogger<AnalysisOrchestrator> logger)
+    ILogger<AnalysisOrchestrator> logger,
+    IComponentHealthTracker? healthTracker = null,
+    IGpuExecutionPolicy? gpuPolicy = null)
 {
     private const int AnalysisSchemaVersion = 1;
     private static readonly EventId StartedEvent = new(3100, "AnalysisStarted");
@@ -184,6 +187,16 @@ public sealed class AnalysisOrchestrator(
         var attemptNumber = job.TechnicalRetryCount;
         var attemptId = firstAttemptId;
 
+        if (healthTracker is not null && healthTracker.IsStageBlocked("PythonWorker"))
+        {
+            logger.LogWarning("Analysis stage blocked because Python worker is unhealthy.");
+            throw new AnalysisStageException(
+                "PYTHON_WORKER_UNHEALTHY",
+                "ai_worker",
+                "Python worker component is unhealthy",
+                false);
+        }
+
         while (true)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -219,25 +232,50 @@ public sealed class AnalysisOrchestrator(
             AiResponse response;
             try
             {
-                await using var lease = await gpu.AcquireAsync(
-                    $"analysis:{job.Id.Value}",
-                    cancellationToken).ConfigureAwait(false);
-
-                try
+                if (gpuPolicy is not null)
                 {
-                    response = await python.ExecuteAsync(
-                        "/v1/analyze", request, cancellationToken).ConfigureAwait(false);
+                    response = await gpuPolicy.ExecuteWithGpuAsync(
+                        $"analysis:{job.Id.Value}",
+                        async () =>
+                        {
+                            try
+                            {
+                                return await python.ExecuteAsync(
+                                    "/v1/analyze", request, cancellationToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await BestEffortReleaseModelsAsync(job.Id).ConfigureAwait(false);
+                            }
+                        },
+                        releaseMemory: async () =>
+                        {
+                            await BestEffortReleaseModelsAsync(job.Id).ConfigureAwait(false);
+                        },
+                        cancellationToken: cancellationToken).ConfigureAwait(false);
                 }
-                finally
+                else
                 {
-                    // Do not release the C# GPU lease until Python has had a bounded
-                    // opportunity to release/park every model, even when Analyze failed
-                    // or the caller cancelled. This prevents handing VRAM to the next
-                    // heavy station while the worker still owns it.
-                    await BestEffortReleaseModelsAsync(job.Id).ConfigureAwait(false);
+                    await using var lease = await gpu.AcquireAsync(
+                        $"analysis:{job.Id.Value}",
+                        cancellationToken).ConfigureAwait(false);
+
+                    try
+                    {
+                        response = await python.ExecuteAsync(
+                            "/v1/analyze", request, cancellationToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await BestEffortReleaseModelsAsync(job.Id).ConfigureAwait(false);
+                    }
                 }
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (GpuOutOfMemoryException)
             {
                 throw;
             }

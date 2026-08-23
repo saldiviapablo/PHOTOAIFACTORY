@@ -2,7 +2,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Application.Projects;
+using PhotoAIFactory.Application.Storage;
 using PhotoAIFactory.Contracts;
 using PhotoAIFactory.Domain;
 using PhotoAIFactory.Domain.Processing;
@@ -19,7 +21,10 @@ public sealed class BasicRevealOrchestrator(
     IProcessingHistoryWriter historyWriter,
     RevealExecutionCoordinator executionCoordinator,
     TimeProvider timeProvider,
-    ILogger<BasicRevealOrchestrator> logger)
+    ILogger<BasicRevealOrchestrator> logger,
+    IStoragePreflightService? storagePreflight = null,
+    ProjectLifecycleService? lifecycleService = null,
+    IComponentHealthTracker? healthTracker = null)
 {
     private const int RecipeSchemaVersion = 1;
     private const int RevealRetryLimit = 2;
@@ -172,6 +177,30 @@ public sealed class BasicRevealOrchestrator(
                 false);
         }
 
+        if (healthTracker is not null && healthTracker.IsStageBlocked("Darktable"))
+        {
+            logger.LogWarning("Basic reveal blocked because Darktable component is unhealthy.");
+            return new(RevealWorkStatus.NoWork, null, job.Id);
+        }
+
+        if (storagePreflight is not null)
+        {
+            var inputLength = File.Exists(job.InputPath) ? new FileInfo(job.InputPath).Length : 10_000_000L;
+            var requiredBytes = storagePreflight.EstimateRequiredBytes(StageName.DarktablePass1, inputLength);
+            var preflight = storagePreflight.CheckAvailableSpace(config.OutputFolder, requiredBytes);
+            if (!preflight.IsSufficient)
+            {
+                if (lifecycleService is not null)
+                {
+                    await lifecycleService.EnterBlockedStorageAsync(
+                        projectId,
+                        $"basic-reveal-preflight:{job.Id.Value}",
+                        cancellationToken: cancellationToken).ConfigureAwait(false);
+                }
+                return new(RevealWorkStatus.NoWork, null, job.Id);
+            }
+        }
+
         var retryCount = job.RevealRetryCount;
         while (true)
         {
@@ -191,6 +220,12 @@ public sealed class BasicRevealOrchestrator(
 
                 if (config.RevealMode == RevealMode.PreAi)
                 {
+                    if (healthTracker is not null && healthTracker.IsStageBlocked("PythonWorker"))
+                    {
+                        logger.LogWarning("Basic reveal PRE_AI recipe blocked because Python worker is unhealthy.");
+                        return new(RevealWorkStatus.NoWork, null, job.Id);
+                    }
+
                     recipe = await GenerateRecipeAsync(
                         store, job, config, cancellationToken).ConfigureAwait(false);
                     recipeHash = Sha256(recipe.Value.GetRawText());

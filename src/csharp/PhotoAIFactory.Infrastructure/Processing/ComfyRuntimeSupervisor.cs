@@ -6,13 +6,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PhotoAIFactory.Application;
+using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Application.Processing;
 
 namespace PhotoAIFactory.Infrastructure.Processing;
 
 public sealed class ComfyRuntimeSupervisor(
     IOptions<ComfyRuntimeOptions> options,
-    ILogger<ComfyRuntimeSupervisor> logger)
+    ILogger<ComfyRuntimeSupervisor> logger,
+    IComponentHealthTracker? healthTracker = null)
     : IComfyUiRuntime, IHostedService, IAsyncDisposable
 {
     private readonly ComfyRuntimeOptions _options = options.Value;
@@ -45,6 +47,19 @@ public sealed class ComfyRuntimeSupervisor(
                 _ = await _client.GetSystemStatsAsync(cancellationToken)
                     .ConfigureAwait(false);
                 return;
+            }
+
+            if (_process is not null && _process.HasExited && healthTracker is not null)
+            {
+                if (!healthTracker.TryRequestRestart("ComfyUI", out var attempt))
+                {
+                    healthTracker.RecordFailure("ComfyUI", "Maximum automatic restart attempts exceeded.");
+                    throw new ComfyStageException(
+                        "COMFY_RESTART_EXHAUSTED",
+                        "runtime",
+                        "Maximum automatic restart attempts exceeded for ComfyUI.",
+                        false);
+                }
             }
 
             await StopCoreAsync(CancellationToken.None).ConfigureAwait(false);
@@ -169,6 +184,7 @@ public sealed class ComfyRuntimeSupervisor(
                             "ComfyUI ready on loopback port {Port}; PID {Pid}",
                             port,
                             process.Id);
+                        healthTracker?.RecordSuccess("ComfyUI");
                         return;
                     }
                 }
@@ -180,15 +196,20 @@ public sealed class ComfyRuntimeSupervisor(
                 await Task.Delay(150, cancellationToken).ConfigureAwait(false);
             }
 
+            healthTracker?.RecordFailure("ComfyUI", "Startup timeout waiting for ComfyUI stats.");
             throw new ComfyStageException(
                 "COMFY_READINESS_TIMEOUT",
                 "component",
-                "ComfyUI did not become ready before the configured timeout.",
+                $"ComfyUI did not become ready within {_options.ReadinessTimeout.TotalSeconds:F0}s.",
                 true,
                 lastError);
         }
-        catch
+        catch (Exception ex)
         {
+            if (ex is not OperationCanceledException)
+            {
+                healthTracker?.RecordFailure("ComfyUI", ex.Message);
+            }
             await StopCoreAsync(CancellationToken.None).ConfigureAwait(false);
             throw;
         }

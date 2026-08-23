@@ -2,7 +2,7 @@
 
 **Baseline:** 2026-08-12  
 **Última actualización:** 2026-08-23
-**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 5 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 6 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 7 CLOSED / GO
+**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 5 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 6 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 7 CLOSED / GO — PHASE 8 CLOSED / GO
 
 ## Documentos congelados como baseline
 
@@ -195,9 +195,29 @@ Informe: `docs/phase4/PHASE4_BASIC_REVEAL_REPORT.md`.
 - git diff --check limpio.
 - Informes: `docs/phase7/PHASE7_IMPLEMENTATION_REPORT.md` y `docs/phase7/PHASE7_TEST_EVIDENCE.md`.
 
+## Phase 8 Recovery / Hardening
+
+- Phase 8 — Recovery / Hardening: CLOSED / GO.
+- Startup crash recovery y reconciliación determinista (`ProductionRecoveryCoordinator`): soporte para los 10 checkpoints reales (`ANALYSIS_COMPLETE` hasta `OUTPUT_PUBLISHED`), normalización controlada a `INTERRUPTED`, verificación rigurosa de artifacts, hashes SHA-256 y pertenencia de `final_history.json` al Job/publicación, transiciones atómicas condicionadas, sin duplicación de jobs, checkpoints, publicaciones ni reprocesamientos: PASS.
+- Preflight e inspección de almacenamiento (`DriveInfoStorageSpaceInspector`, `DefaultStoragePreflightService`): integrado en todas las etapas pesadas (`IngestionCoordinator`, `BasicRevealOrchestrator`, `FeedbackOrchestrator`, `ComfyOrchestrator`, `QaOrchestrator`), margen de seguridad de 50 MB, transición a `BlockedStorage` ante espacio insuficiente impidiendo la invocación de motores externos (Darktable, Python AI Worker, ComfyUI), retención de jobs/cola/checkpoints sin consumir retries técnicos, y reanudación segura a `Running` al restaurar espacio: PASS.
+- Monitoreo de salud y circuit breaker (`ComponentHealthTracker`, `ComponentHealthMonitor`): sondas reales de Storage, GPU, Python, ComfyUI, Darktable; estados `Starting`, `Healthy`, `Degraded`, `Unhealthy`, `Stopped`; aislamiento de dependencias por stage; apertura de circuito ante fallos consecutivos (umbral = 3); reinicios acotados de Python worker y ComfyUI (máximo 2 restarts, apertura de circuito al 3er intento); exclusión de cancelaciones; recuperación half-open ante sondas exitosas: PASS.
+- Hardening GPU / OOM (`GpuResourceCoordinator`, `GpuExecutionPolicy`): lease exclusivo y liberación estricta en todos los caminos de salida (`IAsyncDisposable`), máximo 1 reintento con recuperación de memoria ante OOM, derivación limpia a error duradero (`GpuOutOfMemoryException`) sin sustitución silenciosa de modelos ni degradación de calidad: PASS.
+- Online Backup y Restore seguro (`SqliteBackupService`, `SqliteRestoreService`): backup en caliente de SQLite con `BackupDatabase`, validación de `integrity_check` y `foreign_key_check`, manifiesto SHA-256 dinámico con versión de migrations y assembly, política de retención que preserva último backup bueno, y restore verificado fail-closed con preservación previa de base live dañada (`damaged_pre_restore_*.db`), rechazo de esquemas futuros o incompatibles: PASS.
+- Limpieza segura de staging (`SafeCleanupService`): validación de path canónico restringida estrictamente a work roots administrados (`%LOCALAPPDATA%\PhotoAIFactory\work\<project_id>`), detección y bloqueo de escapes por reparse points/symlinks, eliminación por allowlist de archivos temporales antiguos, protección absoluta e inmutable de originales fuente, originales administrados, publicados, XMP, historiales y backups: PASS.
+- Alineación consistente de State Machine y Lifecycle (`ProjectStateMachine`, `ProjectLifecycleService`): transiciones permitidas a Pause y Stop desde `BlockedStorage` y `ComponentUnhealthy`: PASS.
+- SQLite: `integrity_check = ok`, `foreign_key_check = empty`, `WAL / FULL / FK ON`: PASS.
+- Originales fuente e inmutabilidad: intactos y sin modificaciones: PASS.
+- Cero procesos huérfanos y hardening de shutdown / cancelación: PASS.
+- ADR-024: Accepted (Phase 8 Recovery & Hardening Validation).
+- Tests finales: 300 / 300 PASS (Foundation: 112 / 112, Simulation: 151 / 151, Python repository: 33 / 33, Python worker: 4 / 4).
+- Build Release: 0 errores, 0 warnings.
+- 0 paquetes vulnerables.
+- git diff --check limpio.
+- Informes: `docs/phase8/PHASE8_RECOVERY_HARDENING_REPORT.md` y `docs/phase8/PHASE8_TEST_EVIDENCE.md`.
+
 ## Lo siguiente
 
 ```text
-PHASE 7 — QA / REVIEW / FINAL PUBLICATION = CLOSED / GO
-PHASE 8 = NEXT
+PHASE 8 — RECOVERY / HARDENING = CLOSED / GO
+PHASE 9 = NEXT / NOT STARTED
 ```

@@ -7,8 +7,16 @@ using PhotoAIFactory.Application.Ingestion;
 using PhotoAIFactory.Application.Processing;
 using PhotoAIFactory.Application.Projects;
 using PhotoAIFactory.Application.Qa;
+using PhotoAIFactory.Application.Recovery;
+using PhotoAIFactory.Application.Storage;
+using PhotoAIFactory.Application.Health;
+using PhotoAIFactory.Application.Backup;
+using PhotoAIFactory.Application.Cleanup;
 using PhotoAIFactory.Application.Runtime;
 using PhotoAIFactory.Infrastructure.Analysis;
+using PhotoAIFactory.Infrastructure.Backup;
+using PhotoAIFactory.Infrastructure.Cleanup;
+using PhotoAIFactory.Infrastructure.Health;
 using PhotoAIFactory.Infrastructure.Ingestion;
 using PhotoAIFactory.Infrastructure.Logging;
 using PhotoAIFactory.Infrastructure.Persistence.Analysis;
@@ -18,6 +26,8 @@ using PhotoAIFactory.Infrastructure.Persistence.Qa;
 using PhotoAIFactory.Infrastructure.Persistence.Repositories;
 using PhotoAIFactory.Infrastructure.Processing;
 using PhotoAIFactory.Infrastructure.Qa;
+using PhotoAIFactory.Infrastructure.Recovery;
+using PhotoAIFactory.Infrastructure.Storage;
 
 namespace PhotoAIFactory.Infrastructure.Hosting;
 
@@ -200,6 +210,32 @@ public static class PhotoAIFactoryHostingExtensions
         builder.Services.AddTransient<QaOrchestrator>();
         builder.Services.AddTransient<ProjectQaManager>();
 
+        // Phase 8: Recovery, Storage, Health, Backup, Restore, Cleanup
+        builder.Services.AddSingleton<
+            IRecoveryCoordinator,
+            ProductionRecoveryCoordinator>();
+        builder.Services.AddSingleton<
+            IStorageSpaceInspector,
+            DriveInfoStorageSpaceInspector>();
+        builder.Services.AddSingleton<
+            IStoragePreflightService,
+            DefaultStoragePreflightService>();
+        builder.Services.AddSingleton<
+            IComponentHealthTracker,
+            ComponentHealthTracker>();
+        builder.Services.AddSingleton<
+            IComponentHealthMonitor,
+            ComponentHealthMonitor>();
+        builder.Services.AddSingleton<
+            IBackupService,
+            SqliteBackupService>();
+        builder.Services.AddSingleton<
+            IRestoreService,
+            SqliteRestoreService>();
+        builder.Services.AddSingleton<
+            ICleanupService,
+            SafeCleanupService>();
+
         builder.Services.AddSingleton<TimeProvider>(
             TimeProvider.System);
         builder.Services.AddSingleton<
@@ -214,6 +250,9 @@ public static class PhotoAIFactoryHostingExtensions
         builder.Services.AddSingleton<
             IGpuResourceCoordinator,
             GpuResourceCoordinator>();
+        builder.Services.AddSingleton<
+            IGpuExecutionPolicy,
+            GpuExecutionPolicy>();
 
         builder.Services.AddHostedService<
             RuntimeInitializationHostedService>();

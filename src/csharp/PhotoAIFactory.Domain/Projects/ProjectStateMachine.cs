@@ -11,7 +11,19 @@ public static class ProjectStateMachine
         (ProjectState.Running, ProjectState.StopRequested),
         (ProjectState.PauseRequested, ProjectState.StopRequested),
         (ProjectState.Paused, ProjectState.StopRequested),
-        (ProjectState.StopRequested, ProjectState.Stopped)
+        (ProjectState.StopRequested, ProjectState.Stopped),
+        (ProjectState.Running, ProjectState.BlockedStorage),
+        (ProjectState.BlockedStorage, ProjectState.Running),
+        (ProjectState.BlockedStorage, ProjectState.PauseRequested),
+        (ProjectState.BlockedStorage, ProjectState.Paused),
+        (ProjectState.BlockedStorage, ProjectState.StopRequested),
+        (ProjectState.BlockedStorage, ProjectState.Stopped),
+        (ProjectState.Running, ProjectState.ComponentUnhealthy),
+        (ProjectState.ComponentUnhealthy, ProjectState.Running),
+        (ProjectState.ComponentUnhealthy, ProjectState.PauseRequested),
+        (ProjectState.ComponentUnhealthy, ProjectState.Paused),
+        (ProjectState.ComponentUnhealthy, ProjectState.StopRequested),
+        (ProjectState.ComponentUnhealthy, ProjectState.Stopped)
     ];
 
     public static bool CanTransition(ProjectState from, ProjectState to) =>

@@ -2,7 +2,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Application.Projects;
+using PhotoAIFactory.Application.Storage;
 using PhotoAIFactory.Contracts;
 using PhotoAIFactory.Domain;
 using PhotoAIFactory.Domain.Projects;
@@ -20,7 +22,11 @@ public sealed class ComfyOrchestrator(
     IGpuResourceCoordinator gpu,
     RevealExecutionCoordinator executionCoordinator,
     TimeProvider timeProvider,
-    ILogger<ComfyOrchestrator> logger)
+    ILogger<ComfyOrchestrator> logger,
+    IStoragePreflightService? storagePreflight = null,
+    ProjectLifecycleService? lifecycleService = null,
+    IComponentHealthTracker? healthTracker = null,
+    IGpuExecutionPolicy? gpuPolicy = null)
 {
     private const int RetryLimit = 2;
     private static readonly EventId StartedEvent = new(4600, "ComfyStarted");
@@ -47,6 +53,12 @@ public sealed class ComfyOrchestrator(
             ProjectState.ComponentUnhealthy)
             return new(ComfyWorkStatus.NoWork, null, null);
 
+        if (healthTracker is not null && healthTracker.IsStageBlocked("ComfyUI"))
+        {
+            logger.LogWarning("ComfyUI processing blocked because ComfyUI component is unhealthy.");
+            return new(ComfyWorkStatus.NoWork, null, null);
+        }
+
         var store = comfyStores.Open(projectId);
         var job = await store.GetNextEligibleAsync(
             projectId, cancellationToken).ConfigureAwait(false);
@@ -61,6 +73,24 @@ public sealed class ComfyOrchestrator(
             ?? throw new InvalidOperationException(
                 $"Processing ConfigVersion {job.ProcessingConfigId} was not found.");
         var config = configVersion.ReadConfig();
+
+        if (storagePreflight is not null)
+        {
+            var inputLength = job.RevealSizeBytes > 0 ? job.RevealSizeBytes : (File.Exists(job.RevealPath) ? new FileInfo(job.RevealPath).Length : 10_000_000L);
+            var requiredBytes = storagePreflight.EstimateRequiredBytes(StageName.ComfyUi, inputLength);
+            var preflight = storagePreflight.CheckAvailableSpace(config.OutputFolder, requiredBytes);
+            if (!preflight.IsSufficient)
+            {
+                if (lifecycleService is not null)
+                {
+                    await lifecycleService.EnterBlockedStorageAsync(
+                        projectId,
+                        $"comfy-preflight:{job.Id.Value}",
+                        cancellationToken: cancellationToken).ConfigureAwait(false);
+                }
+                return new(ComfyWorkStatus.NoWork, null, null);
+            }
+        }
 
         var plan = await EnsurePlanAsync(
             store, job, config, cancellationToken).ConfigureAwait(false);
@@ -149,16 +179,35 @@ public sealed class ComfyOrchestrator(
                 }
                 else
                 {
-                    await ReleasePythonModelsAsync(
-                        job.Id, cancellationToken).ConfigureAwait(false);
-                    await using var gpuLease = await gpu.AcquireAsync(
-                        $"COMFYUI:{job.Id.Value}",
-                        cancellationToken).ConfigureAwait(false);
-                    artifact = await executor.ExecuteApprovedAsync(
-                        job,
-                        approvedTasks,
-                        attemptId,
-                        cancellationToken).ConfigureAwait(false);
+                    if (gpuPolicy is not null)
+                    {
+                        artifact = await gpuPolicy.ExecuteWithGpuAsync(
+                            $"COMFYUI:{job.Id.Value}",
+                            async () => await executor.ExecuteApprovedAsync(
+                                job,
+                                approvedTasks,
+                                attemptId,
+                                cancellationToken).ConfigureAwait(false),
+                            releaseMemory: async () =>
+                            {
+                                await ReleasePythonModelsAsync(
+                                    job.Id, cancellationToken).ConfigureAwait(false);
+                            },
+                            cancellationToken: cancellationToken).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await ReleasePythonModelsAsync(
+                            job.Id, cancellationToken).ConfigureAwait(false);
+                        await using var gpuLease = await gpu.AcquireAsync(
+                            $"COMFYUI:{job.Id.Value}",
+                            cancellationToken).ConfigureAwait(false);
+                        artifact = await executor.ExecuteApprovedAsync(
+                            job,
+                            approvedTasks,
+                            attemptId,
+                            cancellationToken).ConfigureAwait(false);
+                    }
                     await historyWriter.WriteAsync(
                         config,
                         job,

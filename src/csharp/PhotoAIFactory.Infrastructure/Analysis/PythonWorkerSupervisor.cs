@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 using PhotoAIFactory.Application;
+using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Application.Runtime;
 using PhotoAIFactory.Contracts;
 
@@ -11,7 +12,8 @@ namespace PhotoAIFactory.Infrastructure.Analysis;
 
 public sealed class PythonWorkerSupervisor(
     IOptions<AnalysisRuntimeOptions> options,
-    IAppPaths paths) : IAsyncDisposable, IPythonAiClient
+    IAppPaths paths,
+    IComponentHealthTracker? healthTracker = null) : IAsyncDisposable, IPythonAiClient
 {
     private readonly SemaphoreSlim gate = new(1, 1);
     private Process? process;
@@ -48,6 +50,15 @@ public sealed class PythonWorkerSupervisor(
             if (process is { HasExited: false } && client is not null)
             {
                 return;
+            }
+
+            if (process is not null && process.HasExited && healthTracker is not null)
+            {
+                if (!healthTracker.TryRequestRestart("PythonWorker", out var attempt))
+                {
+                    healthTracker.RecordFailure("PythonWorker", "Maximum automatic restart attempts exceeded.");
+                    throw new InvalidOperationException("Maximum automatic restart attempts exceeded for PythonWorker.");
+                }
             }
 
             await StopCoreAsync().ConfigureAwait(false);
@@ -111,6 +122,7 @@ public sealed class PythonWorkerSupervisor(
                     if (string.Equals(health.Status, "HEALTHY", StringComparison.OrdinalIgnoreCase) &&
                         string.Equals(health.ApiVersion, "v1", StringComparison.Ordinal))
                     {
+                        healthTracker?.RecordSuccess("PythonWorker");
                         return;
                     }
                 }
@@ -122,10 +134,15 @@ public sealed class PythonWorkerSupervisor(
                 await Task.Delay(200, cancellationToken).ConfigureAwait(false);
             }
 
+            healthTracker?.RecordFailure("PythonWorker", "Startup timeout waiting for healthy probe.");
             throw new TimeoutException("Python AI Worker did not become healthy before startup timeout.", last);
         }
-        catch
+        catch (Exception ex)
         {
+            if (ex is not OperationCanceledException)
+            {
+                healthTracker?.RecordFailure("PythonWorker", ex.Message);
+            }
             await StopCoreAsync().ConfigureAwait(false);
             throw;
         }
