@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Baseline:** 2026-08-12  
-**Última actualización:** 2026-08-22
-**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 5 CLOSED / GO WITH DOCUMENTED LIMITATIONS
+**Última actualización:** 2026-08-23
+**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 5 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 6 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 7 CLOSED / GO
 
 ## Documentos congelados como baseline
 
@@ -177,9 +177,27 @@ Informe: `docs/phase4/PHASE4_BASIC_REVEAL_REPORT.md`.
 5. El test runtime core no utilizó originales fotográficos.
 6. Phase 7 QA y publicación final permanecen sin implementar.
 
+## Phase 7 QA / Review / Final Publication
+
+- Migration 008, expansión de checkpoints (`QA_COMPLETE`, `OUTPUT_PUBLISHED`), `qa_results`, `review_items`, `publications`, triggers append-only e index parcial `ux_review_items_pending`: PASS.
+- Endpoint `/v1/qa` en Python AI Worker (`schema_version = 1`, capacidad `qa:phase7-v1`), clasificación de errores (`validation`, `input`, `resource`, `runtime`) y aislamiento estricto de `force_decision` solo para tests (`PAF_ALLOW_TEST_FORCE_DECISION`): PASS.
+- Motor de decisión de QA (5 decisiones: `PASS`, `REVIEW`, `REPROCESS`, `TECH_RETRY`, `FATAL`): PASS.
+- Invariante obligatoria de `COMPLETED`: ningún Job llega a `COMPLETED` sin checkpoint durable `OUTPUT_PUBLISHED`: PASS.
+- Máximo 1 reprocesamiento de calidad (`quality_reprocess_count` = 1); el padre permanece en `REVIEW_FINAL` conservando su historial y no recibe `OUTPUT_PUBLISHED` falso. La segunda solicitud de reprocesamiento deriva a `REVIEW_FINAL`: PASS.
+- Publicación física atómica exclusiva para JPEG en V1 con inspección binaria de headers y dimensiones: PASS.
+- Política de colisión determinista sin sufijos aleatorios (`{stem}_{jobId}{ext}`) con fail-closed ante conflictos de contenido: PASS.
+- Historial permanente consolidado (`final_history.json`) con verificación estricta de conflictos: PASS.
+- `ReviewService` con operaciones completas (`ApproveAsync`, `RejectAsync`, `ReprocessAsync`, `LeavePendingAsync`): PASS.
+- ADR-023: Accepted.
+- Tests finales: 273/273 PASS (112 Foundation, 124 Simulation, 33 Python repository, 4 Python worker).
+- Build Release con 0 errores y 0 warnings.
+- 0 paquetes vulnerables.
+- git diff --check limpio.
+- Informes: `docs/phase7/PHASE7_IMPLEMENTATION_REPORT.md` y `docs/phase7/PHASE7_TEST_EVIDENCE.md`.
+
 ## Lo siguiente
 
 ```text
-PHASE 6 — COMFYUI = CLOSED / GO WITH DOCUMENTED LIMITATIONS
-PHASE 7 — QA = NOT STARTED
+PHASE 7 — QA / REVIEW / FINAL PUBLICATION = CLOSED / GO
+PHASE 8 = NEXT
 ```

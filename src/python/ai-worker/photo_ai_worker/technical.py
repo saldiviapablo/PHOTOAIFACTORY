@@ -2,6 +2,8 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from .settings import settings
+
 class ImageReadError(RuntimeError): pass
 
 def analyze_image(path: str) -> dict:
@@ -43,15 +45,49 @@ def preselect_from_technical(metrics: dict, config: dict) -> dict:
     return {"decision":decision,"findings":findings,"technical":metrics}
 
 def qa_from_technical(metrics: dict, config: dict) -> dict:
-    thresholds=config.get("thresholds",{})
-    min_focus=float(thresholds.get("min_laplacian_variance", 35.0))
-    max_clip=float(thresholds.get("max_clipping_fraction", 0.08))
-    findings=[]
-    if metrics["sharpness"]["laplacian_variance"] < min_focus:
-        findings.append({"code":"LOW_SHARPNESS","severity":"review","message":"Low technical sharpness","score":metrics["sharpness"]["laplacian_variance"]})
+    forced = config.get("force_decision")
+    if forced and getattr(settings, "allow_test_force_decision", False):
+        if forced in ("QA_PASS", "QA_REVIEW", "QA_REPROCESS", "QA_TECH_RETRY", "QA_FATAL"):
+            return {
+                "schema_version": 1,
+                "decision": forced,
+                "findings": [{"code": f"FORCED_{forced}", "severity": "info", "message": f"Forced decision {forced}"}] if forced != "QA_PASS" else [],
+                "suggested_correction": None,
+                "technical": metrics,
+                "calibration_status": "BASELINE_NOT_CALIBRATED",
+            }
+
+    thresholds = config.get("thresholds", {})
+    min_focus = float(thresholds.get("min_laplacian_variance", 35.0))
+    reprocess_focus = float(thresholds.get("reprocess_laplacian_variance", 15.0))
+    max_clip = float(thresholds.get("max_clipping_fraction", 0.08))
+    findings = []
+
+    score = metrics["sharpness"]["laplacian_variance"]
+    decision = "QA_PASS"
+
+    if score < reprocess_focus:
+        findings.append({"code": "SEVERE_LOW_SHARPNESS", "severity": "reprocess", "message": "Severe low sharpness", "score": score})
+        decision = "QA_REPROCESS"
+    elif score < min_focus:
+        findings.append({"code": "LOW_SHARPNESS", "severity": "review", "message": "Low technical sharpness", "score": score})
+        decision = "QA_REVIEW"
+
     if metrics["clipping"]["white_fraction"] > max_clip:
-        findings.append({"code":"HIGHLIGHT_CLIPPING","severity":"review","message":"High highlight clipping","score":metrics["clipping"]["white_fraction"]})
+        findings.append({"code": "HIGHLIGHT_CLIPPING", "severity": "review", "message": "High highlight clipping", "score": metrics["clipping"]["white_fraction"]})
+        if decision == "QA_PASS":
+            decision = "QA_REVIEW"
+
     if metrics["clipping"]["black_fraction"] > max_clip:
-        findings.append({"code":"SHADOW_CLIPPING","severity":"review","message":"High shadow clipping","score":metrics["clipping"]["black_fraction"]})
-    decision="QA_REVIEW" if findings else "QA_PASS"
-    return {"schema_version":1,"decision":decision,"findings":findings,"suggested_correction":None,"technical":metrics}
+        findings.append({"code": "SHADOW_CLIPPING", "severity": "review", "message": "High shadow clipping", "score": metrics["clipping"]["black_fraction"]})
+        if decision == "QA_PASS":
+            decision = "QA_REVIEW"
+
+    return {
+        "schema_version": 1,
+        "decision": decision,
+        "findings": findings,
+        "suggested_correction": None,
+        "technical": metrics,
+        "calibration_status": "BASELINE_NOT_CALIBRATED",
+    }

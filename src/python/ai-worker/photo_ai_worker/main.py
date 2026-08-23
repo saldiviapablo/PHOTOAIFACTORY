@@ -79,6 +79,7 @@ def capabilities():
             "feedback/inspect:phase5-v1",
             "comfy/plan:phase6-v1",
             "qa:technical",
+            "qa:phase7-v1",
         ],
         "planned": [],
     }
@@ -205,7 +206,7 @@ def preselect(req: AiRequest):
 def qa(req: AiRequest):
     start = time.perf_counter()
     if not req.input_paths:
-        return err(req, "MISSING_INPUT", "validation", "No input path supplied")
+        return err(req, "MISSING_INPUT", "validation", "No input path supplied", False)
     try:
         metrics = analyze_image(req.input_paths[0])
         result = qa_from_technical(metrics, req.config)
@@ -215,6 +216,12 @@ def qa(req: AiRequest):
             result=result,
             timings={"total_ms": (time.perf_counter() - start) * 1000},
         )
+    except (FileNotFoundError, ImageReadError) as exc:
+        return err(req, "INPUT_READ_ERROR", "input", str(exc), False)
+    except (ValueError, TypeError) as exc:
+        return err(req, "INVALID_QA_CONFIG", "validation", str(exc), False)
+    except (MemoryError, TimeoutError) as exc:
+        return err(req, "QA_RESOURCE_EXHAUSTED", "resource", str(exc), True)
     except Exception as exc:
         return err(req, "QA_ERROR", "runtime", str(exc), False)
 

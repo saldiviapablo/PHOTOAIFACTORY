@@ -138,13 +138,13 @@ public sealed class Phase6ComfyTests
     [TestMethod]
     public void Migration_007_is_registered_after_feedback()
     {
-        var last = MigrationCatalog.All.Last();
-        Assert.AreEqual(7, last.Version);
-        Assert.AreEqual("comfyui", last.Name);
-        StringAssert.Contains(last.Sql, "COMFYUI_COMPLETE");
-        StringAssert.Contains(last.Sql, "comfy_retry_count");
-        StringAssert.Contains(last.Sql, "comfy_plans");
-        StringAssert.Contains(last.Sql, "comfy_executions");
+        var migration7 = MigrationCatalog.All[6];
+        Assert.AreEqual(7, migration7.Version);
+        Assert.AreEqual("comfyui", migration7.Name);
+        StringAssert.Contains(migration7.Sql, "COMFYUI_COMPLETE");
+        StringAssert.Contains(migration7.Sql, "comfy_retry_count");
+        StringAssert.Contains(migration7.Sql, "comfy_plans");
+        StringAssert.Contains(migration7.Sql, "comfy_executions");
     }
 
     [TestMethod]

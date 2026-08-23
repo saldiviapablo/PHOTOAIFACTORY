@@ -6,6 +6,7 @@ using PhotoAIFactory.Application.Analysis;
 using PhotoAIFactory.Application.Ingestion;
 using PhotoAIFactory.Application.Processing;
 using PhotoAIFactory.Application.Projects;
+using PhotoAIFactory.Application.Qa;
 using PhotoAIFactory.Application.Runtime;
 using PhotoAIFactory.Infrastructure.Analysis;
 using PhotoAIFactory.Infrastructure.Ingestion;
@@ -13,8 +14,10 @@ using PhotoAIFactory.Infrastructure.Logging;
 using PhotoAIFactory.Infrastructure.Persistence.Analysis;
 using PhotoAIFactory.Infrastructure.Persistence.Ingestion;
 using PhotoAIFactory.Infrastructure.Persistence.Processing;
+using PhotoAIFactory.Infrastructure.Persistence.Qa;
 using PhotoAIFactory.Infrastructure.Persistence.Repositories;
 using PhotoAIFactory.Infrastructure.Processing;
+using PhotoAIFactory.Infrastructure.Qa;
 
 namespace PhotoAIFactory.Infrastructure.Hosting;
 
@@ -182,6 +185,20 @@ public static class PhotoAIFactoryHostingExtensions
         builder.Services.AddTransient<ComfyOrchestrator>();
         builder.Services.AddTransient<ProjectComfyManager>();
         builder.Services.AddTransient<ProjectProcessingManager>();
+        builder.Services.AddSingleton<
+            IQaStoreFactory,
+            SqliteQaStoreFactory>();
+        builder.Services.AddSingleton<
+            IFinalHistoryWriter,
+            FinalHistoryWriter>();
+        builder.Services.AddSingleton<
+            IPublishService,
+            PublishService>();
+        builder.Services.AddSingleton<
+            IReviewService,
+            ReviewService>();
+        builder.Services.AddTransient<QaOrchestrator>();
+        builder.Services.AddTransient<ProjectQaManager>();
 
         builder.Services.AddSingleton<TimeProvider>(
             TimeProvider.System);
