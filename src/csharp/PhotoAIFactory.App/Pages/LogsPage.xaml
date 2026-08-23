@@ -1,0 +1,104 @@
+<Page
+    x:Class="PhotoAIFactory.App.Pages.LogsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:PhotoAIFactory.Application.UI"
+    mc:Ignorable="d">
+
+    <Grid RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="Logs &amp; System Events" Style="{ThemeResource TitleTextBlockStyle}"/>
+                <TextBlock Text="Structured diagnostic logs and failure records for debugging." Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <Button Grid.Column="1" Content="Refresh" Command="{x:Bind ViewModel.RefreshCommand}"/>
+        </Grid>
+
+        <!-- Filter Bar -->
+        <Grid Grid.Row="1" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox PlaceholderText="Filter by message or component..." Text="{x:Bind ViewModel.FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Column="1" Content="Clear" Command="{x:Bind ViewModel.ClearFilterCommand}"/>
+        </Grid>
+
+        <!-- Two Column Log Viewer -->
+        <Grid Grid.Row="2" ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="350"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Logs List -->
+            <ListView
+                ItemsSource="{x:Bind ViewModel.Logs, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedLog, Mode=TwoWay}"
+                SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="ui:ErrorLogEntryDto">
+                        <Grid Padding="10,6" Margin="0,2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{x:Bind Level}" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{x:Bind Component}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="{x:Bind Message}" FontSize="12" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!-- Right: Log Details -->
+            <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                <ScrollViewer>
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Log Entry Details" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Timestamp:" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11"/>
+                            <TextBlock Text="{x:Bind ViewModel.SelectedLog.TimestampUtc, Mode=OneWay}" FontSize="12"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Component:" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11"/>
+                            <TextBlock Text="{x:Bind ViewModel.SelectedLog.Component, Mode=OneWay}" FontSize="12" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Message:" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11"/>
+                            <TextBlock Text="{x:Bind ViewModel.SelectedLog.Message, Mode=OneWay}" TextWrapping="Wrap" FontSize="12"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.HasTechnicalDetails, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="Stack Trace / Technical Info:" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11"/>
+                            <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="8">
+                                <TextBlock Text="{x:Bind ViewModel.SelectedLog.TechnicalDetails, Mode=OneWay}" FontFamily="Consolas" FontSize="10" TextWrapping="Wrap"/>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

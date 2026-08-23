@@ -1,0 +1,184 @@
+<Page
+    x:Class="PhotoAIFactory.App.Pages.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:PhotoAIFactory.Application.UI"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Spacing="20" Padding="0,0,0,40">
+            <!-- Header & Control Bar -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Dashboard" Style="{ThemeResource TitleTextBlockStyle}"/>
+                    <TextBlock Text="{x:Bind ViewModel.Summary.ProjectName, Mode=OneWay, FallbackValue='No Project Open'}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Button Content="Refresh" Command="{x:Bind ViewModel.RefreshCommand}"/>
+                    <Button Style="{ThemeResource AccentButtonStyle}" Content="{x:Bind ViewModel.PauseButtonText, Mode=OneWay}" Command="{x:Bind ViewModel.TogglePauseCommand}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Alerts: Blocked Storage / Component Unhealthy -->
+            <InfoBar
+                IsOpen="{x:Bind ViewModel.IsBlockedStorage, Mode=OneWay}"
+                Severity="Error"
+                Title="Storage Preflight Blocked"
+                Message="Insufficient disk storage on output volume. Job dispatching is safely paused until space is freed."
+                IsClosable="False" />
+
+            <InfoBar
+                IsOpen="{x:Bind ViewModel.IsComponentUnhealthy, Mode=OneWay}"
+                Severity="Warning"
+                Title="Component Health Degraded"
+                Message="One or more background AI/rendering engines are unhealthy. Unaffected pipeline stages continue operating."
+                IsClosable="False" />
+
+            <!-- Metrics Cards Grid -->
+            <Grid ColumnSpacing="12" RowSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Received -->
+                <Border Grid.Column="0" Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Received" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{x:Bind ViewModel.Summary.ReceivedCount, Mode=OneWay, FallbackValue='0'}" FontSize="24" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Queued -->
+                <Border Grid.Column="1" Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="In Queue" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{x:Bind ViewModel.Summary.QueuedCount, Mode=OneWay, FallbackValue='0'}" FontSize="24" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Processing -->
+                <Border Grid.Column="2" Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Processing" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{x:Bind ViewModel.Summary.ProcessingCount, Mode=OneWay, FallbackValue='0'}" FontSize="24" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Completed -->
+                <Border Grid.Column="3" Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Completed" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{x:Bind ViewModel.Summary.CompletedCount, Mode=OneWay, FallbackValue='0'}" FontSize="24" FontWeight="Bold" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- In Review -->
+                <Border Grid.Column="0" Grid.Row="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Pending Review" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{x:Bind ViewModel.Summary.ReviewCount, Mode=OneWay, FallbackValue='0'}" FontSize="24" FontWeight="Bold" Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Rejected -->
+                <Border Grid.Column="1" Grid.Row="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Rejected" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{x:Bind ViewModel.Summary.RejectedCount, Mode=OneWay, FallbackValue='0'}" FontSize="24" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Errors -->
+                <Border Grid.Column="2" Grid.Row="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Errors" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{x:Bind ViewModel.Summary.ErrorCount, Mode=OneWay, FallbackValue='0'}" FontSize="24" FontWeight="Bold" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Avg Time -->
+                <Border Grid.Column="3" Grid.Row="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Avg Process Time" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{x:Bind ViewModel.AverageTimeString, Mode=OneWay}" FontSize="18" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Active Job Section -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Active Processing Job" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <Grid>
+                        <TextBlock Text="No active processing job currently running." Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Visibility="{x:Bind ViewModel.Summary.ActiveJob, Mode=OneWay, Converter={StaticResource NullToVis}, ConverterParameter='Invert'}"/>
+
+                        <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.Summary.ActiveJob, Mode=OneWay, Converter={StaticResource NullToVis}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="{x:Bind ViewModel.Summary.ActiveJob.PhotoName, Mode=OneWay, FallbackValue=''}" FontWeight="SemiBold" FontSize="16"/>
+                                    <Border Background="{ThemeResource AccentFillColorDefaultBrush}" CornerRadius="4" Padding="6,2">
+                                        <TextBlock Text="{x:Bind ViewModel.Summary.ActiveJob.CurrentStageName, Mode=OneWay, FallbackValue=''}" Foreground="White" FontSize="11"/>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.Summary.ActiveJob.State, Mode=OneWay, FallbackValue=''}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </Grid>
+
+                            <!-- Honest Indeterminate Progress -->
+                            <ProgressBar IsIndeterminate="True" Margin="0,8"/>
+
+                            <StackPanel Orientation="Horizontal" Spacing="24">
+                                <TextBlock Text="{x:Bind ViewModel.Summary.ActiveJob.RevealMode, Mode=OneWay, FallbackValue=''}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <TextBlock Text="{x:Bind ViewModel.Summary.ActiveJob.RetryCount, Mode=OneWay, FallbackValue=''}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <TextBlock Text="{x:Bind ViewModel.Summary.ActiveJob.ReprocessCount, Mode=OneWay, FallbackValue=''}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <!-- Component Health Cards -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Engines &amp; System Health" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                <ItemsControl ItemsSource="{x:Bind ViewModel.Summary.ComponentHealth, Mode=OneWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="12"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="ui:ComponentHealthCardDto">
+                            <Border Width="180" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="{x:Bind DisplayName}" FontWeight="SemiBold" FontSize="13"/>
+                                    <TextBlock Text="{x:Bind StatusText}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

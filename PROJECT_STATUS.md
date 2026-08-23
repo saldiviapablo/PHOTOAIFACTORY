@@ -2,7 +2,7 @@
 
 **Baseline:** 2026-08-12  
 **Última actualización:** 2026-08-23
-**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 5 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 6 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 7 CLOSED / GO — PHASE 8 CLOSED / GO
+**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 5 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 6 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 7 CLOSED / GO — PHASE 8 CLOSED / GO — PHASE 9 UX FINAL CLOSED / GO
 
 ## Documentos congelados como baseline
 
@@ -215,9 +215,29 @@ Informe: `docs/phase4/PHASE4_BASIC_REVEAL_REPORT.md`.
 - git diff --check limpio.
 - Informes: `docs/phase8/PHASE8_RECOVERY_HARDENING_REPORT.md` y `docs/phase8/PHASE8_TEST_EVIDENCE.md`.
 
+## Phase 9 UX Final / WinUI 3
+
+- Phase 9 — UX Final / WinUI 3: CLOSED / GO.
+- WinUI 3 Desktop App presentation shell (`PhotoAIFactory.App`) completamente implementada con 11 pantallas canónicas (Projects, Create Project, Dashboard, Queue, Job Detail, Review, Configuration, History, Models & Engines, Logs & Errors, Preferences): PASS.
+- Arquitectura desacoplada: UI como presentation layer puro sin SQL directo ni ejecución directa de procesos; lectura a través de Query Services acotados (`IProjectQueryService`, `IDashboardQueryService`, `IQueueQueryService`, `IReviewQueryService`, `IHistoryQueryService`, `IModelStatusService`, `IErrorLogQueryService`): PASS.
+- Estado operacional honesto: progreso indeterminado en etapas opacas, sin barras de progreso ficticias; estados visuales explícitos para `Running`, `PauseRequested`, `Paused`, `BlockedStorage` y `ComponentUnhealthy`: PASS.
+- Review Station segura: acciones directas sobre `IReviewService` (`Approve` determinista sin sobreescritura, `Reprocess` con límite estricto de 1 intento, `Reject`, `Leave Pending`): PASS.
+- Edición de configuración protegida: edición bloqueada a menos que el proyecto esté en estado `Paused` o `Stopped`; guardado versionado inmutable vía `ConfigService.ApplyAsync`: PASS.
+- Gestión de recursos y caché: carga asíncrona de miniaturas con caché LRU acotada en memoria (128 MB budget, 500 ítems) y cancelación segura: PASS.
+- Cero procesos huérfanos y graceful host shutdown hooks: PASS.
+- Windows App SDK 2.4.0 Stable (.NET 10, Windows x64): PASS.
+- System.Drawing.Common 10.0.11 (MIT, Windows-only, para thumbnails UI): PASS.
+- Pillow eliminado completamente de ai-worker (OpenCV + NumPy conservados): PASS.
+- Packaging final diferido explícitamente a Phase 10: PASS.
+- Tests finales: 307 / 307 PASS (Foundation: 112 / 112, Simulation: 158 / 158, Python: 37 / 37).
+- Build Release: 0 errores, 0 warnings.
+- 0 paquetes vulnerables.
+- git diff --check limpio.
+- Informes: `docs/phase9/PHASE9_UX_IMPLEMENTATION_REPORT.md` y `docs/phase9/PHASE9_UX_TEST_EVIDENCE.md`.
+
 ## Lo siguiente
 
 ```text
-PHASE 8 — RECOVERY / HARDENING = CLOSED / GO
-PHASE 9 = NEXT / NOT STARTED
+PHASE 9 — UX FINAL / WINUI 3 = CLOSED / GO
+PHASE 10 — PACKAGING / DEPLOYMENT = NEXT / NOT STARTED
 ```

@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PhotoAIFactory.Application;
@@ -13,6 +15,8 @@ using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Application.Backup;
 using PhotoAIFactory.Application.Cleanup;
 using PhotoAIFactory.Application.Runtime;
+using PhotoAIFactory.Application.UI;
+using PhotoAIFactory.Application.UI.ViewModels;
 using PhotoAIFactory.Infrastructure.Analysis;
 using PhotoAIFactory.Infrastructure.Backup;
 using PhotoAIFactory.Infrastructure.Cleanup;
@@ -253,6 +257,57 @@ public static class PhotoAIFactoryHostingExtensions
         builder.Services.AddSingleton<
             IGpuExecutionPolicy,
             GpuExecutionPolicy>();
+
+        // Phase 9: UI Query / Read Services & Preferences
+        builder.Services.AddSingleton<
+            IProjectQueryService,
+            PhotoAIFactory.Infrastructure.UI.ProjectQueryService>();
+        builder.Services.AddSingleton<
+            IDashboardQueryService,
+            PhotoAIFactory.Infrastructure.UI.DashboardQueryService>();
+        builder.Services.AddSingleton<
+            IQueueQueryService,
+            PhotoAIFactory.Infrastructure.UI.QueueQueryService>();
+        builder.Services.AddSingleton<
+            IReviewQueryService,
+            PhotoAIFactory.Infrastructure.UI.ReviewQueryService>();
+        builder.Services.AddSingleton<
+            IHistoryQueryService,
+            PhotoAIFactory.Infrastructure.UI.HistoryQueryService>();
+        builder.Services.AddSingleton<
+            IModelStatusService,
+            PhotoAIFactory.Infrastructure.UI.ModelStatusService>();
+        builder.Services.AddSingleton<
+            IErrorLogQueryService,
+            PhotoAIFactory.Infrastructure.UI.ErrorLogQueryService>();
+        builder.Services.AddSingleton<
+            IThumbnailService,
+            PhotoAIFactory.Infrastructure.UI.ThumbnailService>();
+        builder.Services.AddSingleton<
+            IAppPreferencesService,
+            PhotoAIFactory.Infrastructure.UI.AppPreferencesService>();
+
+        builder.Services.AddSingleton<
+            IProjectContext,
+            ProjectContext>();
+
+        builder.Services.TryAddSingleton<
+            INavigationService,
+            NullNavigationService>();
+
+        // Phase 9 ViewModels
+        builder.Services.AddTransient<ProjectsViewModel>();
+        builder.Services.AddTransient<CreateProjectViewModel>();
+        builder.Services.AddTransient<DashboardViewModel>();
+        builder.Services.AddTransient<QueueViewModel>();
+        builder.Services.AddTransient<JobDetailViewModel>();
+        builder.Services.AddTransient<ReviewViewModel>();
+        builder.Services.AddTransient<ProjectConfigViewModel>();
+        builder.Services.AddTransient<HistoryViewModel>();
+        builder.Services.AddTransient<ModelsViewModel>();
+        builder.Services.AddTransient<LogsViewModel>();
+        builder.Services.AddTransient<PreferencesViewModel>();
+        builder.Services.AddTransient<ShellViewModel>();
 
         builder.Services.AddHostedService<
             RuntimeInitializationHostedService>();

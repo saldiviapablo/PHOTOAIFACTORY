@@ -1,0 +1,73 @@
+<Page
+    x:Class="PhotoAIFactory.App.Pages.QueuePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:PhotoAIFactory.Application.UI"
+    mc:Ignorable="d">
+
+    <Grid RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="Processing Queue" Style="{ThemeResource TitleTextBlockStyle}"/>
+                <TextBlock Text="Deterministic FIFO pipeline. Exactly one heavy job is executed at a time." Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <Button Grid.Column="1" Content="Refresh" Command="{x:Bind ViewModel.RefreshCommand}"/>
+        </Grid>
+
+        <!-- Queue List -->
+        <Grid Grid.Row="1">
+            <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <ListView
+                x:Name="QueueListView"
+                ItemsSource="{x:Bind ViewModel.QueueItems, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedItem, Mode=TwoWay}"
+                SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="ui:QueueItemDto">
+                        <Grid Padding="12" Margin="0,4" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{x:Bind QueueSequence}" FontWeight="Bold" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                            <StackPanel Grid.Column="1" Spacing="4">
+                                <TextBlock Text="{x:Bind PhotoName}" FontWeight="SemiBold" FontSize="14"/>
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <TextBlock Text="{x:Bind Format}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock Text="{x:Bind RevealMode}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock Text="{x:Bind QueuedAtUtc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Border Grid.Column="2" Background="{ThemeResource SystemFillColorNeutralBackgroundBrush}" CornerRadius="4" Padding="6,2" VerticalAlignment="Center" Margin="0,0,16,0">
+                                <TextBlock Text="{x:Bind State}" FontSize="12"/>
+                            </Border>
+
+                            <Button Grid.Column="3" Content="Details" VerticalAlignment="Center"
+                                    Command="{Binding DataContext.ViewJobDetailCommand, ElementName=QueueListView}" CommandParameter="{x:Bind}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Grid>
+</Page>

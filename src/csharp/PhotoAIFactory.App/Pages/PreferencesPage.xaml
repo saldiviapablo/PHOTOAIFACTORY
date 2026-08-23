@@ -1,0 +1,47 @@
+<Page
+    x:Class="PhotoAIFactory.App.Pages.PreferencesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel MaxWidth="600" HorizontalAlignment="Left" Spacing="20" Padding="0,0,0,40">
+            <!-- Header -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="Application Preferences" Style="{ThemeResource TitleTextBlockStyle}"/>
+                <TextBlock Text="Global workstation settings, theme preferences, and UI behavior." Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <!-- Status Banner -->
+            <InfoBar
+                IsOpen="{x:Bind ViewModel.StatusMessage, Mode=OneWay, Converter={StaticResource NullToVis}}"
+                Severity="Informational"
+                Message="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                IsClosable="True" />
+
+            <!-- Preferences Form -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Appearance &amp; Behavior" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                    <ComboBox Header="Theme" SelectedIndex="0" Width="250">
+                        <ComboBoxItem Content="System Default"/>
+                        <ComboBoxItem Content="Dark"/>
+                        <ComboBoxItem Content="Light"/>
+                    </ComboBox>
+
+                    <CheckBox Content="Show technical diagnostic details in logs and review" IsChecked="{x:Bind ViewModel.ShowDiagnostics, Mode=TwoWay}"/>
+                    <CheckBox Content="Auto-scroll queue to current active job" IsChecked="{x:Bind ViewModel.AutoScrollQueue, Mode=TwoWay}"/>
+                    <CheckBox Content="Hardware acceleration for photo previews" IsChecked="{x:Bind ViewModel.EnableHardwareAcceleration, Mode=TwoWay}"/>
+
+                    <NumberBox Header="Dashboard Live Refresh Cadence (seconds)" Value="{x:Bind ViewModel.RefreshIntervalSeconds, Mode=TwoWay}" Minimum="1" Maximum="60" Width="250" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Save Button -->
+            <Button Style="{ThemeResource AccentButtonStyle}" Content="Save Preferences" Command="{x:Bind ViewModel.SavePreferencesCommand}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

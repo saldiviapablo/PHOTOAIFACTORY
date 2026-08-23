@@ -1,0 +1,72 @@
+<Window
+    x:Class="PhotoAIFactory.App.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:PhotoAIFactory.App"
+    mc:Ignorable="d"
+    Title="PHOTO AI FACTORY">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Project Context Header / Unhealthy Banner -->
+        <StackPanel Grid.Row="0" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,0,0,1">
+            <InfoBar
+                IsOpen="{x:Bind ViewModel.HasUnhealthyComponents, Mode=OneWay}"
+                Severity="Warning"
+                Title="Component Degraded or Unhealthy"
+                Message="One or more background engines require attention. Dependent pipeline stages will be isolated safely."
+                IsClosable="False" />
+            
+            <Grid Padding="16,10,16,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <TextBlock Text="PHOTO AI FACTORY" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center"/>
+                    <Border Background="{ThemeResource AccentFillColorDefaultBrush}" CornerRadius="4" Padding="8,2" Visibility="{x:Bind ViewModel.Context.HasActiveProject, Mode=OneWay}">
+                        <TextBlock Text="{x:Bind ViewModel.Context.ActiveProjectName, Mode=OneWay}" Foreground="White" FontSize="12" FontWeight="Medium"/>
+                    </Border>
+                    <TextBlock Text="{x:Bind ViewModel.Context.ActiveProjectState, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12" VerticalAlignment="Center" Visibility="{x:Bind ViewModel.Context.HasActiveProject, Mode=OneWay}"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" Content="Switch Project" Command="{x:Bind ViewModel.NavigateCommand}" CommandParameter="Projects" Visibility="{x:Bind ViewModel.Context.HasActiveProject, Mode=OneWay}"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- Navigation Shell -->
+        <NavigationView
+            x:Name="NavView"
+            Grid.Row="1"
+            PaneDisplayMode="Left"
+            IsBackButtonVisible="Collapsed"
+            ItemInvoked="NavView_ItemInvoked"
+            Header="{x:Bind ViewModel.Title, Mode=OneWay}">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Projects" Tag="Projects" Icon="Folder"/>
+                <NavigationViewItem Content="Create Project" Tag="CreateProject" Icon="Add"/>
+                <NavigationViewItemSeparator/>
+                <NavigationViewItem Content="Dashboard" Tag="Dashboard" Icon="Home"/>
+                <NavigationViewItem Content="Queue" Tag="Queue" Icon="List"/>
+                <NavigationViewItem Content="Review" Tag="Review" Icon="PreviewLink"/>
+                <NavigationViewItem Content="Configuration" Tag="ProjectConfig" Icon="Setting"/>
+                <NavigationViewItem Content="History" Tag="History" Icon="Clock"/>
+                <NavigationViewItemSeparator/>
+                <NavigationViewItem Content="Models &amp; Engines" Tag="Models" Icon="Repair"/>
+                <NavigationViewItem Content="Logs &amp; Errors" Tag="Logs" Icon="Document"/>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="Preferences" Tag="Preferences" Icon="Globe"/>
+            </NavigationView.FooterMenuItems>
+
+            <Frame x:Name="ContentFrame" Padding="24"/>
+        </NavigationView>
+    </Grid>
+</Window>

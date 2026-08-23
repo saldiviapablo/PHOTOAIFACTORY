@@ -3,6 +3,7 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.11" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.13" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.11" />
     <ProjectReference Include="..\PhotoAIFactory.Domain\PhotoAIFactory.Domain.csproj" />
     <ProjectReference Include="..\PhotoAIFactory.Contracts\PhotoAIFactory.Contracts.csproj" />
     <ProjectReference Include="..\PhotoAIFactory.Application\PhotoAIFactory.Application.csproj" />

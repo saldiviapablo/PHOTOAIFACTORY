@@ -1,0 +1,18 @@
+<Project>
+  <Target Name="GetMrtPackagingOutputs" Returns="@(PackagingOutputs)" />
+  <Target Name="CopyLocalFilesOutputGroup" Returns="@(CopyLocalFilesOutputGroupOutput)">
+    <ItemGroup>
+      <CopyLocalFilesOutputGroupOutput Include="@(ReferenceCopyLocalPaths)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="_GetDefaultResourceLanguage">
+    <PropertyGroup>
+      <DefaultResourceLanguage>en-US</DefaultResourceLanguage>
+    </PropertyGroup>
+  </Target>
+  <Target Name="_GetPackageArchitecture">
+    <PropertyGroup>
+      <PackageArchitecture>x64</PackageArchitecture>
+    </PropertyGroup>
+  </Target>
+</Project>

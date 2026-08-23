@@ -5,8 +5,10 @@ import time
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
 
 from .analysis_models import (
     ArtifactIdentity,
