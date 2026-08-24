@@ -1,28 +1,28 @@
 {
   "evidence_schema_version": 4,
-  "generated_at_utc": "2026-08-24T04:17:07.8045621\u002B00:00",
+  "generated_at_utc": "2026-08-24T05:10:50.1125149\u002B00:00",
   "assembly_identity_audit": {
     "installed_directory": "C:\\Users\\Pc\\AppData\\Local\\Programs\\PhotoAIFactory",
     "audit_passed": true,
     "assemblies": {
       "PhotoAIFactory.Application.dll": {
-        "installed_sha256": "61282c6f16cdc143fc5816fbc8de1ed7b5c48886f77ad75bbaf57cbfbbbdf661",
-        "testhost_sha256": "61282c6f16cdc143fc5816fbc8de1ed7b5c48886f77ad75bbaf57cbfbbbdf661",
+        "installed_sha256": "1be118fa0bc66cf50920298469b375d4af863679fd117a2a98a294490c17beca",
+        "testhost_sha256": "1be118fa0bc66cf50920298469b375d4af863679fd117a2a98a294490c17beca",
         "byte_identical": true
       },
       "PhotoAIFactory.Infrastructure.dll": {
-        "installed_sha256": "78a8d0373402e3fd58a4cd8be1db9d87b1d760cce6d9de34ab48e03a6c77a603",
-        "testhost_sha256": "78a8d0373402e3fd58a4cd8be1db9d87b1d760cce6d9de34ab48e03a6c77a603",
+        "installed_sha256": "0e9f344a3d34b60bc98913aef924efc497ac0ecf0e791059b220e6aa95dd63e1",
+        "testhost_sha256": "0e9f344a3d34b60bc98913aef924efc497ac0ecf0e791059b220e6aa95dd63e1",
         "byte_identical": true
       },
       "PhotoAIFactory.Domain.dll": {
-        "installed_sha256": "3a2a1e49b7d9c214cd4271cc95b26d8307a57d264034b5d0a1a09f3551f60ec0",
-        "testhost_sha256": "3a2a1e49b7d9c214cd4271cc95b26d8307a57d264034b5d0a1a09f3551f60ec0",
+        "installed_sha256": "dcb05564c4ab48be926d2f2ed98f61ec4d8608073e7c8c6c408b66336f3ceecc",
+        "testhost_sha256": "dcb05564c4ab48be926d2f2ed98f61ec4d8608073e7c8c6c408b66336f3ceecc",
         "byte_identical": true
       },
       "PhotoAIFactory.Contracts.dll": {
-        "installed_sha256": "9e1f317603e6ab5b3cf15a34cf334693890721587b017f87b0fe8ad9d3179fad",
-        "testhost_sha256": "9e1f317603e6ab5b3cf15a34cf334693890721587b017f87b0fe8ad9d3179fad",
+        "installed_sha256": "3ab10a77708cfc0a74b05a4bdded9fcba314f8c7d948ed9f3d6bcddb9d400cfa",
+        "testhost_sha256": "3ab10a77708cfc0a74b05a4bdded9fcba314f8c7d948ed9f3d6bcddb9d400cfa",
         "byte_identical": true
       }
     }
@@ -36,12 +36,12 @@
     "set_verified": true
   },
   "jpeg_product_e2e": {
-    "project_id": "749a82c548834a34853ea9a153223584",
-    "photo_id": "1457841d7212432384204842bfb2ff08",
-    "job_id": "ec767a7873334a9a82ff6276c10a155b",
+    "project_id": "ac4cc09fbc1648eab09ef931c474ce51",
+    "photo_id": "cd39e02766d945519dd86a7fe93e1665",
+    "job_id": "fb904d8b4d844334bdf4beb5310327d5",
     "final_job_state": "COMPLETED",
-    "created_at_utc": "2026-08-24T04:16:22.9666749\u002B00:00",
-    "updated_at_utc": "2026-08-24T04:16:47.7708212\u002B00:00",
+    "created_at_utc": "2026-08-24T05:10:04.5479581\u002B00:00",
+    "updated_at_utc": "2026-08-24T05:10:29.8368001\u002B00:00",
     "checkpoints": [
       "ANALYSIS_COMPLETE",
       "PRESELECTION_COMPLETE",
@@ -51,38 +51,38 @@
     ],
     "durable_checkpoints": [
       {
-        "checkpoint_id": "12394256fe984b9aa30e1948818b4c68",
+        "checkpoint_id": "2f24e61bcae84e739d8d10ec64c99609",
         "checkpoint": "ANALYSIS_COMPLETE",
-        "attempt_id": "b6e57e686b2142df8a3c62498c2477bf",
-        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "attempt_id": "a8b42c6ec1ed42daaa6466dedb10773f",
+        "created_at_utc": "2026-08-24T05:10:14.6543304\u002B00:00",
         "source": "table: job_checkpoints"
       },
       {
-        "checkpoint_id": "4155904b1686475f87c57da2f726e68e",
+        "checkpoint_id": "4cd92c4349be4bbfad2e0c823fed5d2f",
         "checkpoint": "PRESELECTION_COMPLETE",
-        "attempt_id": "b6e57e686b2142df8a3c62498c2477bf",
-        "created_at_utc": "2026-08-24T04:16:32.5176970\u002B00:00",
+        "attempt_id": "a8b42c6ec1ed42daaa6466dedb10773f",
+        "created_at_utc": "2026-08-24T05:10:14.6882979\u002B00:00",
         "source": "table: job_checkpoints"
       },
       {
-        "checkpoint_id": "7b7dbba25c2048daad55dccdf080cdf5",
+        "checkpoint_id": "1fb3bac3716948ef91dde60cf1cc57af",
         "checkpoint": "BASIC_REVEAL_COMPLETE",
-        "attempt_id": "20cec24f301943b9b20041758c2e0ce0",
-        "created_at_utc": "2026-08-24T04:16:47.5567332\u002B00:00",
+        "attempt_id": "5325f744ea404c299ed2b2b5dca9a7da",
+        "created_at_utc": "2026-08-24T05:10:29.6073483\u002B00:00",
         "source": "table: job_checkpoints"
       },
       {
-        "checkpoint_id": "8835b5a5e424408898e1b0dac7ecc957",
+        "checkpoint_id": "3d9056f705164bbd9bb25e57d1fd7c53",
         "checkpoint": "QA_COMPLETE",
-        "attempt_id": "qa-3614ed62",
-        "created_at_utc": "2026-08-24T04:16:47.6982708\u002B00:00",
+        "attempt_id": "qa-632fa568",
+        "created_at_utc": "2026-08-24T05:10:29.7559664\u002B00:00",
         "source": "table: job_checkpoints"
       },
       {
-        "checkpoint_id": "b744ce5659c342cab4bb7c7497ba1c5d",
+        "checkpoint_id": "41b74dc718a34be6827317b39fe0ed28",
         "checkpoint": "OUTPUT_PUBLISHED",
         "attempt_id": "review-approve",
-        "created_at_utc": "2026-08-24T04:16:47.7636849\u002B00:00",
+        "created_at_utc": "2026-08-24T05:10:29.8272953\u002B00:00",
         "source": "table: job_checkpoints"
       }
     ],
@@ -91,63 +91,63 @@
         "model_id": "opencv",
         "model_version": "5.0.0",
         "artifact_set_sha256": null,
-        "timings_json": "{\u0022inference_ms\u0022:102.16500000387896}",
-        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "timings_json": "{\u0022inference_ms\u0022:106.55679999035783}",
+        "created_at_utc": "2026-08-24T05:10:14.6543304\u002B00:00",
         "source": "table: model_executions"
       },
       {
         "model_id": "rf-detr-medium",
         "model_version": "5.15.0",
         "artifact_set_sha256": "01fad58a735ccf51b46cd731ba60fd0929715be6004843f347e2821cae94ac00",
-        "timings_json": "{\u0022inference_ms\u0022:444.37150000885595}",
-        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "timings_json": "{\u0022inference_ms\u0022:525.453700000071}",
+        "created_at_utc": "2026-08-24T05:10:14.6543304\u002B00:00",
         "source": "table: model_executions"
       },
       {
         "model_id": "mediapipe-face-landmarker",
         "model_version": "1.0.1",
         "artifact_set_sha256": "235e67766c5870e91d7586804795ed13b6a4a31b39fa6dbc3a5d2d50dc909a3e",
-        "timings_json": "{\u0022inference_ms\u0022:51.41960000037216}",
-        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "timings_json": "{\u0022inference_ms\u0022:51.673800000571646}",
+        "created_at_utc": "2026-08-24T05:10:14.6543304\u002B00:00",
         "source": "table: model_executions"
       },
       {
         "model_id": "mediapipe-pose-landmarker-full",
         "model_version": "1.0.1",
         "artifact_set_sha256": "9ca9f14b12cb4b160f8b6eaac8fef10292cdd91584aeea64b2cf59a21cca434b",
-        "timings_json": "{\u0022inference_ms\u0022:83.83779998985119}",
-        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "timings_json": "{\u0022inference_ms\u0022:83.3864000014728}",
+        "created_at_utc": "2026-08-24T05:10:14.6543304\u002B00:00",
         "source": "table: model_executions"
       },
       {
         "model_id": "dinov2-vits14-standard",
         "model_version": "5.15.0",
         "artifact_set_sha256": "e00f294bcd46293002e3c56427b26c4d9cfc72a0c026be42eef51d5f6a3657f1",
-        "timings_json": "{\u0022inference_ms\u0022:204.82890000857878}",
-        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "timings_json": "{\u0022inference_ms\u0022:211.59289999923203}",
+        "created_at_utc": "2026-08-24T05:10:14.6543304\u002B00:00",
         "source": "table: model_executions"
       }
     ],
     "publication": {
-      "publication_id": "701d315b6f6d4bfcae30e135218d646c",
-      "destination_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_7ac9c904500441a8b348423300d5031d\\output\\FINAL\\basic-reveal.jpg",
-      "sha256": "0dc0a958e5543f78eb7d5ebc27be74083e60914b01b9065b7bebe5140cec6e85",
+      "publication_id": "8313be4be27d406c9ab1ce8bd8f35860",
+      "destination_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_f718e4df1cf449588333ea611bdf16c1\\output\\FINAL\\basic-reveal.jpg",
+      "sha256": "8ef79d0098817531b02185b46f5e1ca081ce4b37f046cb90b7695be0bb300d1a",
       "size_bytes": 1149900,
       "width": 3000,
       "height": 2000,
-      "history_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_7ac9c904500441a8b348423300d5031d\\output\\.photo-ai-factory\\history\\1457841d7212432384204842bfb2ff08\\ec767a7873334a9a82ff6276c10a155b\\final_history.json",
-      "published_at_utc": "2026-08-24T04:16:47.7473749\u002B00:00",
+      "history_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_f718e4df1cf449588333ea611bdf16c1\\output\\.photo-ai-factory\\history\\cd39e02766d945519dd86a7fe93e1665\\fb904d8b4d844334bdf4beb5310327d5\\final_history.json",
+      "published_at_utc": "2026-08-24T05:10:29.8112365\u002B00:00",
       "source": "table: publications"
     },
-    "published_output_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_7ac9c904500441a8b348423300d5031d\\output\\FINAL\\basic-reveal.jpg",
-    "published_output_sha256": "0dc0a958e5543f78eb7d5ebc27be74083e60914b01b9065b7bebe5140cec6e85",
+    "published_output_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_f718e4df1cf449588333ea611bdf16c1\\output\\FINAL\\basic-reveal.jpg",
+    "published_output_sha256": "8ef79d0098817531b02185b46f5e1ca081ce4b37f046cb90b7695be0bb300d1a",
     "qa_decision": {
-      "qa_result_id": "6d1ec42a5b004e7db719b464298b3217",
+      "qa_result_id": "35b39bfe3048426ba03c7c01525f1d34",
       "decision": "QA_REVIEW",
       "result_json": "{\u0022schema_version\u0022:1,\u0022decision\u0022:\u0022QA_REVIEW\u0022,\u0022findings\u0022:[{\u0022code\u0022:\u0022SHADOW_CLIPPING\u0022,\u0022severity\u0022:\u0022review\u0022,\u0022message\u0022:\u0022High shadow clipping\u0022,\u0022score\u0022:0.08948283333333333}],\u0022suggested_correction\u0022:null,\u0022technical\u0022:{\u0022width\u0022:3000,\u0022height\u0022:2000,\u0022megapixels\u0022:6.0,\u0022luma\u0022:{\u0022p01\u0022:0.0,\u0022p50\u0022:48.0,\u0022p99\u0022:229.0,\u0022mean\u0022:62.63035583496094},\u0022clipping\u0022:{\u0022black_fraction\u0022:0.08948283333333333,\u0022white_fraction\u0022:0.00007816666666666666},\u0022sharpness\u0022:{\u0022laplacian_variance\u0022:203.53146549856865},\u0022channel_means\u0022:{\u0022r\u0022:59.914719000000005,\u0022g\u0022:55.678499333333335,\u0022b\u0022:105.72941300000001}},\u0022calibration_status\u0022:\u0022BASELINE_NOT_CALIBRATED\u0022}",
-      "input_path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\work\\749a82c548834a34853ea9a153223584\\ec767a7873334a9a82ff6276c10a155b\\20cec24f301943b9b20041758c2e0ce0\\reveal\\basic-reveal.jpg",
-      "input_sha256": "0dc0a958e5543f78eb7d5ebc27be74083e60914b01b9065b7bebe5140cec6e85",
-      "created_at_utc": "2026-08-24T04:16:47.6793604\u002B00:00",
+      "input_path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\work\\ac4cc09fbc1648eab09ef931c474ce51\\fb904d8b4d844334bdf4beb5310327d5\\5325f744ea404c299ed2b2b5dca9a7da\\reveal\\basic-reveal.jpg",
+      "input_sha256": "8ef79d0098817531b02185b46f5e1ca081ce4b37f046cb90b7695be0bb300d1a",
+      "created_at_utc": "2026-08-24T05:10:29.7363167\u002B00:00",
       "source": "table: qa_results"
     },
     "fixture_type": "REAL_PHOTOGRAPHIC_JPEG",
@@ -159,12 +159,12 @@
     "status": "JPEG_PRODUCT_E2E_PASS"
   },
   "raw_product_e2e": {
-    "project_id": "e506fdf1dbbc4963b9aaf61c5650019f",
-    "photo_id": "9c4593a908354ed596021cffd765478d",
-    "job_id": "692bdd5464fc48f6ae042af3f8561d47",
+    "project_id": "03093a7127f048c489ad9032c889f15a",
+    "photo_id": "513012d5554a426b9e4540f3fffab641",
+    "job_id": "2ab03b4185e64664b09497b63bcfeee3",
     "final_job_state": "COMPLETED",
-    "created_at_utc": "2026-08-24T04:16:48.8383895\u002B00:00",
-    "updated_at_utc": "2026-08-24T04:17:07.7430370\u002B00:00",
+    "created_at_utc": "2026-08-24T05:10:30.9239098\u002B00:00",
+    "updated_at_utc": "2026-08-24T05:10:50.0468089\u002B00:00",
     "checkpoints": [
       "ANALYSIS_COMPLETE",
       "PRESELECTION_COMPLETE",
@@ -174,38 +174,38 @@
     ],
     "durable_checkpoints": [
       {
-        "checkpoint_id": "35759e759e5244a1884c08fd5bba906a",
+        "checkpoint_id": "ac7ff290189b42238abd61ee8362a8a4",
         "checkpoint": "ANALYSIS_COMPLETE",
-        "attempt_id": "dc07f817f59644d0bd98de298213b633",
-        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "attempt_id": "0fb40bf6dc3d48909822a0c898f2d5f6",
+        "created_at_utc": "2026-08-24T05:10:34.4648383\u002B00:00",
         "source": "table: job_checkpoints"
       },
       {
-        "checkpoint_id": "a55f1f0c39634b3999f1bdf77d8ff00c",
+        "checkpoint_id": "532982d8f2604d70a5dc54ccbb6cf0d4",
         "checkpoint": "PRESELECTION_COMPLETE",
-        "attempt_id": "dc07f817f59644d0bd98de298213b633",
-        "created_at_utc": "2026-08-24T04:16:52.2847826\u002B00:00",
+        "attempt_id": "0fb40bf6dc3d48909822a0c898f2d5f6",
+        "created_at_utc": "2026-08-24T05:10:34.4911108\u002B00:00",
         "source": "table: job_checkpoints"
       },
       {
-        "checkpoint_id": "7e0baa34e6d0472caf55e34fa6f3362b",
+        "checkpoint_id": "e27d1887fdb34785b720546102e9fcc7",
         "checkpoint": "BASIC_REVEAL_COMPLETE",
-        "attempt_id": "09cf9b8c58d84498b4eb471b1b161013",
-        "created_at_utc": "2026-08-24T04:17:07.4680077\u002B00:00",
+        "attempt_id": "ebd83b778d0f45bcb58e7087c862edbe",
+        "created_at_utc": "2026-08-24T05:10:49.7341299\u002B00:00",
         "source": "table: job_checkpoints"
       },
       {
-        "checkpoint_id": "c3aec573f129456b8f13b4b5710b7ede",
+        "checkpoint_id": "c2db47b8f0c2482ca5a98eccaae6f518",
         "checkpoint": "QA_COMPLETE",
-        "attempt_id": "qa-1676590a",
-        "created_at_utc": "2026-08-24T04:17:07.6771063\u002B00:00",
+        "attempt_id": "qa-c51c8933",
+        "created_at_utc": "2026-08-24T05:10:49.9685191\u002B00:00",
         "source": "table: job_checkpoints"
       },
       {
-        "checkpoint_id": "0e946dd1053944e6bf3c0c9538a57b20",
+        "checkpoint_id": "37a314dee2f34497832d4a0eddb970ac",
         "checkpoint": "OUTPUT_PUBLISHED",
         "attempt_id": "review-approve",
-        "created_at_utc": "2026-08-24T04:17:07.7345369\u002B00:00",
+        "created_at_utc": "2026-08-24T05:10:50.0375478\u002B00:00",
         "source": "table: job_checkpoints"
       }
     ],
@@ -214,55 +214,55 @@
         "model_id": "opencv",
         "model_version": "5.0.0",
         "artifact_set_sha256": null,
-        "timings_json": "{\u0022inference_ms\u0022:41.16080001404043}",
-        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "timings_json": "{\u0022inference_ms\u0022:47.60109999915585}",
+        "created_at_utc": "2026-08-24T05:10:34.4648383\u002B00:00",
         "source": "table: model_executions"
       },
       {
         "model_id": "rf-detr-medium",
         "model_version": "5.15.0",
         "artifact_set_sha256": "01fad58a735ccf51b46cd731ba60fd0929715be6004843f347e2821cae94ac00",
-        "timings_json": "{\u0022inference_ms\u0022:56.51580000994727}",
-        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "timings_json": "{\u0022inference_ms\u0022:63.53539999690838}",
+        "created_at_utc": "2026-08-24T05:10:34.4648383\u002B00:00",
         "source": "table: model_executions"
       },
       {
         "model_id": "mediapipe-face-landmarker",
         "model_version": "1.0.1",
         "artifact_set_sha256": "235e67766c5870e91d7586804795ed13b6a4a31b39fa6dbc3a5d2d50dc909a3e",
-        "timings_json": "{\u0022inference_ms\u0022:23.491400002967566}",
-        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "timings_json": "{\u0022inference_ms\u0022:22.835600000689737}",
+        "created_at_utc": "2026-08-24T05:10:34.4648383\u002B00:00",
         "source": "table: model_executions"
       },
       {
         "model_id": "dinov2-vits14-standard",
         "model_version": "5.15.0",
         "artifact_set_sha256": "e00f294bcd46293002e3c56427b26c4d9cfc72a0c026be42eef51d5f6a3657f1",
-        "timings_json": "{\u0022inference_ms\u0022:40.19780000089668}",
-        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "timings_json": "{\u0022inference_ms\u0022:37.0379999949364}",
+        "created_at_utc": "2026-08-24T05:10:34.4648383\u002B00:00",
         "source": "table: model_executions"
       }
     ],
     "publication": {
-      "publication_id": "e6fa46613a744b4697075e37b6bc3be1",
-      "destination_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_8ae6aaa536dd4622a59a3c322775006a\\output\\FINAL\\basic-reveal.jpg",
-      "sha256": "7c4c98d0f32d0d8f50fce16d9b23f67b2476b2fd164db2288ed85d51473f5832",
+      "publication_id": "b47d4c0c2ecd4e959f3bddcbde1ceaf5",
+      "destination_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_4fb123f6c70d4ec98e52641f23c87420\\output\\FINAL\\basic-reveal.jpg",
+      "sha256": "4cfc58520c3df251a3b15a0388e7f6d8d41525f53e0b82db67997fb3218bc9ae",
       "size_bytes": 1508507,
       "width": 4264,
       "height": 2848,
-      "history_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_8ae6aaa536dd4622a59a3c322775006a\\output\\.photo-ai-factory\\history\\9c4593a908354ed596021cffd765478d\\692bdd5464fc48f6ae042af3f8561d47\\final_history.json",
-      "published_at_utc": "2026-08-24T04:17:07.7221245\u002B00:00",
+      "history_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_4fb123f6c70d4ec98e52641f23c87420\\output\\.photo-ai-factory\\history\\513012d5554a426b9e4540f3fffab641\\2ab03b4185e64664b09497b63bcfeee3\\final_history.json",
+      "published_at_utc": "2026-08-24T05:10:50.0251103\u002B00:00",
       "source": "table: publications"
     },
-    "published_output_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_8ae6aaa536dd4622a59a3c322775006a\\output\\FINAL\\basic-reveal.jpg",
-    "published_output_sha256": "7c4c98d0f32d0d8f50fce16d9b23f67b2476b2fd164db2288ed85d51473f5832",
+    "published_output_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_4fb123f6c70d4ec98e52641f23c87420\\output\\FINAL\\basic-reveal.jpg",
+    "published_output_sha256": "4cfc58520c3df251a3b15a0388e7f6d8d41525f53e0b82db67997fb3218bc9ae",
     "qa_decision": {
-      "qa_result_id": "33ecc1e347de4d64a75a5b2e956b3c63",
+      "qa_result_id": "95a8fa89178a4de8bd5d4bd539394821",
       "decision": "QA_REVIEW",
       "result_json": "{\u0022schema_version\u0022:1,\u0022decision\u0022:\u0022QA_REVIEW\u0022,\u0022findings\u0022:[{\u0022code\u0022:\u0022LOW_SHARPNESS\u0022,\u0022severity\u0022:\u0022review\u0022,\u0022message\u0022:\u0022Low technical sharpness\u0022,\u0022score\u0022:28.11653935042637},{\u0022code\u0022:\u0022SHADOW_CLIPPING\u0022,\u0022severity\u0022:\u0022review\u0022,\u0022message\u0022:\u0022High shadow clipping\u0022,\u0022score\u0022:0.11503102140734026}],\u0022suggested_correction\u0022:null,\u0022technical\u0022:{\u0022width\u0022:4264,\u0022height\u0022:2848,\u0022megapixels\u0022:12.144,\u0022luma\u0022:{\u0022p01\u0022:2.0,\u0022p50\u0022:13.0,\u0022p99\u0022:211.0,\u0022mean\u0022:54.926414489746094},\u0022clipping\u0022:{\u0022black_fraction\u0022:0.11503102140734026,\u0022white_fraction\u0022:0.0},\u0022sharpness\u0022:{\u0022laplacian_variance\u0022:28.11653935042637},\u0022channel_means\u0022:{\u0022r\u0022:54.69432788817274,\u0022g\u0022:54.79080329568691,\u0022b\u0022:56.47401685393259}},\u0022calibration_status\u0022:\u0022BASELINE_NOT_CALIBRATED\u0022}",
-      "input_path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\work\\e506fdf1dbbc4963b9aaf61c5650019f\\692bdd5464fc48f6ae042af3f8561d47\\09cf9b8c58d84498b4eb471b1b161013\\reveal\\basic-reveal.jpg",
-      "input_sha256": "7c4c98d0f32d0d8f50fce16d9b23f67b2476b2fd164db2288ed85d51473f5832",
-      "created_at_utc": "2026-08-24T04:17:07.6596221\u002B00:00",
+      "input_path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\work\\03093a7127f048c489ad9032c889f15a\\2ab03b4185e64664b09497b63bcfeee3\\ebd83b778d0f45bcb58e7087c862edbe\\reveal\\basic-reveal.jpg",
+      "input_sha256": "4cfc58520c3df251a3b15a0388e7f6d8d41525f53e0b82db67997fb3218bc9ae",
+      "created_at_utc": "2026-08-24T05:10:49.9419590\u002B00:00",
       "source": "table: qa_results"
     },
     "fixture_type": "REAL_SONY_A7IV_ARW",

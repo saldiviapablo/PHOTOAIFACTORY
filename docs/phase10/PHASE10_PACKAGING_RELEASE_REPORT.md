@@ -58,4 +58,18 @@ Phase 10 delivers the complete Packaging, Deployment, Component Provisioning, an
 ## 5. Release Trust & Code Signing Status
 
 - **Signing Classification**: `PRODUCTION_SIGNING_PENDING` (Truthfully reported in `release-manifest.json` and build scripts; zero dev/test keys or PFX certificates committed to repository).
+
+---
+
+## 6. Hotfix: RC Startup Crash (WinUI 3 Self-Contained)
+
+- **Bug Observed**: Installed application (`PhotoAIFactory.App.exe`) terminated immediately on startup with exit code `0xC000027B` and Windows Application Event Log error in faulting module `Microsoft.UI.Xaml.dll` (v3.2.3.0).
+- **Root Cause**: `PhotoAIFactory.App.csproj` had `<EnableMsixTooling>false</EnableMsixTooling>` and `<AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>`, which prevented the Windows App SDK MSBuild targets from compiling and generating `PhotoAIFactory.App.pri` (containing WinUI XAML binary resources) into the self-contained publish payload. Additionally, `<WindowsAppSdkUndockedRegFreeWinRTInitialize>` was not explicitly configured, causing `Microsoft.UI.Xaml.dll` to throw an unhandled WinRT resource lookup failure upon window initialization.
+- **Fix Applied**:
+  * Configured `<EnableMsixTooling>true</EnableMsixTooling>` and `<WindowsAppSdkUndockedRegFreeWinRTInitialize>true</WindowsAppSdkUndockedRegFreeWinRTInitialize>`.
+  * Removed `<AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>`.
+  * Set `<PublishTrimmed>false</PublishTrimmed>`.
+  * Verified generation of `PhotoAIFactory.App.pri` (2,221,888 bytes) in the self-contained publish output.
+- **Regression Test Gate Added**: Updated `test-release-install.ps1` to execute the installed executable, wait 6 seconds to ensure the process remains active and running stably, and audit the Windows Application Event Log to ensure 0 crash events are emitted.
+
 - **Public Distribution Status**: **NOT PUBLISHED** (Awaiting formal Lead Engineer review).
