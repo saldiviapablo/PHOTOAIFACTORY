@@ -29,7 +29,7 @@
 
             <!-- Status Banner -->
             <InfoBar
-                IsOpen="{x:Bind ViewModel.StatusMessage, Mode=OneWay, Converter={StaticResource NullToVis}}"
+                IsOpen="{x:Bind ViewModel.StatusMessage, Mode=OneWay, Converter={StaticResource NullToBool}}"
                 Severity="Informational"
                 Message="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
                 IsClosable="True" />
@@ -39,14 +39,14 @@
                 <StackPanel Spacing="16">
                     <TextBlock Text="Parameters" Style="{ThemeResource SubtitleTextBlockStyle}"/>
 
-                    <TextBox Header="Input Folder" Text="{x:Bind ViewModel.InputFolder, Mode=TwoWay}" IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay, Converter={StaticResource BoolToVis}, ConverterParameter='Invert'}"/>
-                    <TextBox Header="Output Folder" Text="{x:Bind ViewModel.OutputFolder, Mode=TwoWay}" IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay, Converter={StaticResource BoolToVis}, ConverterParameter='Invert'}"/>
+                    <TextBox Header="Input Folder" Text="{x:Bind ViewModel.InputFolder, Mode=TwoWay}" IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay, Converter={StaticResource InvertBool}}"/>
+                    <TextBox Header="Output Folder" Text="{x:Bind ViewModel.OutputFolder, Mode=TwoWay}" IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay, Converter={StaticResource InvertBool}}"/>
 
                     <CheckBox Content="Include subdirectories" IsChecked="{x:Bind ViewModel.IncludeSubfolders, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsEditing, Mode=OneWay}"/>
                     <CheckBox Content="Preselection &amp; Culling" IsChecked="{x:Bind ViewModel.PreselectionEnabled, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsEditing, Mode=OneWay}"/>
 
-                    <TextBox Header="Export Format" Text="{x:Bind ViewModel.ExportFormat, Mode=TwoWay}" IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay, Converter={StaticResource BoolToVis}, ConverterParameter='Invert'}"/>
-                    <TextBox Header="Export Quality (1-100)" Text="{x:Bind ViewModel.ExportQuality, Mode=TwoWay}" IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay, Converter={StaticResource BoolToVis}, ConverterParameter='Invert'}"/>
+                    <TextBox Header="Export Format" Text="{x:Bind ViewModel.ExportFormat, Mode=TwoWay}" IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay, Converter={StaticResource InvertBool}}"/>
+                    <TextBox Header="Export Quality (1-100)" Text="{x:Bind ViewModel.ExportQuality, Mode=TwoWay}" IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay, Converter={StaticResource InvertBool}}"/>
 
                     <StackPanel Spacing="4" Margin="0,8,0,0">
                         <TextBlock Text="Config SHA-256 Hash:" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>

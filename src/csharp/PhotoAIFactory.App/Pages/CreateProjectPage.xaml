@@ -14,7 +14,7 @@
             </StackPanel>
 
             <InfoBar
-                IsOpen="{x:Bind ViewModel.ValidationError, Mode=OneWay, Converter={StaticResource NullToVis}}"
+                IsOpen="{x:Bind ViewModel.ValidationError, Mode=OneWay, Converter={StaticResource NullToBool}}"
                 Severity="Error"
                 Title="Validation Error"
                 Message="{x:Bind ViewModel.ValidationError, Mode=OneWay}"

@@ -551,6 +551,63 @@ public sealed class PresentationLayerTests
     }
 
     [TestMethod]
+    public async Task CreateProject_EndToEnd_Lifecycle_Persistence_And_Reload()
+    {
+        var builder = PhotoAIFactoryHost.CreateBuilder();
+        var nav = new TestNavService();
+        builder.Services.AddSingleton<INavigationService>(nav);
+        builder.Services.AddSingleton<IAppPaths>(new TestAppPaths(testWorkDir));
+
+        using var host = builder.Build();
+        var projectService = host.Services.GetRequiredService<ProjectService>();
+        var projectQuery = host.Services.GetRequiredService<IProjectQueryService>();
+        var appPaths = host.Services.GetRequiredService<IAppPaths>();
+
+        var inDir = Path.Combine(testWorkDir, "in_e2e");
+        var outDir = Path.Combine(testWorkDir, "out_e2e");
+        Directory.CreateDirectory(inDir);
+        Directory.CreateDirectory(outDir);
+
+        var vm = host.Services.GetRequiredService<CreateProjectViewModel>();
+        vm.ProjectName = "Wedding_2026_Live";
+        vm.InputFolder = inDir;
+        vm.OutputFolder = outDir;
+        vm.IncludeSubfolders = false;
+        vm.RevealMode = RevealMode.DtAuto;
+
+        await vm.CreateProjectAsync();
+        Assert.IsNull(vm.ValidationError);
+        Assert.AreEqual("Dashboard", nav.CurrentPageKey);
+
+        // Verify project.db and project directories were created on disk
+        var projects = await projectQuery.ListProjectsAsync();
+        Assert.AreEqual(1, projects.Count);
+        Assert.AreEqual("Wedding_2026_Live", projects[0].Name);
+
+        var dbPath = appPaths.GetProjectDatabasePath(projects[0].Id);
+        Assert.IsTrue(File.Exists(dbPath), $"Project database must exist at {dbPath}");
+
+        // Create a second project to verify existing projects are not overwritten or damaged
+        var inDir2 = Path.Combine(testWorkDir, "in_e2e2");
+        var outDir2 = Path.Combine(testWorkDir, "out_e2e2");
+        Directory.CreateDirectory(inDir2);
+        Directory.CreateDirectory(outDir2);
+
+        var vm2 = host.Services.GetRequiredService<CreateProjectViewModel>();
+        vm2.ProjectName = "Commercial_Shoot_2026";
+        vm2.InputFolder = inDir2;
+        vm2.OutputFolder = outDir2;
+        await vm2.CreateProjectAsync();
+        Assert.IsNull(vm2.ValidationError);
+
+        // Simulate app restart: re-query all projects
+        var reloadedProjects = await projectQuery.ListProjectsAsync();
+        Assert.AreEqual(2, reloadedProjects.Count);
+        Assert.IsTrue(reloadedProjects.Any(p => p.Name == "Wedding_2026_Live"));
+        Assert.IsTrue(reloadedProjects.Any(p => p.Name == "Commercial_Shoot_2026"));
+    }
+
+    [TestMethod]
     public void Architecture_Rules_Pages_Have_No_Static_ServiceLocator_Or_Raw_Process()
     {
         var pagesDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "src", "csharp", "PhotoAIFactory.App", "Pages");

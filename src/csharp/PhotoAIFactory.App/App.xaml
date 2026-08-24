@@ -10,6 +10,8 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:NullToVisibilityConverter x:Key="NullToVis" />
+            <converters:NullToBooleanConverter x:Key="NullToBool" />
+            <converters:InverseBooleanConverter x:Key="InvertBool" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

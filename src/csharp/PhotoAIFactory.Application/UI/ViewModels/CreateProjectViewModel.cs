@@ -202,7 +202,7 @@ public sealed class CreateProjectViewModel : ObservableObject
                 ProjectName.Trim(),
                 config,
                 Guid.NewGuid().ToString("N"),
-                DateTimeOffset.UtcNow).ConfigureAwait(false);
+                DateTimeOffset.UtcNow);
             projectContext.SetActiveProject(project.Project.Id, project.Project.Name, project.Project.State);
             navigationService.NavigateTo("Dashboard");
         }

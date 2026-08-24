@@ -16,7 +16,7 @@
 
             <!-- Status Banner -->
             <InfoBar
-                IsOpen="{x:Bind ViewModel.StatusMessage, Mode=OneWay, Converter={StaticResource NullToVis}}"
+                IsOpen="{x:Bind ViewModel.StatusMessage, Mode=OneWay, Converter={StaticResource NullToBool}}"
                 Severity="Informational"
                 Message="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
                 IsClosable="True" />
