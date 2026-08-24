@@ -131,13 +131,11 @@ class RfDetrMediumAdapter(LazyAdapter):
         self.processor = AutoImageProcessor.from_pretrained(
             str(root), local_files_only=True, trust_remote_code=False
         )
-        kwargs: dict[str, Any] = {
-            "local_files_only": True,
-            "trust_remote_code": False,
-        }
+        self.model = AutoModelForObjectDetection.from_pretrained(
+            str(root), local_files_only=True, trust_remote_code=False
+        )
         if torch.cuda.is_available():
-            kwargs["device_map"] = {"": "cuda:0"}
-        self.model = AutoModelForObjectDetection.from_pretrained(str(root), **kwargs)
+            self.model = self.model.to("cuda:0")
         self.model.eval()
 
     def predict(self, image_path: str, threshold: float = 0.35) -> tuple[dict, dict]:

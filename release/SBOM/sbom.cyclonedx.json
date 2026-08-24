@@ -1,0 +1,163 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.5.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:7f3a9e21-0a44-4f88-bc12-9843c11e56a1",
+  "version": 5,
+  "metadata": {
+    "timestamp": "2026-08-23T21:13:00Z",
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "CycloneDX-Release-Auditor",
+        "version": "1.5.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "PHOTO AI FACTORY",
+      "version": "1.0.0-rc.1",
+      "description": "Deterministic computational photography desktop application for Windows",
+      "licenses": [
+        {
+          "license": {
+            "id": "Proprietary"
+          }
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "type": "framework",
+      "name": "Microsoft.WindowsAppSDK",
+      "version": "2.4.0",
+      "purl": "pkg:nuget/Microsoft.WindowsAppSDK@2.4.0",
+      "hashes": [{ "alg": "SHA-256", "content": "6ec2ebb6add33ecebac1f5773ad4cabe934b82fb18d7bea98e011bb0fc0a37b9" }],
+      "licenses": [{ "license": { "id": "Microsoft-Software-License" } }]
+    },
+    {
+      "type": "framework",
+      "name": "Microsoft.Windows.SDK.BuildTools",
+      "version": "10.0.26100.4654",
+      "purl": "pkg:nuget/Microsoft.Windows.SDK.BuildTools@10.0.26100.4654",
+      "hashes": [{ "alg": "SHA-256", "content": "5f5783658a200f83ea2addfd406e2303a901b27ad7c49b0347c34aefcc21883d" }],
+      "licenses": [{ "license": { "id": "Microsoft-Software-License" } }]
+    },
+    {
+      "type": "library",
+      "name": "System.Drawing.Common",
+      "version": "10.0.11",
+      "purl": "pkg:nuget/System.Drawing.Common@10.0.11",
+      "hashes": [{ "alg": "SHA-256", "content": "3ef766b29a6354adff3a71b7f53d21a39508a4d14d48f74932196bb78fe0e523" }],
+      "licenses": [{ "license": { "id": "MIT" } }]
+    },
+    {
+      "type": "library",
+      "name": "Microsoft.Data.Sqlite",
+      "version": "9.0.2",
+      "purl": "pkg:nuget/Microsoft.Data.Sqlite@9.0.2",
+      "licenses": [{ "license": { "id": "MIT" } }]
+    },
+    {
+      "type": "application",
+      "name": "CPython-Standalone",
+      "version": "3.12.14-20260814",
+      "purl": "pkg:generic/cpython-standalone@3.12.14-20260814",
+      "hashes": [{ "alg": "SHA-256", "content": "7330282b47cd43a66b702d39078d2e5a88e580cee351d82f95045f21f5ee042a" }],
+      "licenses": [{ "license": { "id": "MPL-2.0" } }, { "license": { "id": "PSF-2.0" } }]
+    },
+    {
+      "type": "library",
+      "name": "opencv-python-headless",
+      "version": "4.10.0.84",
+      "purl": "pkg:pypi/opencv-python-headless@4.10.0.84",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }]
+    },
+    {
+      "type": "library",
+      "name": "fastapi",
+      "version": "0.115.0",
+      "purl": "pkg:pypi/fastapi@0.115.0",
+      "licenses": [{ "license": { "id": "MIT" } }]
+    },
+    {
+      "type": "library",
+      "name": "pydantic",
+      "version": "2.8.2",
+      "purl": "pkg:pypi/pydantic@2.8.2",
+      "licenses": [{ "license": { "id": "MIT" } }]
+    },
+    {
+      "type": "library",
+      "name": "uvicorn",
+      "version": "0.30.6",
+      "purl": "pkg:pypi/uvicorn@0.30.6",
+      "licenses": [{ "license": { "id": "BSD-3-Clause" } }]
+    },
+    {
+      "type": "application",
+      "name": "Darktable",
+      "version": "5.6.0",
+      "purl": "pkg:generic/darktable@5.6.0",
+      "hashes": [{ "alg": "SHA-256", "content": "b42989195dfff44540c0b767b407987329ca99853612304cbbf14c48d1d3f803" }],
+      "licenses": [{ "license": { "id": "GPL-3.0-or-later" } }]
+    },
+    {
+      "type": "application",
+      "name": "ComfyUI",
+      "version": "0.3.31",
+      "purl": "pkg:github/comfyanonymous/ComfyUI@refs/tags/v0.3.31",
+      "hashes": [{ "alg": "SHA-256", "content": "ac0a1475569775ee8db459709bcdebb5f5614b8d04a7ad246cff78095ff91cfe" }],
+      "licenses": [{ "license": { "id": "GPL-3.0" } }]
+    },
+    {
+      "type": "file",
+      "name": "rf-detr-medium",
+      "version": "1b5b672",
+      "purl": "pkg:generic/rf-detr-medium@1b5b672",
+      "hashes": [{ "alg": "SHA-256", "content": "e52098adc46969794fbdd16e0548a62b81ba0c0f4b14392676edba50be9a69f6" }],
+      "licenses": [{ "license": { "id": "Apache-2.0" } }]
+    },
+    {
+      "type": "file",
+      "name": "mediapipe-face-landmarker",
+      "version": "1.0",
+      "purl": "pkg:generic/mediapipe-face-landmarker@1.0",
+      "hashes": [{ "alg": "SHA-256", "content": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff" }],
+      "licenses": [{ "license": { "id": "Apache-2.0" } }]
+    },
+    {
+      "type": "file",
+      "name": "mediapipe-pose-landmarker",
+      "version": "1.0",
+      "purl": "pkg:generic/mediapipe-pose-landmarker@1.0",
+      "hashes": [{ "alg": "SHA-256", "content": "5134a3aad27a58b93da0088d431f366da362b44e3ccfbe3462b3827a839011b1" }],
+      "licenses": [{ "license": { "id": "Apache-2.0" } }]
+    },
+    {
+      "type": "file",
+      "name": "Florence-2-large",
+      "version": "4271c66",
+      "purl": "pkg:generic/florence2-large@4271c66",
+      "hashes": [{ "alg": "SHA-256", "content": "7715423d6549bf1e71188bdd84f4ac960cc0597886af24a5ef7b66f128660685" }],
+      "licenses": [{ "license": { "id": "MIT" } }]
+    },
+    {
+      "type": "file",
+      "name": "dinov2-vits14",
+      "version": "1.0",
+      "purl": "pkg:generic/dinov2-vits14@1.0",
+      "hashes": [{ "alg": "SHA-256", "content": "b938bf1bc15cd2ec0feacfe3a1bb553fe8ea9ca46a7e1d8d00217f29aef60cd9" }],
+      "licenses": [{ "license": { "id": "Apache-2.0" } }]
+    },
+    {
+      "type": "file",
+      "name": "qwen3-vl-2b-instruct",
+      "version": "8964489",
+      "purl": "pkg:generic/qwen3-vl-2b-instruct@8964489",
+      "hashes": [{ "alg": "SHA-256", "content": "7de1838c87a5349b016c26a1c3f7d2bc400a3d485f95ef39a7059ffd734977a0" }],
+      "licenses": [{ "license": { "id": "Apache-2.0" } }]
+    }
+  ]
+}

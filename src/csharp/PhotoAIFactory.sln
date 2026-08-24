@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAIFactory.Simulation.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAIFactory.App", "PhotoAIFactory.App\PhotoAIFactory.App.csproj", "{1FE895EA-1C4D-420F-B1E9-F99361F4D76B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAIFactory.Installer", "PhotoAIFactory.Installer\PhotoAIFactory.Installer.csproj", "{519985A7-0A11-4D40-9927-A4EB75FB12D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -139,6 +141,18 @@ Global
 		{1FE895EA-1C4D-420F-B1E9-F99361F4D76B}.Release|x64.Build.0 = Release|x64
 		{1FE895EA-1C4D-420F-B1E9-F99361F4D76B}.Release|x86.ActiveCfg = Release|x64
 		{1FE895EA-1C4D-420F-B1E9-F99361F4D76B}.Release|x86.Build.0 = Release|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Debug|Any CPU.Build.0 = Debug|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Debug|x64.ActiveCfg = Debug|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Debug|x64.Build.0 = Debug|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Debug|x86.ActiveCfg = Debug|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Debug|x86.Build.0 = Debug|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Release|Any CPU.ActiveCfg = Release|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Release|Any CPU.Build.0 = Release|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Release|x64.ActiveCfg = Release|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Release|x64.Build.0 = Release|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Release|x86.ActiveCfg = Release|x64
+		{519985A7-0A11-4D40-9927-A4EB75FB12D3}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

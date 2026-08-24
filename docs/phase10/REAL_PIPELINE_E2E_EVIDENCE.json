@@ -1,0 +1,305 @@
+{
+  "evidence_schema_version": 4,
+  "generated_at_utc": "2026-08-24T04:17:07.8045621\u002B00:00",
+  "assembly_identity_audit": {
+    "installed_directory": "C:\\Users\\Pc\\AppData\\Local\\Programs\\PhotoAIFactory",
+    "audit_passed": true,
+    "assemblies": {
+      "PhotoAIFactory.Application.dll": {
+        "installed_sha256": "61282c6f16cdc143fc5816fbc8de1ed7b5c48886f77ad75bbaf57cbfbbbdf661",
+        "testhost_sha256": "61282c6f16cdc143fc5816fbc8de1ed7b5c48886f77ad75bbaf57cbfbbbdf661",
+        "byte_identical": true
+      },
+      "PhotoAIFactory.Infrastructure.dll": {
+        "installed_sha256": "78a8d0373402e3fd58a4cd8be1db9d87b1d760cce6d9de34ab48e03a6c77a603",
+        "testhost_sha256": "78a8d0373402e3fd58a4cd8be1db9d87b1d760cce6d9de34ab48e03a6c77a603",
+        "byte_identical": true
+      },
+      "PhotoAIFactory.Domain.dll": {
+        "installed_sha256": "3a2a1e49b7d9c214cd4271cc95b26d8307a57d264034b5d0a1a09f3551f60ec0",
+        "testhost_sha256": "3a2a1e49b7d9c214cd4271cc95b26d8307a57d264034b5d0a1a09f3551f60ec0",
+        "byte_identical": true
+      },
+      "PhotoAIFactory.Contracts.dll": {
+        "installed_sha256": "9e1f317603e6ab5b3cf15a34cf334693890721587b017f87b0fe8ad9d3179fad",
+        "testhost_sha256": "9e1f317603e6ab5b3cf15a34cf334693890721587b017f87b0fe8ad9d3179fad",
+        "byte_identical": true
+      }
+    }
+  },
+  "rfdetr_artifact_audit": {
+    "model_directory": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\models\\rf-detr-medium",
+    "weight_file": "model.safetensors",
+    "weight_sha256": "e52098adc46969794fbdd16e0548a62b81ba0c0f4b14392676edba50be9a69f6",
+    "artifact_set_sha256": "01fad58a735ccf51b46cd731ba60fd0929715be6004843f347e2821cae94ac00",
+    "weight_verified": true,
+    "set_verified": true
+  },
+  "jpeg_product_e2e": {
+    "project_id": "749a82c548834a34853ea9a153223584",
+    "photo_id": "1457841d7212432384204842bfb2ff08",
+    "job_id": "ec767a7873334a9a82ff6276c10a155b",
+    "final_job_state": "COMPLETED",
+    "created_at_utc": "2026-08-24T04:16:22.9666749\u002B00:00",
+    "updated_at_utc": "2026-08-24T04:16:47.7708212\u002B00:00",
+    "checkpoints": [
+      "ANALYSIS_COMPLETE",
+      "PRESELECTION_COMPLETE",
+      "BASIC_REVEAL_COMPLETE",
+      "QA_COMPLETE",
+      "OUTPUT_PUBLISHED"
+    ],
+    "durable_checkpoints": [
+      {
+        "checkpoint_id": "12394256fe984b9aa30e1948818b4c68",
+        "checkpoint": "ANALYSIS_COMPLETE",
+        "attempt_id": "b6e57e686b2142df8a3c62498c2477bf",
+        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "source": "table: job_checkpoints"
+      },
+      {
+        "checkpoint_id": "4155904b1686475f87c57da2f726e68e",
+        "checkpoint": "PRESELECTION_COMPLETE",
+        "attempt_id": "b6e57e686b2142df8a3c62498c2477bf",
+        "created_at_utc": "2026-08-24T04:16:32.5176970\u002B00:00",
+        "source": "table: job_checkpoints"
+      },
+      {
+        "checkpoint_id": "7b7dbba25c2048daad55dccdf080cdf5",
+        "checkpoint": "BASIC_REVEAL_COMPLETE",
+        "attempt_id": "20cec24f301943b9b20041758c2e0ce0",
+        "created_at_utc": "2026-08-24T04:16:47.5567332\u002B00:00",
+        "source": "table: job_checkpoints"
+      },
+      {
+        "checkpoint_id": "8835b5a5e424408898e1b0dac7ecc957",
+        "checkpoint": "QA_COMPLETE",
+        "attempt_id": "qa-3614ed62",
+        "created_at_utc": "2026-08-24T04:16:47.6982708\u002B00:00",
+        "source": "table: job_checkpoints"
+      },
+      {
+        "checkpoint_id": "b744ce5659c342cab4bb7c7497ba1c5d",
+        "checkpoint": "OUTPUT_PUBLISHED",
+        "attempt_id": "review-approve",
+        "created_at_utc": "2026-08-24T04:16:47.7636849\u002B00:00",
+        "source": "table: job_checkpoints"
+      }
+    ],
+    "model_executions": [
+      {
+        "model_id": "opencv",
+        "model_version": "5.0.0",
+        "artifact_set_sha256": null,
+        "timings_json": "{\u0022inference_ms\u0022:102.16500000387896}",
+        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "source": "table: model_executions"
+      },
+      {
+        "model_id": "rf-detr-medium",
+        "model_version": "5.15.0",
+        "artifact_set_sha256": "01fad58a735ccf51b46cd731ba60fd0929715be6004843f347e2821cae94ac00",
+        "timings_json": "{\u0022inference_ms\u0022:444.37150000885595}",
+        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "source": "table: model_executions"
+      },
+      {
+        "model_id": "mediapipe-face-landmarker",
+        "model_version": "1.0.1",
+        "artifact_set_sha256": "235e67766c5870e91d7586804795ed13b6a4a31b39fa6dbc3a5d2d50dc909a3e",
+        "timings_json": "{\u0022inference_ms\u0022:51.41960000037216}",
+        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "source": "table: model_executions"
+      },
+      {
+        "model_id": "mediapipe-pose-landmarker-full",
+        "model_version": "1.0.1",
+        "artifact_set_sha256": "9ca9f14b12cb4b160f8b6eaac8fef10292cdd91584aeea64b2cf59a21cca434b",
+        "timings_json": "{\u0022inference_ms\u0022:83.83779998985119}",
+        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "source": "table: model_executions"
+      },
+      {
+        "model_id": "dinov2-vits14-standard",
+        "model_version": "5.15.0",
+        "artifact_set_sha256": "e00f294bcd46293002e3c56427b26c4d9cfc72a0c026be42eef51d5f6a3657f1",
+        "timings_json": "{\u0022inference_ms\u0022:204.82890000857878}",
+        "created_at_utc": "2026-08-24T04:16:32.4816277\u002B00:00",
+        "source": "table: model_executions"
+      }
+    ],
+    "publication": {
+      "publication_id": "701d315b6f6d4bfcae30e135218d646c",
+      "destination_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_7ac9c904500441a8b348423300d5031d\\output\\FINAL\\basic-reveal.jpg",
+      "sha256": "0dc0a958e5543f78eb7d5ebc27be74083e60914b01b9065b7bebe5140cec6e85",
+      "size_bytes": 1149900,
+      "width": 3000,
+      "height": 2000,
+      "history_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_7ac9c904500441a8b348423300d5031d\\output\\.photo-ai-factory\\history\\1457841d7212432384204842bfb2ff08\\ec767a7873334a9a82ff6276c10a155b\\final_history.json",
+      "published_at_utc": "2026-08-24T04:16:47.7473749\u002B00:00",
+      "source": "table: publications"
+    },
+    "published_output_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_7ac9c904500441a8b348423300d5031d\\output\\FINAL\\basic-reveal.jpg",
+    "published_output_sha256": "0dc0a958e5543f78eb7d5ebc27be74083e60914b01b9065b7bebe5140cec6e85",
+    "qa_decision": {
+      "qa_result_id": "6d1ec42a5b004e7db719b464298b3217",
+      "decision": "QA_REVIEW",
+      "result_json": "{\u0022schema_version\u0022:1,\u0022decision\u0022:\u0022QA_REVIEW\u0022,\u0022findings\u0022:[{\u0022code\u0022:\u0022SHADOW_CLIPPING\u0022,\u0022severity\u0022:\u0022review\u0022,\u0022message\u0022:\u0022High shadow clipping\u0022,\u0022score\u0022:0.08948283333333333}],\u0022suggested_correction\u0022:null,\u0022technical\u0022:{\u0022width\u0022:3000,\u0022height\u0022:2000,\u0022megapixels\u0022:6.0,\u0022luma\u0022:{\u0022p01\u0022:0.0,\u0022p50\u0022:48.0,\u0022p99\u0022:229.0,\u0022mean\u0022:62.63035583496094},\u0022clipping\u0022:{\u0022black_fraction\u0022:0.08948283333333333,\u0022white_fraction\u0022:0.00007816666666666666},\u0022sharpness\u0022:{\u0022laplacian_variance\u0022:203.53146549856865},\u0022channel_means\u0022:{\u0022r\u0022:59.914719000000005,\u0022g\u0022:55.678499333333335,\u0022b\u0022:105.72941300000001}},\u0022calibration_status\u0022:\u0022BASELINE_NOT_CALIBRATED\u0022}",
+      "input_path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\work\\749a82c548834a34853ea9a153223584\\ec767a7873334a9a82ff6276c10a155b\\20cec24f301943b9b20041758c2e0ce0\\reveal\\basic-reveal.jpg",
+      "input_sha256": "0dc0a958e5543f78eb7d5ebc27be74083e60914b01b9065b7bebe5140cec6e85",
+      "created_at_utc": "2026-08-24T04:16:47.6793604\u002B00:00",
+      "source": "table: qa_results"
+    },
+    "fixture_type": "REAL_PHOTOGRAPHIC_JPEG",
+    "fixture_name": "_DSC1200.JPG",
+    "fixture_size_bytes": 2008316,
+    "input_sha256_before": "e2163f2571c69afc375e72624b59811ee04b7ea2d231b6d0045941494d9759e9",
+    "input_sha256_after": "e2163f2571c69afc375e72624b59811ee04b7ea2d231b6d0045941494d9759e9",
+    "immutability_verified": true,
+    "status": "JPEG_PRODUCT_E2E_PASS"
+  },
+  "raw_product_e2e": {
+    "project_id": "e506fdf1dbbc4963b9aaf61c5650019f",
+    "photo_id": "9c4593a908354ed596021cffd765478d",
+    "job_id": "692bdd5464fc48f6ae042af3f8561d47",
+    "final_job_state": "COMPLETED",
+    "created_at_utc": "2026-08-24T04:16:48.8383895\u002B00:00",
+    "updated_at_utc": "2026-08-24T04:17:07.7430370\u002B00:00",
+    "checkpoints": [
+      "ANALYSIS_COMPLETE",
+      "PRESELECTION_COMPLETE",
+      "BASIC_REVEAL_COMPLETE",
+      "QA_COMPLETE",
+      "OUTPUT_PUBLISHED"
+    ],
+    "durable_checkpoints": [
+      {
+        "checkpoint_id": "35759e759e5244a1884c08fd5bba906a",
+        "checkpoint": "ANALYSIS_COMPLETE",
+        "attempt_id": "dc07f817f59644d0bd98de298213b633",
+        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "source": "table: job_checkpoints"
+      },
+      {
+        "checkpoint_id": "a55f1f0c39634b3999f1bdf77d8ff00c",
+        "checkpoint": "PRESELECTION_COMPLETE",
+        "attempt_id": "dc07f817f59644d0bd98de298213b633",
+        "created_at_utc": "2026-08-24T04:16:52.2847826\u002B00:00",
+        "source": "table: job_checkpoints"
+      },
+      {
+        "checkpoint_id": "7e0baa34e6d0472caf55e34fa6f3362b",
+        "checkpoint": "BASIC_REVEAL_COMPLETE",
+        "attempt_id": "09cf9b8c58d84498b4eb471b1b161013",
+        "created_at_utc": "2026-08-24T04:17:07.4680077\u002B00:00",
+        "source": "table: job_checkpoints"
+      },
+      {
+        "checkpoint_id": "c3aec573f129456b8f13b4b5710b7ede",
+        "checkpoint": "QA_COMPLETE",
+        "attempt_id": "qa-1676590a",
+        "created_at_utc": "2026-08-24T04:17:07.6771063\u002B00:00",
+        "source": "table: job_checkpoints"
+      },
+      {
+        "checkpoint_id": "0e946dd1053944e6bf3c0c9538a57b20",
+        "checkpoint": "OUTPUT_PUBLISHED",
+        "attempt_id": "review-approve",
+        "created_at_utc": "2026-08-24T04:17:07.7345369\u002B00:00",
+        "source": "table: job_checkpoints"
+      }
+    ],
+    "model_executions": [
+      {
+        "model_id": "opencv",
+        "model_version": "5.0.0",
+        "artifact_set_sha256": null,
+        "timings_json": "{\u0022inference_ms\u0022:41.16080001404043}",
+        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "source": "table: model_executions"
+      },
+      {
+        "model_id": "rf-detr-medium",
+        "model_version": "5.15.0",
+        "artifact_set_sha256": "01fad58a735ccf51b46cd731ba60fd0929715be6004843f347e2821cae94ac00",
+        "timings_json": "{\u0022inference_ms\u0022:56.51580000994727}",
+        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "source": "table: model_executions"
+      },
+      {
+        "model_id": "mediapipe-face-landmarker",
+        "model_version": "1.0.1",
+        "artifact_set_sha256": "235e67766c5870e91d7586804795ed13b6a4a31b39fa6dbc3a5d2d50dc909a3e",
+        "timings_json": "{\u0022inference_ms\u0022:23.491400002967566}",
+        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "source": "table: model_executions"
+      },
+      {
+        "model_id": "dinov2-vits14-standard",
+        "model_version": "5.15.0",
+        "artifact_set_sha256": "e00f294bcd46293002e3c56427b26c4d9cfc72a0c026be42eef51d5f6a3657f1",
+        "timings_json": "{\u0022inference_ms\u0022:40.19780000089668}",
+        "created_at_utc": "2026-08-24T04:16:52.2604709\u002B00:00",
+        "source": "table: model_executions"
+      }
+    ],
+    "publication": {
+      "publication_id": "e6fa46613a744b4697075e37b6bc3be1",
+      "destination_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_8ae6aaa536dd4622a59a3c322775006a\\output\\FINAL\\basic-reveal.jpg",
+      "sha256": "7c4c98d0f32d0d8f50fce16d9b23f67b2476b2fd164db2288ed85d51473f5832",
+      "size_bytes": 1508507,
+      "width": 4264,
+      "height": 2848,
+      "history_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_8ae6aaa536dd4622a59a3c322775006a\\output\\.photo-ai-factory\\history\\9c4593a908354ed596021cffd765478d\\692bdd5464fc48f6ae042af3f8561d47\\final_history.json",
+      "published_at_utc": "2026-08-24T04:17:07.7221245\u002B00:00",
+      "source": "table: publications"
+    },
+    "published_output_path": "C:\\Users\\Pc\\AppData\\Local\\Temp\\PAF_TrueHostE2E_8ae6aaa536dd4622a59a3c322775006a\\output\\FINAL\\basic-reveal.jpg",
+    "published_output_sha256": "7c4c98d0f32d0d8f50fce16d9b23f67b2476b2fd164db2288ed85d51473f5832",
+    "qa_decision": {
+      "qa_result_id": "33ecc1e347de4d64a75a5b2e956b3c63",
+      "decision": "QA_REVIEW",
+      "result_json": "{\u0022schema_version\u0022:1,\u0022decision\u0022:\u0022QA_REVIEW\u0022,\u0022findings\u0022:[{\u0022code\u0022:\u0022LOW_SHARPNESS\u0022,\u0022severity\u0022:\u0022review\u0022,\u0022message\u0022:\u0022Low technical sharpness\u0022,\u0022score\u0022:28.11653935042637},{\u0022code\u0022:\u0022SHADOW_CLIPPING\u0022,\u0022severity\u0022:\u0022review\u0022,\u0022message\u0022:\u0022High shadow clipping\u0022,\u0022score\u0022:0.11503102140734026}],\u0022suggested_correction\u0022:null,\u0022technical\u0022:{\u0022width\u0022:4264,\u0022height\u0022:2848,\u0022megapixels\u0022:12.144,\u0022luma\u0022:{\u0022p01\u0022:2.0,\u0022p50\u0022:13.0,\u0022p99\u0022:211.0,\u0022mean\u0022:54.926414489746094},\u0022clipping\u0022:{\u0022black_fraction\u0022:0.11503102140734026,\u0022white_fraction\u0022:0.0},\u0022sharpness\u0022:{\u0022laplacian_variance\u0022:28.11653935042637},\u0022channel_means\u0022:{\u0022r\u0022:54.69432788817274,\u0022g\u0022:54.79080329568691,\u0022b\u0022:56.47401685393259}},\u0022calibration_status\u0022:\u0022BASELINE_NOT_CALIBRATED\u0022}",
+      "input_path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\work\\e506fdf1dbbc4963b9aaf61c5650019f\\692bdd5464fc48f6ae042af3f8561d47\\09cf9b8c58d84498b4eb471b1b161013\\reveal\\basic-reveal.jpg",
+      "input_sha256": "7c4c98d0f32d0d8f50fce16d9b23f67b2476b2fd164db2288ed85d51473f5832",
+      "created_at_utc": "2026-08-24T04:17:07.6596221\u002B00:00",
+      "source": "table: qa_results"
+    },
+    "fixture_type": "REAL_SONY_A7IV_ARW",
+    "fixture_name": "DSC03593.ARW",
+    "fixture_size_bytes": 25616384,
+    "input_sha256_before": "83e8c4647600e1c8d8da2c42fc6356b2a6086e9064be14bfb8f1686470017793",
+    "input_sha256_after": "83e8c4647600e1c8d8da2c42fc6356b2a6086e9064be14bfb8f1686470017793",
+    "immutability_verified": true,
+    "status": "RAW_PRODUCT_E2E_PASS"
+  },
+  "raw_jpeg_product_e2e": {
+    "status": "NOT_RUN_NO_APPROVED_PAIR",
+    "notes": "Real JPEG and real Sony RAW verified individually on disk."
+  },
+  "rfdetr_execution": {
+    "model_id": "model-rfdetr-medium",
+    "expected_weight_sha256": "e52098adc46969794fbdd16e0548a62b81ba0c0f4b14392676edba50be9a69f6",
+    "actual_weight_sha256": "e52098adc46969794fbdd16e0548a62b81ba0c0f4b14392676edba50be9a69f6",
+    "expected_artifact_set_sha256": "01fad58a735ccf51b46cd731ba60fd0929715be6004843f347e2821cae94ac00",
+    "actual_artifact_set_sha256": "01fad58a735ccf51b46cd731ba60fd0929715be6004843f347e2821cae94ac00",
+    "execution_verified": true,
+    "status": "EXECUTION_VERIFIED"
+  },
+  "darktable_execution": {
+    "executable_path": "C:\\Program Files\\darktable\\bin\\darktable-cli.exe",
+    "version": "5.6.0",
+    "execution_verified": true,
+    "status": "EXECUTION_VERIFIED"
+  },
+  "negative_evidence_tests": {
+    "negative_1_altered_sha": "PASSED_CAUGHT_CORRUPTION",
+    "negative_2_missing_checkpoint": "PASSED_CAUGHT_MISSING_CHECKPOINT",
+    "negative_3_incomplete_state": "PASSED_CAUGHT_INCOMPLETE_STATE",
+    "negative_4_missing_history": "PASSED_CAUGHT_MISSING_HISTORY",
+    "negative_5_missing_rfdetr": "PASSED_CAUGHT_MISSING_RFDETR",
+    "negative_6_wrong_rfdetr_sha": "PASSED_CAUGHT_WRONG_SHA",
+    "all_negative_tests_passed": true
+  },
+  "overall_status": "ALL_GATES_PASSED"
+}

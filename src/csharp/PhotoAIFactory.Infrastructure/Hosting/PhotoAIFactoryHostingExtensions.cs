@@ -17,6 +17,7 @@ using PhotoAIFactory.Application.Cleanup;
 using PhotoAIFactory.Application.Runtime;
 using PhotoAIFactory.Application.UI;
 using PhotoAIFactory.Application.UI.ViewModels;
+using PhotoAIFactory.Application.Provisioning;
 using PhotoAIFactory.Infrastructure.Analysis;
 using PhotoAIFactory.Infrastructure.Backup;
 using PhotoAIFactory.Infrastructure.Cleanup;
@@ -29,6 +30,7 @@ using PhotoAIFactory.Infrastructure.Persistence.Processing;
 using PhotoAIFactory.Infrastructure.Persistence.Qa;
 using PhotoAIFactory.Infrastructure.Persistence.Repositories;
 using PhotoAIFactory.Infrastructure.Processing;
+using PhotoAIFactory.Infrastructure.Provisioning;
 using PhotoAIFactory.Infrastructure.Qa;
 using PhotoAIFactory.Infrastructure.Recovery;
 using PhotoAIFactory.Infrastructure.Storage;
@@ -281,11 +283,21 @@ public static class PhotoAIFactoryHostingExtensions
             IErrorLogQueryService,
             PhotoAIFactory.Infrastructure.UI.ErrorLogQueryService>();
         builder.Services.AddSingleton<
-            IThumbnailService,
-            PhotoAIFactory.Infrastructure.UI.ThumbnailService>();
+            IThumbnailService>(sp =>
+                OperatingSystem.IsWindows()
+                    ? new PhotoAIFactory.Infrastructure.UI.ThumbnailService()
+                    : null!);
         builder.Services.AddSingleton<
             IAppPreferencesService,
             PhotoAIFactory.Infrastructure.UI.AppPreferencesService>();
+
+        // Phase 10: Component Provisioning & Release Management
+        builder.Services.AddSingleton<
+            IReleaseManifestService,
+            ReleaseManifestVerifier>();
+        builder.Services.AddSingleton<
+            IComponentProvisioner,
+            ComponentProvisioningService>();
 
         builder.Services.AddSingleton<
             IProjectContext,

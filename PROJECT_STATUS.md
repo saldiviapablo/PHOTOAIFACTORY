@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 **Baseline:** 2026-08-12  
-**Última actualización:** 2026-08-23
-**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 5 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 6 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 7 CLOSED / GO — PHASE 8 CLOSED / GO — PHASE 9 UX FINAL CLOSED / GO
+**Última actualización:** 2026-08-24
+**Estado:** PHASE 0 CLOSED / GO — PHASE 1 FOUNDATION CLOSED / GO — PHASE 2 INGESTION CLOSED / GO — PHASE 3 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 4 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 5 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 6 CLOSED / GO WITH DOCUMENTED LIMITATIONS — PHASE 7 CLOSED / GO — PHASE 8 CLOSED / GO — PHASE 9 UX FINAL CLOSED / GO — PHASE 10 PACKAGING & RELEASE ENGINEERING CLOSED / GO — V1 ENGINEERING RC VALIDATED
 
 ## Documentos congelados como baseline
 
@@ -235,9 +235,62 @@ Informe: `docs/phase4/PHASE4_BASIC_REVEAL_REPORT.md`.
 - git diff --check limpio.
 - Informes: `docs/phase9/PHASE9_UX_IMPLEMENTATION_REPORT.md` y `docs/phase9/PHASE9_UX_TEST_EVIDENCE.md`.
 
-## Lo siguiente
+## Phase 10 Packaging / Deployment / Release Engineering
+
+- Phase 10 — Packaging / Deployment / Release Engineering: CLOSED / GO.
+- V1 Engineering RC: VALIDATED.
+- Estrategia de Deployment (ADR-025): Arquitectura híbrida seleccionada — Aplicación WinUI 3 Self-Contained x64 (.NET 10 + Windows App SDK 2.4.0 Stable) + Aprovisionamiento y gestión desacoplada de componentes externos y modelos de IA en `%LOCALAPPDATA%\PhotoAIFactory\components\` y `models\`: PASS.
+- Auditoría de Licencias y Redistribución (Windows App SDK 2.4.0): Verificación exhaustiva de paquetes NuGet y `license.txt` (Sección 3 - Distributable Code). Redistribución binaria comercial plenamente autorizada sin cláusulas Engineering Preview: PASS.
+- Invariante GPL-3.0 y Aislamiento de Procesos: Darktable (5.6.0) y ComfyUI (v0.33.1) ejecutados exclusivamente como programas externos vía CLI y API loopback. Manifiesto y oferta de código fuente formalizados en `THIRD_PARTY_NOTICES.txt`: PASS.
+- Gestor y Aprovisionador de Componentes (`ComponentProvisioningService`, `ReleaseManifestVerifier`, `ArchiveExtractionHelper`): Preflight de espacio en disco, validación obligatoria dual de hash criptográfico SHA-256 (PayloadSha256 previo a la extracción e InstalledArtifactSha256 post-instalación), extracción segura con protección contra Zip-Slip / Path Traversal, soporte multi-versión side-by-side para reproducibilidad histórica, y reparación atómica de componentes corruptos: PASS.
+- Conservación de Datos del Usuario en Desinstalación (`V1_INSTALL_UNINSTALL_RUNBOOK.md`): Eliminación limpia de binarios de la aplicación preservando estrictamente las bases de datos de proyectos (`project.db`), fotos originales administradas, exportaciones publicadas e historiales de procesamiento: PASS.
+- Integridad de Release y SBOM: Generación de manifiestos inmutables con hashes reales (`release/release-manifest.json`, `release/components.lock.json`), checksums verificados (`release/checksums.txt`) y SBOM CycloneDX 1.5 completo (`release/SBOM/sbom.cyclonedx.json`): PASS.
+- Automatización de Release (`build-release.ps1`, `test-release-install.ps1`): Pipeline determinista de compilación, ejecución de tests, publicación self-contained, escaneo de secretos y validación de firma: PASS.
+- Packaging & Model Provisioning:
+  * Standalone self-contained Setup (`PhotoAIFactory-1.0.0-rc.1-Setup.exe`): Validated.
+  * Embedded application payload: Validated.
+  * Install / uninstall / repair / upgrade lifecycle: Validated.
+  * Component lock + manifest + SBOM: Validated.
+  * Fail-closed checksum verification: Validated.
+  * ModelFileset strategy (Qwen3-VL-2B-Instruct FP8): Validated.
+  * RF-DETR Medium exact artifact & compound set verification: Validated.
+  * Darktable 5.6.0 isolated CLI execution: Validated.
+  * Windows App SDK self-contained deployment: Validated.
+- True Product Host E2E (`test-pipeline-e2e.ps1` & `PhotoAIFactory.TestHost`):
+  * Real Photographic JPEG (`_DSC1200.JPG`, 2,008,316 bytes): PASS.
+  * Real Sony Alpha RAW (`DSC03593.ARW`, 25,616,384 bytes): PASS.
+  * RF-DETR Model Execution & Telemetry Correlation: PASS.
+  * MediaPipe Face & Pose Landmarkers: PASS.
+  * DINOv2 Visual Features: PASS.
+  * Darktable 5.6.0 CLI Execution via Host Orchestrator: PASS.
+  * Checkpoints (`ANALYSIS_COMPLETE`, `PRESELECTION_COMPLETE`, `BASIC_REVEAL_COMPLETE`, `QA_COMPLETE`, `OUTPUT_PUBLISHED`): PASS.
+  * Final Job State = COMPLETED: PASS.
+  * Durable History Artifacts (`final_history.json`): PASS.
+  * Source Fixtures Immutability (SHA-256 before == after): PASS.
+  * Assembly Identity Audit (Installed vs TestHost): PASS (Byte-Identical).
+  * Strict Real Validator + 6 Negative Adversarial Tests: PASS.
+- Regression Verification:
+  * Release Build: 0 errors, 0 warnings.
+  * Foundation Tests: 112 / 112 PASS.
+  * Simulation Tests: 174 / 174 PASS.
+  * Python Worker Tests: 37 / 37 PASS.
+  * Total Automated Tests: 323 / 323 PASS.
+  * Vulnerabilities: 0.
+  * `uv pip check`: PASS (25 packages compatible).
+  * `git diff --check`: Clean (0 errors).
+- Limitations & Release Status:
+  * Semantic FULL: `FULL_PROVISIONING_VERIFIED`.
+  * RAW+JPEG final Phase 10 rerun: `NOT_RUN_NO_APPROVED_PAIR`.
+  * Code Signing: `PRODUCTION_SIGNING_PENDING`.
+  * Distribution: `NOT FOR PUBLIC DISTRIBUTION`.
+- Informes: `docs/phase10/PHASE10_PACKAGING_RELEASE_REPORT.md`, `docs/phase10/PHASE10_CLEAN_MACHINE_EVIDENCE.md` y `docs/phase10/PRODUCT_HOST_E2E_EVIDENCE.json`.
+
+## Decisión de Cierre
 
 ```text
-PHASE 9 — UX FINAL / WINUI 3 = CLOSED / GO
-PHASE 10 — PACKAGING / DEPLOYMENT = NEXT / NOT STARTED
+PHASE 10 — PACKAGING / DEPLOYMENT / RELEASE ENGINEERING = CLOSED / GO
+PHOTO AI FACTORY V1 ENGINEERING RC = VALIDATED
+
+PRODUCTION_SIGNING_PENDING
+NOT FOR PUBLIC DISTRIBUTION
 ```

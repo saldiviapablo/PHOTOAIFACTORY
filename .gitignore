@@ -53,6 +53,7 @@ venv/
 models/
 work/
 artifacts/
+release/artifacts/
 outputs/
 output/
 logs/

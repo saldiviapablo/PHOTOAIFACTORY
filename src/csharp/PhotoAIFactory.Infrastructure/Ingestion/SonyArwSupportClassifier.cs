@@ -10,7 +10,7 @@ namespace PhotoAIFactory.Infrastructure.Ingestion;
 /// </summary>
 public sealed class SonyArwSupportClassifier : IRawSupportClassifier
 {
-    private const int FullSizeMinimumLongEdge = 6000;
+    private const int FullSizeMinimumLongEdge = 4000;
 
     public Task<RawSupportInfo> ClassifyAsync(
         string path,

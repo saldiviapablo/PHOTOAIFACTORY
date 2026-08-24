@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "version": "1.0.0-rc.1",
+  "name": "PHOTO AI FACTORY V1 Release Candidate 1",
+  "commit": "f441c2aeda4d1e5997daf6b90222500b2047742f",
+  "built_at_utc": "2026-08-23T21:28:00Z",
+  "target_os": "windows-x64",
+  "target_architecture": "x64",
+  "signing_status": "PRODUCTION_SIGNING_PENDING",
+  "components_lock_sha256": "62bc6a1b5b0c6cf523e50d1bea92f15c354aa187d8ed8a6eb64de13f885dca08",
+  "is_production_ready": false,
+  "included_components": [
+    "photoaifactory-app",
+    "windowsappsdk-runtime",
+    "python-runtime-isolated",
+    "python-ai-worker",
+    "model-rfdetr-medium",
+    "model-florence2-large",
+    "model-mediapipe-face",
+    "model-mediapipe-pose",
+    "model-dinov2-vits14"
+  ]
+}
