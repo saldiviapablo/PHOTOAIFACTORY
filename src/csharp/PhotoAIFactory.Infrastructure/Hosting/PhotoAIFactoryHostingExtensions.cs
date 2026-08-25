@@ -34,6 +34,7 @@ using PhotoAIFactory.Infrastructure.Provisioning;
 using PhotoAIFactory.Infrastructure.Qa;
 using PhotoAIFactory.Infrastructure.Recovery;
 using PhotoAIFactory.Infrastructure.Storage;
+using PhotoAIFactory.Infrastructure.UI;
 
 namespace PhotoAIFactory.Infrastructure.Hosting;
 
@@ -216,6 +217,11 @@ public static class PhotoAIFactoryHostingExtensions
         builder.Services.AddTransient<QaOrchestrator>();
         builder.Services.AddTransient<ProjectQaManager>();
 
+        // Production Autonomous Pipeline Queue Dispatcher
+        builder.Services.AddSingleton<QueueDispatcherService>();
+        builder.Services.AddSingleton<IHostedService>(
+            services => services.GetRequiredService<QueueDispatcherService>());
+
         // Phase 8: Recovery, Storage, Health, Backup, Restore, Cleanup
         builder.Services.AddSingleton<
             IRecoveryCoordinator,
@@ -303,9 +309,18 @@ public static class PhotoAIFactoryHostingExtensions
             IProjectContext,
             ProjectContext>();
 
+        builder.Services.AddSingleton<
+            ProjectRuntimeCoordinator>();
+
         builder.Services.TryAddSingleton<
             INavigationService,
             NullNavigationService>();
+        builder.Services.TryAddSingleton<
+            IFolderPickerService,
+            NullFolderPickerService>();
+        builder.Services.TryAddSingleton<
+            IWindowService,
+            NullWindowService>();
 
         // Phase 9 ViewModels
         builder.Services.AddTransient<ProjectsViewModel>();

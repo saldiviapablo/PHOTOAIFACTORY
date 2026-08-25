@@ -186,7 +186,7 @@ public sealed class ProjectConfigViewModel : ObservableObject
         {
             var pId = projectContext.ActiveProjectId!;
             var store = storeFactory.Open(pId);
-            var projectWrapper = await store.GetAsync(pId).ConfigureAwait(false);
+            var projectWrapper = await store.GetAsync(pId);
             if (projectWrapper is not null)
             {
                 CurrentVersion = projectWrapper.LatestConfig;
@@ -265,7 +265,7 @@ public sealed class ProjectConfigViewModel : ObservableObject
                 currentConfig?.AssociationWindowSeconds ?? 5);
 
             var opId = Guid.NewGuid().ToString("N");
-            var result = await configService.ApplyAsync(pId, newConfig, currentVersion?.Id ?? string.Empty, opId).ConfigureAwait(false);
+            var result = await configService.ApplyAsync(pId, newConfig, currentVersion?.Id ?? string.Empty, opId);
             if (result.Status == ConfigChangeStatus.Created && result.ConfigVersion is not null)
             {
                 CurrentVersion = result.ConfigVersion;

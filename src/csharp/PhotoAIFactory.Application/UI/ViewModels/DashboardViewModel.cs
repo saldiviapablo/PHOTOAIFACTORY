@@ -1,3 +1,4 @@
+using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Application.Projects;
 using PhotoAIFactory.Application.UI;
 using PhotoAIFactory.Domain;
@@ -8,9 +9,9 @@ namespace PhotoAIFactory.Application.UI.ViewModels;
 public sealed class DashboardViewModel : ObservableObject
 {
     private readonly IDashboardQueryService dashboardQuery;
-    private readonly ProjectLifecycleService lifecycleService;
     private readonly IProjectContext projectContext;
     private readonly INavigationService navigationService;
+    private readonly ProjectRuntimeCoordinator runtimeCoordinator;
 
     private DashboardSummaryDto? summary;
     private bool isLoading;
@@ -18,14 +19,14 @@ public sealed class DashboardViewModel : ObservableObject
 
     public DashboardViewModel(
         IDashboardQueryService dashboardQuery,
-        ProjectLifecycleService lifecycleService,
         IProjectContext projectContext,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        ProjectRuntimeCoordinator runtimeCoordinator)
     {
         this.dashboardQuery = dashboardQuery ?? throw new ArgumentNullException(nameof(dashboardQuery));
-        this.lifecycleService = lifecycleService ?? throw new ArgumentNullException(nameof(lifecycleService));
         this.projectContext = projectContext ?? throw new ArgumentNullException(nameof(projectContext));
         this.navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        this.runtimeCoordinator = runtimeCoordinator ?? throw new ArgumentNullException(nameof(runtimeCoordinator));
 
         RefreshCommand = new AsyncRelayCommand(RefreshAsync);
         TogglePauseCommand = new AsyncRelayCommand(TogglePauseAsync, () => projectContext.HasActiveProject);
@@ -44,6 +45,7 @@ public sealed class DashboardViewModel : ObservableObject
                 OnPropertyChanged(nameof(HasSummary));
                 OnPropertyChanged(nameof(IsPaused));
                 OnPropertyChanged(nameof(IsRunning));
+                OnPropertyChanged(nameof(IsDegradedRunning));
                 OnPropertyChanged(nameof(IsBlockedStorage));
                 OnPropertyChanged(nameof(IsComponentUnhealthy));
                 OnPropertyChanged(nameof(PauseButtonText));
@@ -65,17 +67,32 @@ public sealed class DashboardViewModel : ObservableObject
         private set => SetProperty(ref statusMessage, value);
     }
 
-    public bool IsPaused => summary?.State is ProjectState.Paused or ProjectState.PauseRequested;
-    public bool IsRunning => summary?.State is ProjectState.Running;
-    public bool IsBlockedStorage => summary?.State is ProjectState.BlockedStorage;
-    public bool IsComponentUnhealthy => summary?.State is ProjectState.ComponentUnhealthy;
+    public bool IsIngestionUnhealthy =>
+        summary?.ComponentHealth.Any(c =>
+            string.Equals(c.ComponentName, "IngestionRuntime", StringComparison.OrdinalIgnoreCase) &&
+            (c.State == ComponentHealthState.Unhealthy || c.CircuitOpen)) == true;
 
-    public string PauseButtonText => summary?.State switch
+    public bool IsDegradedRunning =>
+        summary?.State == ProjectState.Running &&
+        (IsIngestionUnhealthy || summary?.ComponentHealth.Any(c => c.CircuitOpen || c.State == ComponentHealthState.Unhealthy) == true);
+
+    public bool IsPaused => summary?.State is ProjectState.Paused or ProjectState.PauseRequested;
+    public bool IsRunning => summary?.State is ProjectState.Running && !IsDegradedRunning;
+    public bool IsBlockedStorage => summary?.State is ProjectState.BlockedStorage;
+    public bool IsComponentUnhealthy => summary?.State is ProjectState.ComponentUnhealthy || IsDegradedRunning;
+
+    public string PauseButtonText => summary switch
     {
-        ProjectState.Paused => "Resume Processing",
-        ProjectState.PauseRequested => "Pausing...",
-        ProjectState.BlockedStorage => "Check Storage & Resume",
-        _ => "Pause Processing"
+        null => "Start Processing",
+        { State: ProjectState.Stopped } => "Start Processing",
+        { State: ProjectState.Paused } => "Resume Processing",
+        { State: ProjectState.PauseRequested } => "Pausing...",
+        { State: ProjectState.StopRequested } => "Stopping...",
+        { State: ProjectState.BlockedStorage } => "Check Storage & Resume",
+        { State: ProjectState.ComponentUnhealthy } => "Inspect Components & Resume",
+        { State: ProjectState.Running } when IsDegradedRunning => "Inspect Components & Resume",
+        { State: ProjectState.Running } => "Pause Processing",
+        _ => "Start Processing"
     };
 
     public string AverageTimeString => summary switch
@@ -104,7 +121,7 @@ public sealed class DashboardViewModel : ObservableObject
         try
         {
             var pId = projectContext.ActiveProjectId!;
-            var data = await dashboardQuery.GetDashboardSummaryAsync(pId).ConfigureAwait(false);
+            var data = await dashboardQuery.GetDashboardSummaryAsync(pId);
             Summary = data;
             if (data is not null)
             {
@@ -133,22 +150,24 @@ public sealed class DashboardViewModel : ObservableObject
             var opId = Guid.NewGuid().ToString("N");
             if (summary.State == ProjectState.Paused || summary.State == ProjectState.Stopped)
             {
-                await lifecycleService.StartOrResumeAsync(pId, opId).ConfigureAwait(false);
+                await runtimeCoordinator.StartOrResumeProjectAsync(pId, opId);
             }
-            else if (summary.State == ProjectState.Running)
+            else if (summary.State == ProjectState.Running && !IsDegradedRunning)
             {
-                await lifecycleService.RequestPauseAsync(pId, opId).ConfigureAwait(false);
+                await runtimeCoordinator.PauseProjectAsync(pId, opId);
             }
-            else if (summary.State == ProjectState.BlockedStorage)
+            else if (summary.State == ProjectState.BlockedStorage || summary.State == ProjectState.ComponentUnhealthy || IsDegradedRunning)
             {
-                await lifecycleService.StartOrResumeAsync(pId, opId).ConfigureAwait(false);
+                await runtimeCoordinator.StartOrResumeProjectAsync(pId, opId);
             }
-
-            await RefreshAsync().ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             StatusMessage = $"State transition failed: {ex.Message}";
+        }
+        finally
+        {
+            await RefreshAsync();
         }
     }
 }

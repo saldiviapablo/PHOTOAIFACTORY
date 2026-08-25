@@ -42,14 +42,14 @@ public sealed class ModelsViewModel : ObservableObject
         StatusMessage = null;
         try
         {
-            var componentStatuses = await modelStatusService.GetComponentStatusesAsync().ConfigureAwait(false);
+            var componentStatuses = await modelStatusService.GetComponentStatusesAsync();
             Components.Clear();
             foreach (var c in componentStatuses)
             {
                 Components.Add(c);
             }
 
-            var modelDescriptors = await modelStatusService.GetModelDescriptorsAsync().ConfigureAwait(false);
+            var modelDescriptors = await modelStatusService.GetModelDescriptorsAsync();
             Models.Clear();
             foreach (var m in modelDescriptors)
             {

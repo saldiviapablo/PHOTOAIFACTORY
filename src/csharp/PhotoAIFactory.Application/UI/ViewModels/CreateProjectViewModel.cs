@@ -1,4 +1,5 @@
 using PhotoAIFactory.Application.Projects;
+using PhotoAIFactory.Application.UI;
 using PhotoAIFactory.Domain;
 using PhotoAIFactory.Domain.Projects;
 
@@ -9,6 +10,7 @@ public sealed class CreateProjectViewModel : ObservableObject
     private readonly ProjectService projectService;
     private readonly IProjectContext projectContext;
     private readonly INavigationService navigationService;
+    private readonly IFolderPickerService folderPickerService;
 
     private string projectName = string.Empty;
     private string inputFolder = string.Empty;
@@ -27,14 +29,18 @@ public sealed class CreateProjectViewModel : ObservableObject
     public CreateProjectViewModel(
         ProjectService projectService,
         IProjectContext projectContext,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        IFolderPickerService folderPickerService)
     {
         this.projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
         this.projectContext = projectContext ?? throw new ArgumentNullException(nameof(projectContext));
         this.navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        this.folderPickerService = folderPickerService ?? throw new ArgumentNullException(nameof(folderPickerService));
 
         CreateProjectCommand = new AsyncRelayCommand(CreateProjectAsync, CanCreateProject);
         CancelCommand = new RelayCommand(() => navigationService.NavigateTo("Projects"));
+        BrowseInputCommand = new AsyncRelayCommand(BrowseInputFolderAsync);
+        BrowseOutputCommand = new AsyncRelayCommand(BrowseOutputFolderAsync);
     }
 
     public string ProjectName
@@ -138,6 +144,26 @@ public sealed class CreateProjectViewModel : ObservableObject
 
     public AsyncRelayCommand CreateProjectCommand { get; }
     public RelayCommand CancelCommand { get; }
+    public AsyncRelayCommand BrowseInputCommand { get; }
+    public AsyncRelayCommand BrowseOutputCommand { get; }
+
+    public async Task BrowseInputFolderAsync()
+    {
+        var path = await folderPickerService.PickFolderAsync("Select Input Folder");
+        if (!string.IsNullOrWhiteSpace(path))
+        {
+            InputFolder = path;
+        }
+    }
+
+    public async Task BrowseOutputFolderAsync()
+    {
+        var path = await folderPickerService.PickFolderAsync("Select Output Folder");
+        if (!string.IsNullOrWhiteSpace(path))
+        {
+            OutputFolder = path;
+        }
+    }
 
     public bool CanCreateProject()
     {

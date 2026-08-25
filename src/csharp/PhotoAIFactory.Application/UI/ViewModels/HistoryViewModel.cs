@@ -82,7 +82,7 @@ public sealed class HistoryViewModel : ObservableObject
         try
         {
             var pId = projectContext.ActiveProjectId!;
-            var list = await historyQuery.GetHistoryAsync(pId).ConfigureAwait(false);
+            var list = await historyQuery.GetHistoryAsync(pId);
             HistoryItems.Clear();
             foreach (var item in list)
             {

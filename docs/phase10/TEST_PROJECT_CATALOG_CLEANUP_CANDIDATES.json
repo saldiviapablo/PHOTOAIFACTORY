@@ -1,0 +1,1827 @@
+{
+  "generated_at_utc": "2026-08-25T03:14:20.668329+00:00",
+  "summary": {
+    "total": 130,
+    "high_confidence_test": 126,
+    "user_project": 4,
+    "ambiguous": 0,
+    "running": 29,
+    "paused": 49,
+    "stopped": 52,
+    "other": 0
+  },
+  "projects": [
+    {
+      "project_id": "03093a7127f048c489ad9032c889f15a",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_051029",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\03093a7127f048c489ad9032c889f15a",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T05:10:29.9033431+00:00",
+      "updated_at_utc": "2026-08-24T05:10:29.9402050+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_051029' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "063e3ec8316641c8a2b280ad049872e6",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\063e3ec8316641c8a2b280ad049872e6",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T19:50:20.9141558+00:00",
+      "updated_at_utc": "2026-08-23T19:50:20.9633956+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "084b8cecc2a744f7909f5293f5df0f82",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\084b8cecc2a744f7909f5293f5df0f82",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T19:16:42.9520868+00:00",
+      "updated_at_utc": "2026-08-24T19:16:43.0001339+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "0944d17fb55344e48d335b4dc47fdadb",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\0944d17fb55344e48d335b4dc47fdadb",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T23:46:55.0180297+00:00",
+      "updated_at_utc": "2026-08-24T23:46:55.0680279+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "0ad5a717d1a342b2a9cf538dd3c347ac",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\0ad5a717d1a342b2a9cf538dd3c347ac",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T23:43:30.4903087+00:00",
+      "updated_at_utc": "2026-08-24T23:43:30.4903087+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "0f4d1b12b32241e6882db3fd360a689a",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\0f4d1b12b32241e6882db3fd360a689a",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T23:49:36.0121993+00:00",
+      "updated_at_utc": "2026-08-23T23:49:36.0121993+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "106514685a03419ba3c655f4b31d60bc",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\106514685a03419ba3c655f4b31d60bc",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T22:43:12.5802600+00:00",
+      "updated_at_utc": "2026-08-23T22:43:12.6281752+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "10a4d1297ddf4dab88216ef74ae1b82d",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\10a4d1297ddf4dab88216ef74ae1b82d",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T23:27:22.2805147+00:00",
+      "updated_at_utc": "2026-08-24T23:27:22.2805147+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "12b0670b22a34e7baa09735d21a94c93",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\12b0670b22a34e7baa09735d21a94c93",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T04:13:20.0042128+00:00",
+      "updated_at_utc": "2026-08-24T04:13:20.0594113+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "173c7f019231415193cf3a6fc15b9fdb",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\173c7f019231415193cf3a6fc15b9fdb",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T21:25:13.0385212+00:00",
+      "updated_at_utc": "2026-08-24T21:25:13.0385212+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "18663d9e892c4a598b1e07de130dbe77",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\18663d9e892c4a598b1e07de130dbe77",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-25T00:45:37.6748115+00:00",
+      "updated_at_utc": "2026-08-25T00:45:37.7544722+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "18c448931ddb42f3ac51da5c58fd4c07",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_041531",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\18c448931ddb42f3ac51da5c58fd4c07",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T04:15:31.3894345+00:00",
+      "updated_at_utc": "2026-08-24T04:15:31.4220825+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_041531' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "20fe0964ccb5491a8b2ad4d387c7f0bb",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\20fe0964ccb5491a8b2ad4d387c7f0bb",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T19:53:04.2882128+00:00",
+      "updated_at_utc": "2026-08-24T19:53:04.2882128+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "21e0cb744e7f443ebf56e837620cdae6",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\21e0cb744e7f443ebf56e837620cdae6",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T19:30:09.0488831+00:00",
+      "updated_at_utc": "2026-08-24T19:30:09.0488831+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "229e3d91ee0d4f9fb5798b25e75c8f7a",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\229e3d91ee0d4f9fb5798b25e75c8f7a",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T18:38:18.6359915+00:00",
+      "updated_at_utc": "2026-08-23T18:38:18.6359915+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "2393f1ab9b44408d8f8a4cfa81c4ccc8",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\2393f1ab9b44408d8f8a4cfa81c4ccc8",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T05:08:35.9916010+00:00",
+      "updated_at_utc": "2026-08-24T05:08:36.0516154+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "24d001e0ecb44c37887b81832738d9fe",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\24d001e0ecb44c37887b81832738d9fe",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T00:34:15.0999486+00:00",
+      "updated_at_utc": "2026-08-24T00:34:15.1469322+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "27abde12b08d49bca2a6237f33636da5",
+      "name": "Prueba 2",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\27abde12b08d49bca2a6237f33636da5",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T20:31:40.3869965+00:00",
+      "updated_at_utc": "2026-08-24T20:32:24.3279142+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "USER_PROJECT",
+      "positive_evidence": []
+    },
+    {
+      "project_id": "28b42467adf7407aa9bdc674aa17db60",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\28b42467adf7407aa9bdc674aa17db60",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T19:31:47.3632544+00:00",
+      "updated_at_utc": "2026-08-24T19:31:47.4135330+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "29fbfcfc11d644cfbfb0cf6c574881ba",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\29fbfcfc11d644cfbfb0cf6c574881ba",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T04:05:44.3842209+00:00",
+      "updated_at_utc": "2026-08-24T04:05:44.3842209+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "2b75dba910e44269ad3dde29eefc73f6",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\2b75dba910e44269ad3dde29eefc73f6",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T23:12:44.4707184+00:00",
+      "updated_at_utc": "2026-08-23T23:12:44.4707184+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "2beab290a6204b95afe0bcfabae7b7bf",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_040205",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\2beab290a6204b95afe0bcfabae7b7bf",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T04:02:05.3728648+00:00",
+      "updated_at_utc": "2026-08-24T04:02:05.4061256+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_040205' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "2d6dd9722cee495e8d84fe0af0dc85ea",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_035511",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\2d6dd9722cee495e8d84fe0af0dc85ea",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T03:55:11.3411319+00:00",
+      "updated_at_utc": "2026-08-24T03:55:11.4396684+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_035511' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "2dc16e72e6ef49d0a05c938d2a217843",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\2dc16e72e6ef49d0a05c938d2a217843",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T21:25:13.0727980+00:00",
+      "updated_at_utc": "2026-08-24T21:25:13.1208199+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "2fa0633fc44f4b5d83258e79844692d2",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\2fa0633fc44f4b5d83258e79844692d2",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-25T01:17:12.1677618+00:00",
+      "updated_at_utc": "2026-08-25T01:17:12.2181348+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "30795a645c6243c299154793b07a49bb",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\30795a645c6243c299154793b07a49bb",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T19:51:40.5196542+00:00",
+      "updated_at_utc": "2026-08-24T19:51:40.5196542+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "34c6aa51c33948f0b92741211bc9f9ac",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\34c6aa51c33948f0b92741211bc9f9ac",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-25T01:15:04.2689795+00:00",
+      "updated_at_utc": "2026-08-25T01:15:04.3205346+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "3d4e4794b94a47a1b435ac8bfc7f78f3",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\3d4e4794b94a47a1b435ac8bfc7f78f3",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T05:13:00.7068540+00:00",
+      "updated_at_utc": "2026-08-24T05:13:00.7542693+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "3e4f117661cc4c1f8f739c7bfc854a61",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\3e4f117661cc4c1f8f739c7bfc854a61",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T00:49:09.5775630+00:00",
+      "updated_at_utc": "2026-08-24T00:49:09.6261019+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "4491ca338bdb4beba55ef90b0b485820",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\4491ca338bdb4beba55ef90b0b485820",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T21:56:46.9234353+00:00",
+      "updated_at_utc": "2026-08-23T21:56:46.9702766+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "467cd014e0f1459e9aff03941093bace",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\467cd014e0f1459e9aff03941093bace",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T19:31:47.3280426+00:00",
+      "updated_at_utc": "2026-08-24T19:31:47.3280426+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "49b2c2acd6294cdfb277db1a8f0aef68",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_183010",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\49b2c2acd6294cdfb277db1a8f0aef68",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T18:30:10.0956072+00:00",
+      "updated_at_utc": "2026-08-24T18:30:10.1317284+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_183010' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "4c66c0ab7e494c078b93ca9306feb479",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_054457",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\4c66c0ab7e494c078b93ca9306feb479",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T05:44:57.5598537+00:00",
+      "updated_at_utc": "2026-08-24T05:44:57.5907041+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_054457' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "4cb672dfc69a4913b86179a9d28c4bab",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\4cb672dfc69a4913b86179a9d28c4bab",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T20:16:38.8984767+00:00",
+      "updated_at_utc": "2026-08-23T20:16:38.8984767+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "5084165419bf4a928328ebe0b164ad88",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\5084165419bf4a928328ebe0b164ad88",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T19:50:20.8795507+00:00",
+      "updated_at_utc": "2026-08-23T19:50:20.8795507+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "528cba76ddb640928fd14090e40d2501",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\528cba76ddb640928fd14090e40d2501",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-25T00:47:00.2607168+00:00",
+      "updated_at_utc": "2026-08-25T00:47:00.3363767+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "53d0c2cd14ea4791b5da964e026cc5e9",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_035647",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\53d0c2cd14ea4791b5da964e026cc5e9",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T03:56:47.1544284+00:00",
+      "updated_at_utc": "2026-08-24T03:56:47.2490179+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_035647' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "54d80d313ac5406db364f5b93fc481b9",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\54d80d313ac5406db364f5b93fc481b9",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-25T00:49:36.7072152+00:00",
+      "updated_at_utc": "2026-08-25T00:49:36.7784485+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "57d869ef564444b4a17739326f6cac1f",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\57d869ef564444b4a17739326f6cac1f",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T23:12:44.5050699+00:00",
+      "updated_at_utc": "2026-08-23T23:12:44.5533581+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "58897007d90945e88d6d8b8ccbabd444",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\58897007d90945e88d6d8b8ccbabd444",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-25T01:15:04.2352492+00:00",
+      "updated_at_utc": "2026-08-25T01:15:04.2352492+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "58e9340ffc254672b245411124383a4d",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_035953",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\58e9340ffc254672b245411124383a4d",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T03:59:53.2864840+00:00",
+      "updated_at_utc": "2026-08-24T03:59:53.3980476+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_035953' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "5a327ea44e8c466aa64b6f3ba1908c40",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_040139",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\5a327ea44e8c466aa64b6f3ba1908c40",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T04:01:39.1872194+00:00",
+      "updated_at_utc": "2026-08-24T04:01:39.2828163+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_040139' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "5a60056d75864259994610d52965aa25",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\5a60056d75864259994610d52965aa25",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T18:32:24.7933838+00:00",
+      "updated_at_utc": "2026-08-23T18:32:24.8411934+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "5d45842c7320404f8382e36ac10ea10b",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\5d45842c7320404f8382e36ac10ea10b",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T04:13:19.9644613+00:00",
+      "updated_at_utc": "2026-08-24T04:13:19.9644613+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "5e6b9f0e766647a0a8f613f2b3302702",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\5e6b9f0e766647a0a8f613f2b3302702",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T18:57:50.2255593+00:00",
+      "updated_at_utc": "2026-08-24T18:57:50.2730623+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "5e752cf74ba64e399de3bc84f39da8ae",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\5e752cf74ba64e399de3bc84f39da8ae",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T19:53:04.3253192+00:00",
+      "updated_at_utc": "2026-08-24T19:53:04.3779229+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "6105f11943464acd909e1f464aed7b12",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\6105f11943464acd909e1f464aed7b12",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-25T00:49:36.6601679+00:00",
+      "updated_at_utc": "2026-08-25T00:49:36.6601679+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "62736acd2e68438e92fe77cc0bd35018",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\62736acd2e68438e92fe77cc0bd35018",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T18:30:42.0213904+00:00",
+      "updated_at_utc": "2026-08-23T18:30:42.0213904+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "63fdd2393c954e7ba4c24744b3a1b64d",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\63fdd2393c954e7ba4c24744b3a1b64d",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T23:27:22.3149612+00:00",
+      "updated_at_utc": "2026-08-24T23:27:22.3658856+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "650f45bc55074cce957161293866a920",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\650f45bc55074cce957161293866a920",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-25T00:47:00.2106977+00:00",
+      "updated_at_utc": "2026-08-25T00:47:00.2106977+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "6762fe260e304a669de79a6fe8dce8fd",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_040324",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\6762fe260e304a669de79a6fe8dce8fd",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T04:03:24.7334191+00:00",
+      "updated_at_utc": "2026-08-24T04:03:24.7669909+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_040324' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "69bd4cd9cf2546229018c0f21bd5ba2e",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\69bd4cd9cf2546229018c0f21bd5ba2e",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T20:08:45.6375616+00:00",
+      "updated_at_utc": "2026-08-24T20:08:45.6375616+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "6b83444eccd0404ea912e5d1df41f162",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\6b83444eccd0404ea912e5d1df41f162",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T22:44:42.3699424+00:00",
+      "updated_at_utc": "2026-08-23T22:44:42.3699424+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "6d0196404d6d46c4b8abf1e721d6b306",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\6d0196404d6d46c4b8abf1e721d6b306",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-25T01:17:12.1345754+00:00",
+      "updated_at_utc": "2026-08-25T01:17:12.1345754+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "6d1d8a6433804d7d85e9568565b66048",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\6d1d8a6433804d7d85e9568565b66048",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T03:33:11.1037440+00:00",
+      "updated_at_utc": "2026-08-24T03:33:11.1037440+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "708ca43468404f4db87780b902254903",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\708ca43468404f4db87780b902254903",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T18:33:44.3577105+00:00",
+      "updated_at_utc": "2026-08-23T18:33:44.4069024+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "720b30dd69fb41ee9cb0ab9184bf8259",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_193508",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\720b30dd69fb41ee9cb0ab9184bf8259",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T19:35:08.5976584+00:00",
+      "updated_at_utc": "2026-08-24T19:35:08.6382462+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_193508' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "749a82c548834a34853ea9a153223584",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_041621",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\749a82c548834a34853ea9a153223584",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T04:16:21.9129891+00:00",
+      "updated_at_utc": "2026-08-24T04:16:22.0069218+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_041621' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "7aa75fa9d94845fbb1321aca7f36be3a",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\7aa75fa9d94845fbb1321aca7f36be3a",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T19:33:13.4078510+00:00",
+      "updated_at_utc": "2026-08-24T19:33:13.4587111+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "7b244c3c3bb5408383e42d17479b577a",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\7b244c3c3bb5408383e42d17479b577a",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T18:32:24.7583192+00:00",
+      "updated_at_utc": "2026-08-23T18:32:24.7583192+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "7bc976aa718f4e92b9c39645d95d7f55",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\7bc976aa718f4e92b9c39645d95d7f55",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T04:19:06.2549582+00:00",
+      "updated_at_utc": "2026-08-24T04:19:06.3062417+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "7bd1a60a2f3f4d78bb921d43c4d5ea8d",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\7bd1a60a2f3f4d78bb921d43c4d5ea8d",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T23:49:36.0458057+00:00",
+      "updated_at_utc": "2026-08-23T23:49:36.0931522+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "81581ba0b8c84dd698176f14f1294a87",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\81581ba0b8c84dd698176f14f1294a87",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T19:49:38.1584999+00:00",
+      "updated_at_utc": "2026-08-24T19:49:38.2187649+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "83af24ff0de5409ebafbc16771971014",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_035859",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\83af24ff0de5409ebafbc16771971014",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T03:58:59.0482292+00:00",
+      "updated_at_utc": "2026-08-24T03:58:59.1448551+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_035859' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "84197b626d824bcab739aff92cb16655",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\84197b626d824bcab739aff92cb16655",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T19:51:40.5536104+00:00",
+      "updated_at_utc": "2026-08-24T19:51:40.6031230+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "8a3d8dba7393457eac82912923931819",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_190107",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\8a3d8dba7393457eac82912923931819",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T19:01:07.9663705+00:00",
+      "updated_at_utc": "2026-08-24T19:01:08.0008670+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_190107' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "8c550cccf4ef4242bb059aa27db10788",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\8c550cccf4ef4242bb059aa27db10788",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T00:49:09.5440031+00:00",
+      "updated_at_utc": "2026-08-24T00:49:09.5440031+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "8ccae03672824344b4631732146da60e",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\8ccae03672824344b4631732146da60e",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T18:26:18.0717844+00:00",
+      "updated_at_utc": "2026-08-24T18:26:18.1201525+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "8f06c1d4b55942cc953304913a32f7f2",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\8f06c1d4b55942cc953304913a32f7f2",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T22:00:34.3840859+00:00",
+      "updated_at_utc": "2026-08-23T22:00:34.3840859+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "903c2c1ab38e4812878e7914bd11ad1a",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\903c2c1ab38e4812878e7914bd11ad1a",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T20:07:09.0728646+00:00",
+      "updated_at_utc": "2026-08-24T20:07:09.0728646+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "95b40889af594913b5a0ef4541863336",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\95b40889af594913b5a0ef4541863336",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T18:59:13.6721648+00:00",
+      "updated_at_utc": "2026-08-24T18:59:13.7207900+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "97948e6cd21a4a148a258db3935eabef",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\97948e6cd21a4a148a258db3935eabef",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T18:59:13.6360401+00:00",
+      "updated_at_utc": "2026-08-24T18:59:13.6360401+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "9a23603ca7804d868fb4078a238c09eb",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_035445",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\9a23603ca7804d868fb4078a238c09eb",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T03:54:45.4386122+00:00",
+      "updated_at_utc": "2026-08-24T03:54:45.4386122+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_035445' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "9a290172d59b43fd967f1abe719d6cdb",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\9a290172d59b43fd967f1abe719d6cdb",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T21:22:04.2919752+00:00",
+      "updated_at_utc": "2026-08-24T21:22:04.2919752+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "9b7bfcf7f63c4be7beb9d6c7a32b5c0d",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_054431",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\9b7bfcf7f63c4be7beb9d6c7a32b5c0d",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T05:44:31.3927487+00:00",
+      "updated_at_utc": "2026-08-24T05:44:31.4900564+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_054431' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "9b9188ab285744d4ba0febe7db893afa",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\9b9188ab285744d4ba0febe7db893afa",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T19:48:54.5927166+00:00",
+      "updated_at_utc": "2026-08-23T19:48:54.6427735+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "9c5a459c95fe45c3bf1c36fab4e85fef",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\9c5a459c95fe45c3bf1c36fab4e85fef",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T22:00:34.4257182+00:00",
+      "updated_at_utc": "2026-08-23T22:00:34.4822831+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "9c9714b45b0d4805bdd834d51f683bcc",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\9c9714b45b0d4805bdd834d51f683bcc",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T18:27:44.0572289+00:00",
+      "updated_at_utc": "2026-08-24T18:27:44.1058522+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "9e8053e1b2a94eb285d05e7e278ecffa",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\9e8053e1b2a94eb285d05e7e278ecffa",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T23:46:54.9827168+00:00",
+      "updated_at_utc": "2026-08-24T23:46:54.9827168+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "a05b37cbb4424ec688c97329e96b955f",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\a05b37cbb4424ec688c97329e96b955f",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-25T00:45:37.6189303+00:00",
+      "updated_at_utc": "2026-08-25T00:45:37.6189303+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "a2f169c13bd84b6392f0970d05606b0a",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\a2f169c13bd84b6392f0970d05606b0a",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T20:16:38.9335258+00:00",
+      "updated_at_utc": "2026-08-23T20:16:38.9809822+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "a4d32b721e834f0aa907d7aa39ef7ebf",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_040259",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\a4d32b721e834f0aa907d7aa39ef7ebf",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T04:02:59.1300537+00:00",
+      "updated_at_utc": "2026-08-24T04:02:59.2392405+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_040259' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "a50a7d0b3b1e4687b7a1701f2343e7d8",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\a50a7d0b3b1e4687b7a1701f2343e7d8",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T05:42:53.4759436+00:00",
+      "updated_at_utc": "2026-08-24T05:42:53.4759436+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "a739a8f5b3f44b698236a59e752bab3f",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_190042",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\a739a8f5b3f44b698236a59e752bab3f",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T19:00:42.4773021+00:00",
+      "updated_at_utc": "2026-08-24T19:00:42.5730278+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_190042' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "ac4cc09fbc1648eab09ef931c474ce51",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_051003",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\ac4cc09fbc1648eab09ef931c474ce51",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T05:10:03.4691148+00:00",
+      "updated_at_utc": "2026-08-24T05:10:03.5725950+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_051003' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "ac7e82a664694f369d38a68d4eef7004",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\ac7e82a664694f369d38a68d4eef7004",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T04:05:44.4185794+00:00",
+      "updated_at_utc": "2026-08-24T04:05:44.4665605+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "af08ecfdd7cc4d29949109810fdc7fcb",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\af08ecfdd7cc4d29949109810fdc7fcb",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T18:38:18.6702117+00:00",
+      "updated_at_utc": "2026-08-23T18:38:18.7184728+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "aff22f9b69e54f1c9d658a76cc229d7b",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\aff22f9b69e54f1c9d658a76cc229d7b",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T18:27:44.0243930+00:00",
+      "updated_at_utc": "2026-08-24T18:27:44.0243930+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "b151034fc76b4c848d4c0ddce7c2a658",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_035532",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\b151034fc76b4c848d4c0ddce7c2a658",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T03:55:32.2709110+00:00",
+      "updated_at_utc": "2026-08-24T03:55:32.3715882+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_035532' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "b36b3d80706a48ceaa5c085fd22c937e",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\b36b3d80706a48ceaa5c085fd22c937e",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T20:08:45.6735312+00:00",
+      "updated_at_utc": "2026-08-24T20:08:45.7221777+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "b3e45d1168824e77a00d1c8bdf5ad14f",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\b3e45d1168824e77a00d1c8bdf5ad14f",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T04:19:06.2205348+00:00",
+      "updated_at_utc": "2026-08-24T04:19:06.2205348+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "b681105321724ba99070d1d34528b112",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_040019",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\b681105321724ba99070d1d34528b112",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T04:00:19.2349978+00:00",
+      "updated_at_utc": "2026-08-24T04:00:19.2762301+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_040019' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "b805717302eb45c8990bbc5231cef5bd",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\b805717302eb45c8990bbc5231cef5bd",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T05:42:53.5099435+00:00",
+      "updated_at_utc": "2026-08-24T05:42:53.5555460+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "b90763a7dd774c71b5cec9efdd7c3d9f",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_191803",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\b90763a7dd774c71b5cec9efdd7c3d9f",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T19:18:03.9032148+00:00",
+      "updated_at_utc": "2026-08-24T19:18:04.0041202+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_191803' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "b921e97d2e6c4785ae2cbd6f10449503",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_035804",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\b921e97d2e6c4785ae2cbd6f10449503",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T03:58:04.7470459+00:00",
+      "updated_at_utc": "2026-08-24T03:58:04.8489953+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_035804' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "b989c61bac20428baef95db0b5173101",
+      "name": "Prueba 5",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\b989c61bac20428baef95db0b5173101",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-25T01:44:19.7966381+00:00",
+      "updated_at_utc": "2026-08-25T01:44:30.0973788+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "USER_PROJECT",
+      "positive_evidence": []
+    },
+    {
+      "project_id": "bc8af7d0fae24241b3de16b4a343381a",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_182917",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\bc8af7d0fae24241b3de16b4a343381a",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T18:29:17.2138286+00:00",
+      "updated_at_utc": "2026-08-24T18:29:17.4027647+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_182917' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "bd2c24a066e94bb5a936b85c3d3b2426",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\bd2c24a066e94bb5a936b85c3d3b2426",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T18:57:50.1907110+00:00",
+      "updated_at_utc": "2026-08-24T18:57:50.1907110+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "c2ac9d54cc294b2b8b6208d5ee9d2294",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\c2ac9d54cc294b2b8b6208d5ee9d2294",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T18:30:41.8736986+00:00",
+      "updated_at_utc": "2026-08-23T18:30:41.8736986+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "c547e797d0dc4180898eed3c4ae675f7",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\c547e797d0dc4180898eed3c4ae675f7",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T21:40:31.1111051+00:00",
+      "updated_at_utc": "2026-08-24T21:40:31.1599488+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "c7f04b24cbb14ca79f10bfe433d5f8cc",
+      "name": "Prueba 3",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\c7f04b24cbb14ca79f10bfe433d5f8cc",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-25T00:24:42.3925363+00:00",
+      "updated_at_utc": "2026-08-25T00:24:42.3925363+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "USER_PROJECT",
+      "positive_evidence": []
+    },
+    {
+      "project_id": "c804fe329c764c3da17ea18623dea77c",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\c804fe329c764c3da17ea18623dea77c",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T23:43:30.5244918+00:00",
+      "updated_at_utc": "2026-08-24T23:43:30.5735421+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "cab0cd5fdd9846629d2e76f13587db15",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_193443",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\cab0cd5fdd9846629d2e76f13587db15",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T19:34:43.3876258+00:00",
+      "updated_at_utc": "2026-08-24T19:34:43.4809645+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_193443' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "cb140f20505c482aaf7bceaf432b6c50",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\cb140f20505c482aaf7bceaf432b6c50",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T05:08:35.9482877+00:00",
+      "updated_at_utc": "2026-08-24T05:08:35.9482877+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "ccc113e80a9946ba983e3d0f6bf6c9fa",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\ccc113e80a9946ba983e3d0f6bf6c9fa",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T19:33:13.3735745+00:00",
+      "updated_at_utc": "2026-08-24T19:33:13.3735745+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "cd8b37189d1e468fa0b8839768df6d5c",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\cd8b37189d1e468fa0b8839768df6d5c",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T00:34:15.0662572+00:00",
+      "updated_at_utc": "2026-08-24T00:34:15.0662572+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "cfbdf54974a644aa83fc7a06b7944773",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\cfbdf54974a644aa83fc7a06b7944773",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T19:30:09.0882517+00:00",
+      "updated_at_utc": "2026-08-24T19:30:09.1430423+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d20fd01a33cf43ceb5f6faddbf402a7a",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d20fd01a33cf43ceb5f6faddbf402a7a",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T05:13:00.6733611+00:00",
+      "updated_at_utc": "2026-08-24T05:13:00.6733611+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d2c798668e7948a1be3ea39f45f12d81",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d2c798668e7948a1be3ea39f45f12d81",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-23T22:44:42.4043208+00:00",
+      "updated_at_utc": "2026-08-23T22:44:42.4519131+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d32b4a83a8d44bb784a58e3f21517f26",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d32b4a83a8d44bb784a58e3f21517f26",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T00:16:28.2775886+00:00",
+      "updated_at_utc": "2026-08-24T00:16:28.2775886+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d339ccd3ed4c42afa40e02389134aefc",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d339ccd3ed4c42afa40e02389134aefc",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T20:07:09.1075847+00:00",
+      "updated_at_utc": "2026-08-24T20:07:09.1569529+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d3cc95f08d3a448face84dbd621afbab",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d3cc95f08d3a448face84dbd621afbab",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T21:40:31.0771118+00:00",
+      "updated_at_utc": "2026-08-24T21:40:31.0771118+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d589abca3e7f4d9db21aaf6a802b810d",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d589abca3e7f4d9db21aaf6a802b810d",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T19:15:22.0538590+00:00",
+      "updated_at_utc": "2026-08-24T19:15:22.0538590+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d68e0bf2d80f48d68da69caf24d231c1",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d68e0bf2d80f48d68da69caf24d231c1",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T18:26:18.0381441+00:00",
+      "updated_at_utc": "2026-08-24T18:26:18.0381441+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d83761c05a1946b9979f5b48135efd8e",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d83761c05a1946b9979f5b48135efd8e",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T19:49:38.1172783+00:00",
+      "updated_at_utc": "2026-08-24T19:49:38.1172783+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d8383c6a279648349095243be6ba1c17",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d8383c6a279648349095243be6ba1c17",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T21:56:46.8880252+00:00",
+      "updated_at_utc": "2026-08-23T21:56:46.8880252+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "d8f7ca3d78034b18bf66816dd405b611",
+      "name": "Prueba 1",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\d8f7ca3d78034b18bf66816dd405b611",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T18:01:09.2743353+00:00",
+      "updated_at_utc": "2026-08-24T18:14:02.2452306+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "USER_PROJECT",
+      "positive_evidence": []
+    },
+    {
+      "project_id": "e0100fda6b5840f9b4080ea46211b3c1",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\e0100fda6b5840f9b4080ea46211b3c1",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T18:33:44.3226037+00:00",
+      "updated_at_utc": "2026-08-23T18:33:44.3226037+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "e0dce1d5a7f44438b8dac4b5101ab2bf",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\e0dce1d5a7f44438b8dac4b5101ab2bf",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T21:36:25.4879545+00:00",
+      "updated_at_utc": "2026-08-24T21:36:25.4879545+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "e1ece5d85fe649bc9443c1f70474f9aa",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\e1ece5d85fe649bc9443c1f70474f9aa",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T03:33:11.1472319+00:00",
+      "updated_at_utc": "2026-08-24T03:33:11.2054258+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "e33fce50078845d492ee07fbbf8cd7fb",
+      "name": "TrueHost_JPEG_PRODUCT_E2E_20260824_041503",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\e33fce50078845d492ee07fbbf8cd7fb",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T04:15:03.9092104+00:00",
+      "updated_at_utc": "2026-08-24T04:15:04.0026455+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_JPEG_PRODUCT_E2E_20260824_041503' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "e45843e9f03c4e04bd3edb9e4cd9b11c",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\e45843e9f03c4e04bd3edb9e4cd9b11c",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T00:16:28.3091150+00:00",
+      "updated_at_utc": "2026-08-24T00:16:28.3556504+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "e506fdf1dbbc4963b9aaf61c5650019f",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_041647",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\e506fdf1dbbc4963b9aaf61c5650019f",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T04:16:47.8280391+00:00",
+      "updated_at_utc": "2026-08-24T04:16:47.8605952+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_041647' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "e62d426e62fd4ed5883a2f50d5bd333f",
+      "name": "TrueHost_RAW_PRODUCT_E2E_20260824_191829",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\e62d426e62fd4ed5883a2f50d5bd333f",
+      "state": "RUNNING",
+      "created_at_utc": "2026-08-24T19:18:29.4631234+00:00",
+      "updated_at_utc": "2026-08-24T19:18:29.4963987+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'TrueHost_RAW_PRODUCT_E2E_20260824_191829' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "e83a20a633dd4c2e8f573a7ef24f1d3a",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\e83a20a633dd4c2e8f573a7ef24f1d3a",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T21:22:04.3273001+00:00",
+      "updated_at_utc": "2026-08-24T21:22:04.3794024+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "e89e1509542e442bac56c4dbd2eb7170",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\e89e1509542e442bac56c4dbd2eb7170",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-24T19:16:42.9174909+00:00",
+      "updated_at_utc": "2026-08-24T19:16:42.9174909+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "eaaa89e6d5ea43da96f8758598f0f739",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\eaaa89e6d5ea43da96f8758598f0f739",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T22:43:12.5433351+00:00",
+      "updated_at_utc": "2026-08-23T22:43:12.5433351+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "ef5f84f8e4ff4cabac757932495b3eea",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\ef5f84f8e4ff4cabac757932495b3eea",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T21:36:25.5222622+00:00",
+      "updated_at_utc": "2026-08-24T21:36:25.5709861+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "effa8788794442d7ac9a29d33eb8fe7a",
+      "name": "Test Presentation Project",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\effa8788794442d7ac9a29d33eb8fe7a",
+      "state": "STOPPED",
+      "created_at_utc": "2026-08-23T19:48:54.5570237+00:00",
+      "updated_at_utc": "2026-08-23T19:48:54.5570237+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Test Presentation Project' contains test keywords"
+      ]
+    },
+    {
+      "project_id": "fc26aaa2388443728cf9f62e59b8d106",
+      "name": "Config Test",
+      "path": "C:\\Users\\Pc\\AppData\\Local\\PhotoAIFactory\\projects\\fc26aaa2388443728cf9f62e59b8d106",
+      "state": "PAUSED",
+      "created_at_utc": "2026-08-24T19:15:22.0869106+00:00",
+      "updated_at_utc": "2026-08-24T19:15:22.1336388+00:00",
+      "input_folder": null,
+      "output_folder": null,
+      "classification": "HIGH_CONFIDENCE_TEST",
+      "positive_evidence": [
+        "Name 'Config Test' contains test keywords"
+      ]
+    }
+  ]
+}

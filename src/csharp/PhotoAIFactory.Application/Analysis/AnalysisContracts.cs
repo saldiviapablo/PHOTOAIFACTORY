@@ -151,3 +151,50 @@ public sealed record AnalysisRunResult(
     AnalysisResultSnapshot Analysis,
     PreselectionResultSnapshot Preselection,
     IReadOnlyList<QueueEntrySnapshot> Queue);
+
+public enum AnalysisDispatchStatus
+{
+    NoWork,
+    AnalysisCompleted,
+    Suppressed,
+    Failed
+}
+
+public sealed record AnalysisDispatchResult(
+    AnalysisDispatchStatus Status,
+    int NewlyDispatchedCount,
+    IReadOnlyList<AnalysisRunResult> Results);
+
+/// <summary>
+/// Authoritative eligibility check for Phase 3 analysis.
+/// A photo is eligible to begin or resume analysis ONLY when:
+/// 1. Photo is in IngestionPhotoState.ReadyForAnalysis.
+/// 2. No existing Job is in a downstream, review, queue, or terminal state (e.g. ERROR, REVIEW_PRE, QUEUED, PROCESSING, QA, REVIEW_FINAL, COMPLETED).
+/// 3. No ANALYSIS_COMPLETE checkpoint already exists for that Job.
+/// </summary>
+public static class AnalysisEligibilityRule
+{
+    public static bool IsEligibleForAnalysis(
+        PhotoIngestionSnapshot photo,
+        AnalysisJobSnapshot? existingJob,
+        bool hasAnalysisCompleteCheckpoint)
+    {
+        if (photo.State != IngestionPhotoState.ReadyForAnalysis)
+            return false;
+
+        if (existingJob is null)
+            return true;
+
+        if (hasAnalysisCompleteCheckpoint)
+            return false;
+
+        return existingJob.State switch
+        {
+            JobState.Received => true,
+            JobState.Analyzing => true,
+            JobState.Retrying => true,
+            JobState.Interrupted => true,
+            _ => false // Error, ReviewPre, RejectedPre, Queued, Processing, Qa, ReviewFinal, RejectedFinal, Completed, CancelRequested, Cancelled
+        };
+    }
+}

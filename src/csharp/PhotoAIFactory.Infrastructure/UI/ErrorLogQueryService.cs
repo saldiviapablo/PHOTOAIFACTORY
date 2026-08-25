@@ -48,7 +48,9 @@ public sealed partial class ErrorLogQueryService(IAppPaths paths) : IErrorLogQue
                         using var doc = JsonDocument.Parse(line);
                         var root = doc.RootElement;
 
-                        var levelStr = root.TryGetProperty("LogLevel", out var lProp) ? lProp.GetString() : "Information";
+                        // Parse Level: support "level" (JsonLinesLoggerProvider standard) and "LogLevel"
+                        var levelStr = root.TryGetProperty("level", out var lProp) ? lProp.GetString() :
+                                       (root.TryGetProperty("LogLevel", out var lProp2) ? lProp2.GetString() : "Information");
                         if (!Enum.TryParse<LogLevel>(levelStr, out var level))
                         {
                             level = LogLevel.Information;
@@ -57,26 +59,63 @@ public sealed partial class ErrorLogQueryService(IAppPaths paths) : IErrorLogQue
                         if (minLevel.HasValue && level < minLevel.Value)
                             continue;
 
-                        var timestampStr = root.TryGetProperty("TimestampUtc", out var tProp) ? tProp.GetString() : null;
+                        // Parse Timestamp: support "timestamp_utc", "TimestampUtc", "timestamp"
+                        var timestampStr = root.TryGetProperty("timestamp_utc", out var tProp) ? tProp.GetString() :
+                                           (root.TryGetProperty("TimestampUtc", out var tProp2) ? tProp2.GetString() :
+                                           (root.TryGetProperty("timestamp", out var tProp3) ? tProp3.GetString() : null));
                         var timestamp = DateTimeOffset.TryParse(timestampStr, out var ts) ? ts : DateTimeOffset.UtcNow;
-                        var category = root.TryGetProperty("Category", out var cProp) ? cProp.GetString() ?? "General" : "General";
-                        var rawMessage = root.TryGetProperty("Message", out var mProp) ? mProp.GetString() ?? string.Empty : string.Empty;
 
-                        string? pId = null;
-                        string? jId = null;
-                        if (root.TryGetProperty("State", out var stateProp) && stateProp.ValueKind == JsonValueKind.Object)
+                        // Parse Category / Component
+                        var category = root.TryGetProperty("component", out var compProp) && !string.IsNullOrWhiteSpace(compProp.GetString())
+                            ? compProp.GetString()!
+                            : (root.TryGetProperty("category", out var cProp) ? cProp.GetString() ?? "General"
+                            : (root.TryGetProperty("Category", out var cProp2) ? cProp2.GetString() ?? "General" : "General"));
+
+                        // Parse Message
+                        var rawMessage = root.TryGetProperty("message", out var mProp) ? mProp.GetString() ?? string.Empty :
+                                         (root.TryGetProperty("Message", out var mProp2) ? mProp2.GetString() ?? string.Empty : string.Empty);
+
+                        // Parse Correlation Identifiers: project_id, job_id, photo_id
+                        string? pId = root.TryGetProperty("project_id", out var pjProp) ? pjProp.GetString() : null;
+                        string? jId = root.TryGetProperty("job_id", out var jbProp) ? jbProp.GetString() : null;
+
+                        // Fallback to nested State if present
+                        if (pId is null && root.TryGetProperty("State", out var stateProp) && stateProp.ValueKind == JsonValueKind.Object)
                         {
-                            if (stateProp.TryGetProperty("project_id", out var pjProp)) pId = pjProp.GetString();
-                            if (stateProp.TryGetProperty("job_id", out var jbProp)) jId = jbProp.GetString();
+                            if (stateProp.TryGetProperty("project_id", out var sPjProp)) pId = sPjProp.GetString();
+                            if (stateProp.TryGetProperty("job_id", out var sJbProp)) jId = sJbProp.GetString();
                         }
 
-                        if (projectId is not null && !string.Equals(pId, projectId.Value, StringComparison.OrdinalIgnoreCase))
+                        // Project filtering: include if projectId matches OR if entry is a system-level log (pId == null)
+                        if (projectId is not null && pId is not null && !string.Equals(pId, projectId.Value, StringComparison.OrdinalIgnoreCase))
                             continue;
 
-                        if (jobId is not null && !string.Equals(jId, jobId.Value, StringComparison.OrdinalIgnoreCase))
+                        if (jobId is not null && jId is not null && !string.Equals(jId, jobId.Value, StringComparison.OrdinalIgnoreCase))
                             continue;
 
-                        var rawTechnical = root.TryGetProperty("Exception", out var exProp) ? exProp.GetString() : null;
+                        // Parse Exception / Technical details
+                        string? rawTechnical = null;
+                        if (root.TryGetProperty("exception", out var exProp))
+                        {
+                            if (exProp.ValueKind == JsonValueKind.Object)
+                            {
+                                var exType = exProp.TryGetProperty("type", out var et) ? et.GetString() : null;
+                                var exMsg = exProp.TryGetProperty("message", out var em) ? em.GetString() : null;
+                                var exSt = exProp.TryGetProperty("stack_trace", out var es) ? es.GetString() : null;
+                                rawTechnical = string.IsNullOrWhiteSpace(exSt)
+                                    ? $"{exType}: {exMsg}"
+                                    : $"{exType}: {exMsg}\n{exSt}";
+                            }
+                            else if (exProp.ValueKind == JsonValueKind.String)
+                            {
+                                rawTechnical = exProp.GetString();
+                            }
+                        }
+                        else if (root.TryGetProperty("Exception", out var exProp2))
+                        {
+                            rawTechnical = exProp2.GetString();
+                        }
+
                         var logId = Guid.NewGuid().ToString("N")[..8];
 
                         results.Add(new ErrorLogEntryDto(

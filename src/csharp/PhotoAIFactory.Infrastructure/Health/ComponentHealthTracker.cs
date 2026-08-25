@@ -51,6 +51,20 @@ public sealed class ComponentHealthTracker : IComponentHealthTracker
         }
     }
 
+    public void MarkUnhealthy(string componentName, string reason)
+    {
+        var entry = GetOrAdd(componentName);
+        lock (entry)
+        {
+            entry.ConsecutiveFailures = Math.Max(entry.ConsecutiveFailures + 1, failureThreshold);
+            entry.CircuitOpen = true;
+            entry.State = ComponentHealthState.Unhealthy;
+            entry.Reason = reason;
+            entry.LastCheckedUtc = DateTimeOffset.UtcNow;
+            entry.LastStateChangeUtc = DateTimeOffset.UtcNow;
+        }
+    }
+
     public ComponentHealthStatus GetStatus(string componentName)
     {
         var entry = GetOrAdd(componentName);

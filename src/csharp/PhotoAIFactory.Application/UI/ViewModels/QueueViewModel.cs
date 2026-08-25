@@ -93,7 +93,7 @@ public sealed class QueueViewModel : ObservableObject
         try
         {
             var pId = projectContext.ActiveProjectId!;
-            var data = await queueQuery.GetQueueOverviewAsync(pId).ConfigureAwait(false);
+            var data = await queueQuery.GetQueueOverviewAsync(pId);
             Overview = data;
             QueueItems.Clear();
             if (data is not null)

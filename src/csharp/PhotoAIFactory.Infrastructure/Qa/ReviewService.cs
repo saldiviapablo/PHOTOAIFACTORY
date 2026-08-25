@@ -7,7 +7,63 @@ public sealed class ReviewService(
     IQaStoreFactory storeFactory,
     IPublishService publishService) : IReviewService
 {
-    public async Task ApproveAsync(
+    public async Task ApprovePreselectionAsync(
+        ProjectId projectId,
+        JobId jobId,
+        string operationId,
+        CancellationToken cancellationToken = default)
+    {
+        var store = storeFactory.Open(projectId);
+        var job = await store.GetJobAsync(jobId, cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException($"Job {jobId.Value} not found.");
+
+        if (job.State == JobState.ReviewFinal)
+        {
+            throw new InvalidOperationException($"Job {jobId.Value} is in state REVIEW_FINAL, expected REVIEW_PRE.");
+        }
+
+        if (job.State is JobState.Queued or JobState.Processing or JobState.Qa or JobState.Completed)
+        {
+            return; // Already approved/progressed idempotently
+        }
+
+        if (job.State != JobState.ReviewPre)
+        {
+            throw new InvalidOperationException($"Job {jobId.Value} is in state {job.State}, expected REVIEW_PRE.");
+        }
+
+        await store.ApprovePreselectionReviewAsync(jobId, operationId, DateTimeOffset.UtcNow, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task RejectPreselectionAsync(
+        ProjectId projectId,
+        JobId jobId,
+        string operationId,
+        CancellationToken cancellationToken = default)
+    {
+        var store = storeFactory.Open(projectId);
+        var job = await store.GetJobAsync(jobId, cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException($"Job {jobId.Value} not found.");
+
+        if (job.State == JobState.ReviewFinal)
+        {
+            throw new InvalidOperationException($"Job {jobId.Value} is in state REVIEW_FINAL, expected REVIEW_PRE.");
+        }
+
+        if (job.State == JobState.RejectedPre)
+        {
+            return; // Idempotent
+        }
+
+        if (job.State != JobState.ReviewPre)
+        {
+            throw new InvalidOperationException($"Job {jobId.Value} is in state {job.State}, expected REVIEW_PRE.");
+        }
+
+        await store.RejectPreselectionReviewAsync(jobId, operationId, DateTimeOffset.UtcNow, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task ApproveFinalAsync(
         ProjectId projectId,
         JobId jobId,
         string operationId,
@@ -15,21 +71,28 @@ public sealed class ReviewService(
         CancellationToken cancellationToken = default)
     {
         var store = storeFactory.Open(projectId);
-        var pendingReview = await store.GetPendingReviewItemAsync(jobId, "FINAL", cancellationToken).ConfigureAwait(false);
         var job = await store.GetJobAsync(jobId, cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException($"Job {jobId.Value} not found.");
 
-        if (pendingReview is null)
+        if (job.State == JobState.ReviewPre)
         {
-            if (job.State == JobState.Completed)
-                return; // Already approved/completed idempotently
+            throw new InvalidOperationException($"Job {jobId.Value} is in state REVIEW_PRE, expected REVIEW_FINAL.");
+        }
 
-            throw new InvalidOperationException($"No pending FINAL review item found for job {jobId.Value}.");
+        if (job.State == JobState.Completed)
+        {
+            return; // Already approved/completed idempotently
         }
 
         if (job.State != JobState.ReviewFinal)
         {
             throw new InvalidOperationException($"Job {jobId.Value} is in state {job.State}, expected REVIEW_FINAL.");
+        }
+
+        var pendingReview = await store.GetPendingReviewItemAsync(jobId, "FINAL", cancellationToken).ConfigureAwait(false);
+        if (pendingReview is null)
+        {
+            throw new InvalidOperationException($"No pending FINAL review item found for job {jobId.Value}.");
         }
 
         var qaResult = await store.GetQaResultAsync(jobId, cancellationToken).ConfigureAwait(false)
@@ -89,28 +152,35 @@ public sealed class ReviewService(
             cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task RejectAsync(
+    public async Task RejectFinalAsync(
         ProjectId projectId,
         JobId jobId,
         string operationId,
         CancellationToken cancellationToken = default)
     {
         var store = storeFactory.Open(projectId);
-        var pendingReview = await store.GetPendingReviewItemAsync(jobId, "FINAL", cancellationToken).ConfigureAwait(false);
         var job = await store.GetJobAsync(jobId, cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException($"Job {jobId.Value} not found.");
 
-        if (pendingReview is null)
+        if (job.State == JobState.ReviewPre)
         {
-            if (job.State == JobState.RejectedFinal)
-                return; // Idempotent
+            throw new InvalidOperationException($"Job {jobId.Value} is in state REVIEW_PRE, expected REVIEW_FINAL.");
+        }
 
-            throw new InvalidOperationException($"No pending FINAL review item found for job {jobId.Value}.");
+        if (job.State == JobState.RejectedFinal)
+        {
+            return; // Idempotent
         }
 
         if (job.State != JobState.ReviewFinal)
         {
             throw new InvalidOperationException($"Job {jobId.Value} is in state {job.State}, expected REVIEW_FINAL.");
+        }
+
+        var pendingReview = await store.GetPendingReviewItemAsync(jobId, "FINAL", cancellationToken).ConfigureAwait(false);
+        if (pendingReview is null)
+        {
+            throw new InvalidOperationException($"No pending FINAL review item found for job {jobId.Value}.");
         }
 
         await store.TransitionJobStateAsync(
@@ -131,6 +201,47 @@ public sealed class ReviewService(
             cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task ApproveAsync(
+        ProjectId projectId,
+        JobId jobId,
+        string operationId,
+        string outputRootFolder,
+        CancellationToken cancellationToken = default)
+    {
+        var store = storeFactory.Open(projectId);
+        var job = await store.GetJobAsync(jobId, cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException($"Job {jobId.Value} not found.");
+
+        if (job.State == JobState.ReviewPre)
+        {
+            await ApprovePreselectionAsync(projectId, jobId, operationId, cancellationToken).ConfigureAwait(false);
+        }
+        else
+        {
+            await ApproveFinalAsync(projectId, jobId, operationId, outputRootFolder, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    public async Task RejectAsync(
+        ProjectId projectId,
+        JobId jobId,
+        string operationId,
+        CancellationToken cancellationToken = default)
+    {
+        var store = storeFactory.Open(projectId);
+        var job = await store.GetJobAsync(jobId, cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException($"Job {jobId.Value} not found.");
+
+        if (job.State == JobState.ReviewPre)
+        {
+            await RejectPreselectionAsync(projectId, jobId, operationId, cancellationToken).ConfigureAwait(false);
+        }
+        else
+        {
+            await RejectFinalAsync(projectId, jobId, operationId, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
     public async Task<JobId> ReprocessAsync(
         ProjectId projectId,
         JobId jobId,
@@ -138,18 +249,23 @@ public sealed class ReviewService(
         CancellationToken cancellationToken = default)
     {
         var store = storeFactory.Open(projectId);
-        var pendingReview = await store.GetPendingReviewItemAsync(jobId, "FINAL", cancellationToken).ConfigureAwait(false);
         var job = await store.GetJobAsync(jobId, cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException($"Job {jobId.Value} not found.");
 
-        if (pendingReview is null)
+        if (job.State == JobState.ReviewPre)
         {
-            throw new InvalidOperationException($"No pending FINAL review item found for job {jobId.Value}.");
+            throw new InvalidOperationException($"Job {jobId.Value} is in state REVIEW_PRE, reprocessing only supported for REVIEW_FINAL.");
         }
 
         if (job.State != JobState.ReviewFinal)
         {
             throw new InvalidOperationException($"Job {jobId.Value} is in state {job.State}, expected REVIEW_FINAL.");
+        }
+
+        var pendingReview = await store.GetPendingReviewItemAsync(jobId, "FINAL", cancellationToken).ConfigureAwait(false);
+        if (pendingReview is null)
+        {
+            throw new InvalidOperationException($"No pending FINAL review item found for job {jobId.Value}.");
         }
 
         if (job.QualityReprocessCount >= 1)
@@ -185,9 +301,9 @@ public sealed class ReviewService(
         var job = await store.GetJobAsync(jobId, cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException($"Job {jobId.Value} not found.");
 
-        if (job.State != JobState.ReviewFinal)
+        if (job.State is not (JobState.ReviewPre or JobState.ReviewFinal))
         {
-            throw new InvalidOperationException($"Job {jobId.Value} is in state {job.State}, expected REVIEW_FINAL.");
+            throw new InvalidOperationException($"Job {jobId.Value} is in state {job.State}, expected REVIEW_PRE or REVIEW_FINAL.");
         }
 
         // Left untouched as pending

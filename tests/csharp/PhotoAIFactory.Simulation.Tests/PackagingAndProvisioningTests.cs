@@ -43,7 +43,7 @@ public sealed class PackagingAndProvisioningTests
     [TestMethod]
     public async Task Component_Manifest_And_Release_Manifest_Load_And_Validate_Hashes()
     {
-        var releaseDir = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "release");
+        var releaseDir = FindReleaseDirectory();
         if (!Directory.Exists(releaseDir))
         {
             releaseDir = Path.Combine(testWorkDir, "release");
@@ -639,6 +639,113 @@ public sealed class PackagingAndProvisioningTests
 
         Assert.IsFalse(executedModels.ContainsKey("model-rfdetr-medium"),
             "Audit evaluator must reject fake EXECUTION_VERIFIED claims with zero runtime duration.");
+    }
+
+    [TestMethod]
+    public async Task INSTALLED_PYTHON_WORKER_COMPONENT_GATE_Provisions_And_Resolves_Without_Repository_Fallback()
+    {
+        var isolatedRoot = Path.Combine(testWorkDir, "isolated_installed_root");
+        Directory.CreateDirectory(isolatedRoot);
+        var mockPaths = new MockAppPaths(isolatedRoot);
+
+        var releaseDir = FindReleaseDirectory();
+        var repoPayload = Path.Combine(releaseDir, "payloads", "python-ai-worker-0.1.0.zip");
+        if (!File.Exists(repoPayload))
+        {
+            Assert.Inconclusive($"Required payload not found at '{repoPayload}'.");
+        }
+
+        // Copy offline payload to isolated payload directory
+        var isolatedPayloads = Path.Combine(isolatedRoot, "payloads");
+        Directory.CreateDirectory(isolatedPayloads);
+        var targetPayload = Path.Combine(isolatedPayloads, "python-ai-worker-0.1.0.zip");
+        File.Copy(repoPayload, targetPayload, overwrite: true);
+
+        var manifestVerifier = new ReleaseManifestVerifier(releaseDir);
+        var provisioner = new ComponentProvisioningService(
+            manifestVerifier,
+            new MockStorageInspector(10L * 1024L * 1024L * 1024L),
+            mockPaths,
+            offlinePayloadDir: isolatedPayloads);
+
+        // 1. Provision component
+        var provisionState = await provisioner.ProvisionAsync("python-ai-worker");
+        Assert.AreEqual(ComponentStatus.Installed, provisionState.Status, $"Provisioning failed: {provisionState.ErrorMessage}");
+
+        var expectedEntrypoint = Path.Combine(isolatedRoot, "components", "python-ai-worker", "0.1.0", "worker_entrypoint.py");
+        Assert.IsTrue(File.Exists(expectedEntrypoint), $"Worker entrypoint physically missing at '{expectedEntrypoint}'.");
+
+        // 2. Resolve entrypoint in PythonWorkerSupervisor without repository fallback
+        var options = Microsoft.Extensions.Options.Options.Create(new PhotoAIFactory.Infrastructure.Analysis.AnalysisRuntimeOptions());
+        await using var supervisor = new PhotoAIFactory.Infrastructure.Analysis.PythonWorkerSupervisor(options, mockPaths);
+
+        var resolved = supervisor.ResolveWorkerEntrypoint(null);
+        Assert.AreEqual(Path.GetFullPath(expectedEntrypoint), Path.GetFullPath(resolved), "Supervisor did not resolve from provisioned component tree.");
+        Assert.IsFalse(resolved.Contains("src\\python\\ai-worker"), "Supervisor must not fall back to source repository when component is provisioned.");
+
+        // 3. Verify process start, loopback /v1/health, clean shutdown
+        var health = await supervisor.GetHealthAsync();
+        Assert.AreEqual("HEALTHY", health.Status);
+        Assert.AreEqual("v1", health.ApiVersion);
+
+        await supervisor.DisposeAsync();
+    }
+
+    [TestMethod]
+    public async Task Python_AI_Worker_Repairs_Corrupted_Entrypoint_Atomically()
+    {
+        var isolatedRoot = Path.Combine(testWorkDir, "isolated_repair_root");
+        Directory.CreateDirectory(isolatedRoot);
+        var mockPaths = new MockAppPaths(isolatedRoot);
+
+        var releaseDir = FindReleaseDirectory();
+        var repoPayload = Path.Combine(releaseDir, "payloads", "python-ai-worker-0.1.0.zip");
+        var isolatedPayloads = Path.Combine(isolatedRoot, "payloads");
+        Directory.CreateDirectory(isolatedPayloads);
+        var targetPayload = Path.Combine(isolatedPayloads, "python-ai-worker-0.1.0.zip");
+        File.Copy(repoPayload, targetPayload, overwrite: true);
+
+        var manifestVerifier = new ReleaseManifestVerifier(releaseDir);
+        var provisioner = new ComponentProvisioningService(
+            manifestVerifier,
+            new MockStorageInspector(10L * 1024L * 1024L * 1024L),
+            mockPaths,
+            offlinePayloadDir: isolatedPayloads);
+
+        // Initial provisioning
+        var provisionState = await provisioner.ProvisionAsync("python-ai-worker");
+        Assert.AreEqual(ComponentStatus.Installed, provisionState.Status);
+
+        // Corrupt entrypoint
+        var entrypoint = Path.Combine(isolatedRoot, "components", "python-ai-worker", "0.1.0", "worker_entrypoint.py");
+        await File.WriteAllTextAsync(entrypoint, "# CORRUPTED CONTENT");
+
+        // Inspect detects corruption
+        var inspectState = await provisioner.InspectAsync("python-ai-worker");
+        Assert.AreEqual(ComponentStatus.Corrupted, inspectState.Status);
+
+        // Repair restores valid state
+        var repairState = await provisioner.RepairAsync("python-ai-worker");
+        Assert.AreEqual(ComponentStatus.Installed, repairState.Status);
+
+        var finalInspect = await provisioner.InspectAsync("python-ai-worker");
+        Assert.AreEqual(ComponentStatus.Installed, finalInspect.Status);
+    }
+
+    private static string FindReleaseDirectory()
+    {
+        var current = new DirectoryInfo(AppContext.BaseDirectory);
+        while (current != null)
+        {
+            var candidate = Path.Combine(current.FullName, "release");
+            if (Directory.Exists(candidate) && File.Exists(Path.Combine(candidate, "components.lock.json")))
+            {
+                return candidate;
+            }
+            current = current.Parent;
+        }
+
+        return Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "..", "release");
     }
 
     private sealed class MockStorageInspector(long freeBytes) : IStorageSpaceInspector

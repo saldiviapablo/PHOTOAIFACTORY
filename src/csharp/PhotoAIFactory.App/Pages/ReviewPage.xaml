@@ -83,7 +83,7 @@
 
                         <!-- Action Buttons -->
                         <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,16,0,0">
-                            <Button Style="{ThemeResource AccentButtonStyle}" Content="Approve &amp; Publish" Command="{x:Bind ViewModel.ApproveCommand}"/>
+                            <Button Style="{ThemeResource AccentButtonStyle}" Content="{x:Bind ViewModel.ApproveButtonLabel, Mode=OneWay}" Command="{x:Bind ViewModel.ApproveCommand}"/>
                             <Button Content="Reprocess (Quality)" Command="{x:Bind ViewModel.ReprocessCommand}"/>
                             <Button Content="Reject" Command="{x:Bind ViewModel.RejectCommand}"/>
                             <Button Content="Leave Pending" Command="{x:Bind ViewModel.LeavePendingCommand}"/>

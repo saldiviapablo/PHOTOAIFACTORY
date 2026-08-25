@@ -128,7 +128,7 @@ public sealed record QaResultSummaryDto(
 public sealed record ReviewItemDto(
     string ReviewItemId,
     ProjectId ProjectId,
-    JobId JobId,
+    JobId? JobId,
     PhotoId PhotoId,
     string PhotoName,
     JobState JobState,
@@ -139,7 +139,10 @@ public sealed record ReviewItemDto(
     JsonElement Findings,
     string? ErrorMessage,
     int ReprocessCount,
-    DateTimeOffset CreatedAtUtc);
+    DateTimeOffset CreatedAtUtc)
+{
+    public bool HasJob => JobId is not null;
+}
 
 public sealed record HistoryItemDto(
     JobId JobId,

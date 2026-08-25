@@ -110,8 +110,8 @@ public sealed class BasicRevealOrchestrator(
 
         if (job is null)
         {
-            // Safe pause/stop: only RUNNING may claim a new queue item.
-            if (project.Project.State != ProjectState.Running)
+            // Safe pause/stop: only healthy RUNNING may claim a new queue item.
+            if (!ProjectDispatchGuard.CanDispatchNextJob(project.Project.State, healthTracker))
             {
                 return new(RevealWorkStatus.NoWork, null, null);
             }

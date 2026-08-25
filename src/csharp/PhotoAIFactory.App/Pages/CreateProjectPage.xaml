@@ -36,7 +36,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Header="Input Folder (Watch Directory)" Text="{x:Bind ViewModel.InputFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="C:\Photos\Input"/>
-                    <Button Grid.Column="1" VerticalAlignment="Bottom" Content="Browse..." Click="BrowseInputFolder_Click"/>
+                    <Button Grid.Column="1" VerticalAlignment="Bottom" Content="Browse..." Command="{x:Bind ViewModel.BrowseInputCommand}"/>
                 </Grid>
 
                 <Grid ColumnSpacing="8">
@@ -45,7 +45,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Header="Output Folder (Results)" Text="{x:Bind ViewModel.OutputFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="C:\Photos\Output"/>
-                    <Button Grid.Column="1" VerticalAlignment="Bottom" Content="Browse..." Click="BrowseOutputFolder_Click"/>
+                    <Button Grid.Column="1" VerticalAlignment="Bottom" Content="Browse..." Command="{x:Bind ViewModel.BrowseOutputCommand}"/>
                 </Grid>
 
                 <CheckBox Content="Include subdirectories in ingestion" IsChecked="{x:Bind ViewModel.IncludeSubfolders, Mode=TwoWay}"/>

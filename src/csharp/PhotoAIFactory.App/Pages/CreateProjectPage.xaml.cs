@@ -1,4 +1,3 @@
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using PhotoAIFactory.Application.UI.ViewModels;
@@ -22,46 +21,6 @@ public sealed partial class CreateProjectPage : Page
             ViewModel = vm;
             DataContext = vm;
             Bindings.Update();
-        }
-    }
-
-    private async void BrowseInputFolder_Click(object sender, RoutedEventArgs e)
-    {
-        if (ViewModel is null) return;
-
-        var picker = new Windows.Storage.Pickers.FolderPicker();
-        picker.FileTypeFilter.Add("*");
-
-        var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current);
-        if (hwnd != IntPtr.Zero)
-        {
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-        }
-
-        var folder = await picker.PickSingleFolderAsync();
-        if (folder is not null)
-        {
-            ViewModel.InputFolder = folder.Path;
-        }
-    }
-
-    private async void BrowseOutputFolder_Click(object sender, RoutedEventArgs e)
-    {
-        if (ViewModel is null) return;
-
-        var picker = new Windows.Storage.Pickers.FolderPicker();
-        picker.FileTypeFilter.Add("*");
-
-        var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current);
-        if (hwnd != IntPtr.Zero)
-        {
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-        }
-
-        var folder = await picker.PickSingleFolderAsync();
-        if (folder is not null)
-        {
-            ViewModel.OutputFolder = folder.Path;
         }
     }
 }

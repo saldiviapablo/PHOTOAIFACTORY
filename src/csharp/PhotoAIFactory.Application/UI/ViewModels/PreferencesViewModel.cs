@@ -70,7 +70,7 @@ public sealed class PreferencesViewModel : ObservableObject
     {
         try
         {
-            var prefs = await preferencesService.GetPreferencesAsync().ConfigureAwait(false);
+            var prefs = await preferencesService.GetPreferencesAsync();
             Theme = prefs.Theme;
             ShowDiagnostics = prefs.ShowDiagnostics;
             RefreshIntervalSeconds = prefs.RefreshIntervalSeconds;
@@ -97,7 +97,7 @@ public sealed class PreferencesViewModel : ObservableObject
                 AutoScrollQueue,
                 EnableHardwareAcceleration);
 
-            await preferencesService.SavePreferencesAsync(dto).ConfigureAwait(false);
+            await preferencesService.SavePreferencesAsync(dto);
             StatusMessage = "Preferences saved successfully.";
         }
         catch (Exception ex)

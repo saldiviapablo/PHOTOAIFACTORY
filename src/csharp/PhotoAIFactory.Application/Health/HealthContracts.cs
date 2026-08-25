@@ -6,7 +6,8 @@ public enum ComponentHealthState
     Healthy,
     Degraded,
     Unhealthy,
-    Stopped
+    Stopped,
+    Standby
 }
 
 public sealed record ComponentHealthStatus(
@@ -23,6 +24,7 @@ public interface IComponentHealthTracker
 {
     void RecordSuccess(string componentName);
     void RecordFailure(string componentName, string reason);
+    void MarkUnhealthy(string componentName, string reason);
     ComponentHealthStatus GetStatus(string componentName);
     IReadOnlyList<ComponentHealthStatus> GetAllStatuses();
     bool IsStageBlocked(string componentName);

@@ -45,7 +45,11 @@ public static class Program
         Console.WriteLine("[2/4] Verifying RF-DETR Physical Artifact & Weight Integrity...");
         var rfDetrAudit = AuditRfDetrArtifacts();
 
+        var testRoot = Path.Combine(Path.GetTempPath(), "PAF_TrueHostE2E_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(testRoot);
+
         var builder = PhotoAIFactoryHost.CreateBuilder();
+        builder.Services.AddSingleton<IAppPaths>(new TestAppPaths(testRoot));
         using var host = builder.Build();
         await host.StartAsync();
 
@@ -766,4 +770,16 @@ public static class Program
         var hash = sha.ComputeHash(stream);
         return Convert.ToHexStringLower(hash);
     }
+}
+
+public sealed class TestAppPaths(string root) : IAppPaths
+{
+    public string RootDirectory => root;
+    public string ProjectsDirectory => Path.Combine(root, "projects");
+    public string WorkDirectory => Path.Combine(root, "work");
+    public string LogsDirectory => Path.Combine(root, "logs");
+    public string ModelsDirectory => Path.Combine(root, "models");
+    public string ComponentsDirectory => Path.Combine(root, "components");
+
+    public string GetProjectDatabasePath(ProjectId projectId) => Path.Combine(ProjectsDirectory, projectId.Value, "project.db");
 }

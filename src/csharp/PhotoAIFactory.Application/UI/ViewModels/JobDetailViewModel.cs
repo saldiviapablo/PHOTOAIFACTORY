@@ -102,7 +102,7 @@ public sealed class JobDetailViewModel : ObservableObject, IParameterizedNavigab
         try
         {
             var pId = projectContext.ActiveProjectId!;
-            var data = await queueQuery.GetJobDetailAsync(pId, currentJobId).ConfigureAwait(false);
+            var data = await queueQuery.GetJobDetailAsync(pId, currentJobId);
             JobDetail = data;
         }
         catch (Exception ex)

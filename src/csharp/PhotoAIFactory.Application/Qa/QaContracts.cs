@@ -124,6 +124,18 @@ public interface IQaStore
         DateTimeOffset nowUtc,
         CancellationToken cancellationToken = default);
 
+    Task ApprovePreselectionReviewAsync(
+        JobId jobId,
+        string operationId,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default);
+
+    Task RejectPreselectionReviewAsync(
+        JobId jobId,
+        string operationId,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default);
+
     Task<JobId> CreateChildQualityReprocessJobAsync(
         JobId parentJobId,
         JobId childJobId,

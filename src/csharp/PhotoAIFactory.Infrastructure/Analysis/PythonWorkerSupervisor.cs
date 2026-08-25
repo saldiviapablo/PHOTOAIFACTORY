@@ -63,17 +63,13 @@ public sealed class PythonWorkerSupervisor(
 
             await StopCoreAsync().ConfigureAwait(false);
             var settings = options.Value;
-            if (!File.Exists(settings.PythonExecutablePath))
-            {
-                throw new FileNotFoundException("Isolated AI Worker Python runtime was not found.", settings.PythonExecutablePath);
-            }
-
+            var pythonExe = ResolvePythonExecutable(settings.PythonExecutablePath);
             var workerEntrypoint = ResolveWorkerEntrypoint(settings.WorkerEntrypointPath);
             var port = ReserveLoopbackPort();
             token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
             var start = new ProcessStartInfo
             {
-                FileName = settings.PythonExecutablePath,
+                FileName = pythonExe,
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
@@ -201,8 +197,48 @@ public sealed class PythonWorkerSupervisor(
         }
     }
 
+    public string ResolvePythonExecutable(string? configuredPath)
+    {
+        if (!string.IsNullOrWhiteSpace(configuredPath) && File.Exists(configuredPath))
+        {
+            return Path.GetFullPath(configuredPath);
+        }
 
-    private string ResolveWorkerEntrypoint(string? configuredPath)
+        var candidates = new[]
+        {
+            Path.Combine(paths.RootDirectory, "runtimes", "ai-worker", "Scripts", "python.exe"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PhotoAIFactory", "runtimes", "ai-worker", "Scripts", "python.exe"),
+            Path.Combine(paths.ComponentsDirectory, "python-runtime-isolated", "python", "python.exe"),
+            Path.Combine(AppContext.BaseDirectory, "runtimes", "ai-worker", "Scripts", "python.exe"),
+            Path.Combine(AppContext.BaseDirectory, "python-runtime-isolated", "python", "python.exe")
+        };
+
+        foreach (var c in candidates)
+        {
+            if (File.Exists(c))
+            {
+                return Path.GetFullPath(c);
+            }
+        }
+
+        // Repository virtualenv fallback in development context
+        foreach (var start in new[] { Environment.CurrentDirectory, AppContext.BaseDirectory })
+        {
+            var current = new DirectoryInfo(Path.GetFullPath(start));
+            for (var depth = 0; current is not null && depth < 10; depth++, current = current.Parent)
+            {
+                var devPython = Path.Combine(current.FullName, "src", "python", "ai-worker", ".venv", "Scripts", "python.exe");
+                if (File.Exists(devPython))
+                {
+                    return devPython;
+                }
+            }
+        }
+
+        throw new FileNotFoundException("Isolated AI Worker Python runtime was not found.", configuredPath ?? "python.exe");
+    }
+
+    public string ResolveWorkerEntrypoint(string? configuredPath)
     {
         if (!string.IsNullOrWhiteSpace(configuredPath))
         {
@@ -215,13 +251,60 @@ public sealed class PythonWorkerSupervisor(
             throw new FileNotFoundException("Configured AI Worker entrypoint was not found.", full);
         }
 
-        var componentCandidate = Path.Combine(
-            paths.ComponentsDirectory, "ai-worker", "worker_entrypoint.py");
-        if (File.Exists(componentCandidate))
+        // 1. Check versioned component directories under paths.ComponentsDirectory:
+        // e.g. %LOCALAPPDATA%\PhotoAIFactory\components\python-ai-worker\0.1.0\worker_entrypoint.py
+        var componentsRoot = paths.ComponentsDirectory;
+        var pythonWorkerRoot = Path.Combine(componentsRoot, "python-ai-worker");
+        if (Directory.Exists(pythonWorkerRoot))
         {
-            return componentCandidate;
+            var versionDirs = Directory.GetDirectories(pythonWorkerRoot);
+            Array.Sort(versionDirs, StringComparer.OrdinalIgnoreCase);
+            for (int i = versionDirs.Length - 1; i >= 0; i--)
+            {
+                var candidate = Path.Combine(versionDirs[i], "worker_entrypoint.py");
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
+            }
         }
 
+        // 2. Direct component candidate checks under ComponentsDirectory & AppContext.BaseDirectory
+        var directCandidates = new[]
+        {
+            Path.Combine(componentsRoot, "python-ai-worker", "worker_entrypoint.py"),
+            Path.Combine(componentsRoot, "ai-worker", "worker_entrypoint.py"),
+            Path.Combine(AppContext.BaseDirectory, "components", "python-ai-worker", "worker_entrypoint.py"),
+            Path.Combine(AppContext.BaseDirectory, "components", "ai-worker", "worker_entrypoint.py"),
+            Path.Combine(AppContext.BaseDirectory, "python-ai-worker", "worker_entrypoint.py"),
+            Path.Combine(AppContext.BaseDirectory, "ai-worker", "worker_entrypoint.py")
+        };
+
+        foreach (var dc in directCandidates)
+        {
+            if (File.Exists(dc))
+            {
+                return dc;
+            }
+        }
+
+        // 3. Also check versioned subdirectories under AppContext.BaseDirectory/components/python-ai-worker
+        var appLocalWorkerRoot = Path.Combine(AppContext.BaseDirectory, "components", "python-ai-worker");
+        if (Directory.Exists(appLocalWorkerRoot))
+        {
+            var versionDirs = Directory.GetDirectories(appLocalWorkerRoot);
+            Array.Sort(versionDirs, StringComparer.OrdinalIgnoreCase);
+            for (int i = versionDirs.Length - 1; i >= 0; i--)
+            {
+                var candidate = Path.Combine(versionDirs[i], "worker_entrypoint.py");
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
+            }
+        }
+
+        // 4. Repository fallback (ONLY in development context, e.g. tests or running from source repo)
         foreach (var start in new[] { Environment.CurrentDirectory, AppContext.BaseDirectory })
         {
             var current = new DirectoryInfo(Path.GetFullPath(start));

@@ -3,6 +3,8 @@ using PhotoAIFactory.Application.Projects;
 using PhotoAIFactory.Application.Qa;
 using PhotoAIFactory.Application.UI;
 using PhotoAIFactory.Domain;
+using PhotoAIFactory.Domain.Projects;
+using PhotoAIFactory.Domain.Qa;
 
 namespace PhotoAIFactory.Application.UI.ViewModels;
 
@@ -10,59 +12,38 @@ public sealed class ReviewViewModel : ObservableObject
 {
     private readonly IReviewQueryService reviewQuery;
     private readonly IReviewService reviewService;
+    private readonly IProjectStoreFactory storeFactory;
     private readonly IProjectContext projectContext;
-    private readonly INavigationService navigationService;
+    private readonly IThumbnailService thumbnailService;
 
-    private ReviewItemDto? selectedItem;
     private bool isLoading;
     private bool isExecutingAction;
+    private ReviewItemDto? selectedItem;
     private string? statusMessage;
-
-    private readonly IProjectStoreFactory storeFactory;
 
     public ReviewViewModel(
         IReviewQueryService reviewQuery,
         IReviewService reviewService,
         IProjectStoreFactory storeFactory,
         IProjectContext projectContext,
-        INavigationService navigationService)
+        IThumbnailService thumbnailService)
     {
         this.reviewQuery = reviewQuery ?? throw new ArgumentNullException(nameof(reviewQuery));
         this.reviewService = reviewService ?? throw new ArgumentNullException(nameof(reviewService));
         this.storeFactory = storeFactory ?? throw new ArgumentNullException(nameof(storeFactory));
         this.projectContext = projectContext ?? throw new ArgumentNullException(nameof(projectContext));
-        this.navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        this.thumbnailService = thumbnailService ?? throw new ArgumentNullException(nameof(thumbnailService));
 
         PendingReviews = new ObservableCollection<ReviewItemDto>();
 
         RefreshCommand = new AsyncRelayCommand(RefreshAsync);
-        ApproveCommand = new AsyncRelayCommand(ApproveSelectedAsync, CanExecuteAction);
-        ReprocessCommand = new AsyncRelayCommand(ReprocessSelectedAsync, CanReprocessSelected);
-        RejectCommand = new AsyncRelayCommand(RejectSelectedAsync, CanExecuteAction);
-        LeavePendingCommand = new AsyncRelayCommand(LeavePendingSelectedAsync, CanExecuteAction);
+        ApproveCommand = new AsyncRelayCommand(ApproveSelectedAsync, () => CanApprove);
+        ReprocessCommand = new AsyncRelayCommand(ReprocessSelectedAsync, () => CanReprocess && !isExecutingAction);
+        RejectCommand = new AsyncRelayCommand(RejectSelectedAsync, () => CanReject);
+        LeavePendingCommand = new AsyncRelayCommand(LeavePendingSelectedAsync, () => CanLeavePending);
     }
 
     public ObservableCollection<ReviewItemDto> PendingReviews { get; }
-
-    public ReviewItemDto? SelectedItem
-    {
-        get => selectedItem;
-        set
-        {
-            if (SetProperty(ref selectedItem, value))
-            {
-                OnPropertyChanged(nameof(HasSelectedItem));
-                OnPropertyChanged(nameof(CanReprocess));
-                ApproveCommand.RaiseCanExecuteChanged();
-                ReprocessCommand.RaiseCanExecuteChanged();
-                RejectCommand.RaiseCanExecuteChanged();
-                LeavePendingCommand.RaiseCanExecuteChanged();
-            }
-        }
-    }
-
-    public bool HasSelectedItem => selectedItem is not null;
-    public bool CanReprocess => selectedItem is not null && selectedItem.ReprocessCount < 1;
 
     public bool IsLoading
     {
@@ -85,6 +66,40 @@ public sealed class ReviewViewModel : ObservableObject
         }
     }
 
+    public ReviewItemDto? SelectedItem
+    {
+        get => selectedItem;
+        set
+        {
+            if (SetProperty(ref selectedItem, value))
+            {
+                OnPropertyChanged(nameof(HasSelectedItem));
+                OnPropertyChanged(nameof(CanReprocess));
+                OnPropertyChanged(nameof(CanApprove));
+                OnPropertyChanged(nameof(CanReject));
+                OnPropertyChanged(nameof(CanLeavePending));
+                OnPropertyChanged(nameof(ApproveButtonLabel));
+                ApproveCommand.RaiseCanExecuteChanged();
+                ReprocessCommand.RaiseCanExecuteChanged();
+                RejectCommand.RaiseCanExecuteChanged();
+                LeavePendingCommand.RaiseCanExecuteChanged();
+            }
+        }
+    }
+
+    public bool HasSelectedItem => selectedItem is not null;
+    public bool CanApprove => selectedItem?.JobId is not null && !isExecutingAction && (selectedItem.JobState == JobState.ReviewPre || selectedItem.JobState == JobState.ReviewFinal);
+    public bool CanReject => selectedItem?.JobId is not null && !isExecutingAction && (selectedItem.JobState == JobState.ReviewPre || selectedItem.JobState == JobState.ReviewFinal);
+    public bool CanReprocess => selectedItem?.JobId is not null && !isExecutingAction && selectedItem.JobState == JobState.ReviewFinal;
+    public bool CanLeavePending => selectedItem?.JobId is not null && !isExecutingAction && (selectedItem.JobState == JobState.ReviewPre || selectedItem.JobState == JobState.ReviewFinal);
+
+    public string ApproveButtonLabel => selectedItem?.JobState switch
+    {
+        JobState.ReviewPre => "Approve & Continue",
+        JobState.ReviewFinal => "Approve & Publish",
+        _ => "Approve"
+    };
+
     public string? StatusMessage
     {
         get => statusMessage;
@@ -96,9 +111,6 @@ public sealed class ReviewViewModel : ObservableObject
     public AsyncRelayCommand ReprocessCommand { get; }
     public AsyncRelayCommand RejectCommand { get; }
     public AsyncRelayCommand LeavePendingCommand { get; }
-
-    private bool CanExecuteAction() => !isExecutingAction && selectedItem is not null;
-    private bool CanReprocessSelected() => CanExecuteAction() && CanReprocess;
 
     public async Task RefreshAsync()
     {
@@ -114,7 +126,7 @@ public sealed class ReviewViewModel : ObservableObject
         try
         {
             var pId = projectContext.ActiveProjectId!;
-            var list = await reviewQuery.GetPendingReviewsAsync(pId).ConfigureAwait(false);
+            var list = await reviewQuery.GetPendingReviewsAsync(pId);
             PendingReviews.Clear();
             foreach (var item in list)
             {
@@ -134,20 +146,30 @@ public sealed class ReviewViewModel : ObservableObject
 
     public async Task ApproveSelectedAsync()
     {
-        if (selectedItem is null) return;
+        if (selectedItem?.JobId is null || !CanApprove) return;
         IsExecutingAction = true;
         StatusMessage = null;
         try
         {
             var pId = projectContext.ActiveProjectId!;
-            var store = storeFactory.Open(pId);
-            var snapshot = await store.GetAsync(pId).ConfigureAwait(false);
-            var outputFolder = snapshot?.LatestConfig.ReadConfig().OutputFolder ?? string.Empty;
-
             var opId = Guid.NewGuid().ToString("N");
-            await reviewService.ApproveAsync(pId, selectedItem.JobId, opId, outputFolder).ConfigureAwait(false);
-            StatusMessage = $"Photo {selectedItem.PhotoName} approved and published!";
-            await RefreshAsync().ConfigureAwait(false);
+
+            if (selectedItem.JobState == JobState.ReviewPre)
+            {
+                await reviewService.ApprovePreselectionAsync(pId, selectedItem.JobId, opId);
+                StatusMessage = $"Photo {selectedItem.PhotoName} approved for processing!";
+            }
+            else if (selectedItem.JobState == JobState.ReviewFinal)
+            {
+                var store = storeFactory.Open(pId);
+                var snapshot = await store.GetAsync(pId);
+                var outputFolder = snapshot?.LatestConfig.ReadConfig().OutputFolder ?? string.Empty;
+
+                await reviewService.ApproveFinalAsync(pId, selectedItem.JobId, opId, outputFolder);
+                StatusMessage = $"Photo {selectedItem.PhotoName} approved and published!";
+            }
+
+            await RefreshAsync();
         }
         catch (Exception ex)
         {
@@ -161,16 +183,16 @@ public sealed class ReviewViewModel : ObservableObject
 
     public async Task ReprocessSelectedAsync()
     {
-        if (selectedItem is null || !CanReprocess) return;
+        if (selectedItem?.JobId is null || !CanReprocess) return;
         IsExecutingAction = true;
         StatusMessage = null;
         try
         {
             var pId = projectContext.ActiveProjectId!;
             var opId = Guid.NewGuid().ToString("N");
-            var childJobId = await reviewService.ReprocessAsync(pId, selectedItem.JobId, opId).ConfigureAwait(false);
+            var childJobId = await reviewService.ReprocessAsync(pId, selectedItem.JobId, opId);
             StatusMessage = $"Photo {selectedItem.PhotoName} queued for reprocessing as job {childJobId.Value[..8]}!";
-            await RefreshAsync().ConfigureAwait(false);
+            await RefreshAsync();
         }
         catch (Exception ex)
         {
@@ -184,16 +206,25 @@ public sealed class ReviewViewModel : ObservableObject
 
     public async Task RejectSelectedAsync()
     {
-        if (selectedItem is null) return;
+        if (selectedItem?.JobId is null || !CanReject) return;
         IsExecutingAction = true;
         StatusMessage = null;
         try
         {
             var pId = projectContext.ActiveProjectId!;
             var opId = Guid.NewGuid().ToString("N");
-            await reviewService.RejectAsync(pId, selectedItem.JobId, opId).ConfigureAwait(false);
+
+            if (selectedItem.JobState == JobState.ReviewPre)
+            {
+                await reviewService.RejectPreselectionAsync(pId, selectedItem.JobId, opId);
+            }
+            else if (selectedItem.JobState == JobState.ReviewFinal)
+            {
+                await reviewService.RejectFinalAsync(pId, selectedItem.JobId, opId);
+            }
+
             StatusMessage = $"Photo {selectedItem.PhotoName} rejected.";
-            await RefreshAsync().ConfigureAwait(false);
+            await RefreshAsync();
         }
         catch (Exception ex)
         {
@@ -207,15 +238,15 @@ public sealed class ReviewViewModel : ObservableObject
 
     public async Task LeavePendingSelectedAsync()
     {
-        if (selectedItem is null) return;
+        if (selectedItem?.JobId is null || !CanLeavePending) return;
         IsExecutingAction = true;
         StatusMessage = null;
         try
         {
             var pId = projectContext.ActiveProjectId!;
-            await reviewService.LeavePendingAsync(pId, selectedItem.JobId).ConfigureAwait(false);
+            await reviewService.LeavePendingAsync(pId, selectedItem.JobId);
             StatusMessage = "Review left pending.";
-            await RefreshAsync().ConfigureAwait(false);
+            await RefreshAsync();
         }
         catch (Exception ex)
         {

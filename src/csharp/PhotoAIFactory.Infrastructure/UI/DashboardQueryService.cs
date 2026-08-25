@@ -40,11 +40,19 @@ public sealed class DashboardQueryService(
             {
                 cmd.CommandText = """
                     SELECT
-                        COALESCE(SUM(CASE WHEN state = 'RECEIVED' THEN 1 ELSE 0 END), 0) AS received_count,
+                        (
+                            COALESCE((SELECT COUNT(*) FROM photos p WHERE p.state IN ('WAITING_FOR_ASSOCIATION', 'READY_FOR_ANALYSIS') AND NOT EXISTS (SELECT 1 FROM jobs j WHERE j.photo_id = p.photo_id)), 0)
+                            +
+                            COALESCE(SUM(CASE WHEN state = 'RECEIVED' THEN 1 ELSE 0 END), 0)
+                        ) AS received_count,
                         COALESCE(SUM(CASE WHEN state = 'QUEUED' THEN 1 ELSE 0 END), 0) AS queued_count,
                         COALESCE(SUM(CASE WHEN state IN ('ANALYZING', 'PROCESSING', 'QA', 'RETRYING') THEN 1 ELSE 0 END), 0) AS processing_count,
                         COALESCE(SUM(CASE WHEN state = 'COMPLETED' THEN 1 ELSE 0 END), 0) AS completed_count,
-                        COALESCE(SUM(CASE WHEN state IN ('REVIEW_PRE', 'REVIEW_FINAL') THEN 1 ELSE 0 END), 0) AS review_count,
+                        (
+                            COALESCE((SELECT COUNT(*) FROM photos p WHERE p.state = 'REVIEW_UNSUPPORTED_FORMAT' AND NOT EXISTS (SELECT 1 FROM jobs j WHERE j.photo_id = p.photo_id)), 0)
+                            +
+                            COALESCE(SUM(CASE WHEN state IN ('REVIEW_PRE', 'REVIEW_FINAL') THEN 1 ELSE 0 END), 0)
+                        ) AS review_count,
                         COALESCE(SUM(CASE WHEN state IN ('REJECTED_PRE', 'REJECTED_FINAL') THEN 1 ELSE 0 END), 0) AS rejected_count,
                         COALESCE(SUM(CASE WHEN state = 'ERROR' THEN 1 ELSE 0 END), 0) AS error_count
                     FROM jobs;
@@ -150,15 +158,56 @@ public sealed class DashboardQueryService(
         }
 
         // 4. Component health cards
-        var healthStatuses = healthTracker.GetAllStatuses();
-        var healthCards = healthStatuses.Select(h => new ComponentHealthCardDto(
-            h.ComponentName,
-            GetDisplayComponentName(h.ComponentName),
-            h.State,
-            h.Reason ?? (h.State == ComponentHealthState.Healthy ? "Operational" : h.State.ToString()),
-            h.CircuitBreakerOpen,
-            h.TotalRestarts,
-            h.LastCheckedUtc)).ToList();
+        var existingHealth = healthTracker.GetAllStatuses()
+            .ToDictionary(h => h.ComponentName, StringComparer.OrdinalIgnoreCase);
+
+        var healthCards = new List<ComponentHealthCardDto>();
+        var knownComponents = new[]
+        {
+            ("IngestionRuntime", "Ingestion Runtime"),
+            ("PythonWorker", "Python AI Worker"),
+            ("ComfyUI", "ComfyUI Runtime"),
+            ("Darktable", "Darktable CLI")
+        };
+
+        foreach (var (compName, dispName) in knownComponents)
+        {
+            if (existingHealth.TryGetValue(compName, out var h))
+            {
+                healthCards.Add(new ComponentHealthCardDto(
+                    h.ComponentName,
+                    dispName,
+                    h.State,
+                    h.Reason ?? (h.State == ComponentHealthState.Healthy ? "Operational" : h.State.ToString()),
+                    h.CircuitBreakerOpen,
+                    h.TotalRestarts,
+                    h.LastCheckedUtc));
+                existingHealth.Remove(compName);
+            }
+            else
+            {
+                healthCards.Add(new ComponentHealthCardDto(
+                    compName,
+                    dispName,
+                    ComponentHealthState.Standby,
+                    "Standby (On-Demand)",
+                    false,
+                    0,
+                    DateTimeOffset.UtcNow));
+            }
+        }
+
+        foreach (var h in existingHealth.Values)
+        {
+            healthCards.Add(new ComponentHealthCardDto(
+                h.ComponentName,
+                GetDisplayComponentName(h.ComponentName),
+                h.State,
+                h.Reason ?? (h.State == ComponentHealthState.Healthy ? "Operational" : h.State.ToString()),
+                h.CircuitBreakerOpen,
+                h.TotalRestarts,
+                h.LastCheckedUtc));
+        }
 
         TimeSpan? avgDuration = avgSeconds.HasValue && avgSeconds.Value > 0 ? TimeSpan.FromSeconds(avgSeconds.Value) : null;
 

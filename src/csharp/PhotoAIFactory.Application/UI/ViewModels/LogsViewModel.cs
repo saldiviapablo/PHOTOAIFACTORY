@@ -104,7 +104,7 @@ public sealed class LogsViewModel : ObservableObject
             var list = await errorLogQuery.GetErrorLogsAsync(
                 projectId: pId,
                 minLevel: selectedSeverity,
-                limit: 200).ConfigureAwait(false);
+                limit: 200);
 
             Logs.Clear();
             foreach (var log in list)

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Application.Ingestion;
 using PhotoAIFactory.Application.Projects;
 using PhotoAIFactory.Domain;
@@ -14,12 +15,15 @@ namespace PhotoAIFactory.Application.Analysis;
 public sealed class ProjectAnalysisManager(
     IProjectStoreFactory projectStores,
     IIngestionStoreFactory ingestionStores,
+    IAnalysisStoreFactory analysisStores,
     AnalysisOrchestrator orchestrator,
-    ILogger<ProjectAnalysisManager> logger)
+    ILogger<ProjectAnalysisManager> logger,
+    IComponentHealthTracker? healthTracker = null,
+    TimeProvider? timeProvider = null)
 {
     private static readonly EventId PhotoFailureEvent = new(3201, "AnalysisPhotoFailed");
 
-    public async Task<IReadOnlyList<AnalysisRunResult>> ProcessReadyAsync(
+    public async Task<AnalysisDispatchResult> ProcessReadyAsync(
         ProjectId projectId,
         CancellationToken cancellationToken = default)
     {
@@ -27,34 +31,61 @@ public sealed class ProjectAnalysisManager(
         var snapshot = await projectStore.GetAsync(projectId, cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException($"Project {projectId.Value} was not found.");
 
-        if (snapshot.Project.State != ProjectState.Running)
+        if (!ProjectDispatchGuard.CanDispatchNextJob(snapshot.Project.State, healthTracker))
         {
-            return [];
+            return new AnalysisDispatchResult(AnalysisDispatchStatus.NoWork, 0, []);
         }
 
         var configVersion = snapshot.LatestConfig;
         var config = configVersion.ReadConfig();
         var ingestionStore = ingestionStores.Open(projectId);
+        var analysisStore = analysisStores.Open(projectId);
+
+        var latestSource = await ingestionStore.GetLatestSourceAsync(projectId, cancellationToken).ConfigureAwait(false);
+        if (latestSource is not null)
+        {
+            await ingestionStore.FinalizeAssociationsAsync(
+                projectId,
+                latestSource.Id,
+                (timeProvider ?? TimeProvider.System).GetUtcNow(),
+                force: false,
+                cancellationToken).ConfigureAwait(false);
+        }
+
         var ready = (await ingestionStore.ListPhotosAsync(projectId, cancellationToken).ConfigureAwait(false))
             .Where(photo => photo.State == IngestionPhotoState.ReadyForAnalysis)
             .OrderBy(photo => photo.CreatedAtUtc)
             .ThenBy(photo => photo.Id.Value, StringComparer.Ordinal)
             .ToArray();
 
-        var completed = new List<AnalysisRunResult>(ready.Length);
+        var newlyDispatched = new List<AnalysisRunResult>();
+        var hasSuppressed = false;
+
         foreach (var photo in ready)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            var existingJob = await analysisStore.GetInitialJobByPhotoAsync(projectId, photo.Id, cancellationToken).ConfigureAwait(false);
+            var hasAnalysisComplete = existingJob is not null && await analysisStore.HasCheckpointAsync(existingJob.Id, "ANALYSIS_COMPLETE", cancellationToken).ConfigureAwait(false);
+
+            if (!AnalysisEligibilityRule.IsEligibleForAnalysis(photo, existingJob, hasAnalysisComplete))
+            {
+                hasSuppressed = true;
+                continue;
+            }
+
             try
             {
-                completed.Add(await orchestrator.ProcessPhotoAsync(
+                var runResult = await orchestrator.ProcessPhotoAsync(
                     projectId,
                     photo.Id,
                     configVersion.Id,
                     configVersion.Id,
                     config.SemanticMode,
                     config.PreselectionEnabled,
-                    cancellationToken).ConfigureAwait(false));
+                    cancellationToken).ConfigureAwait(false);
+
+                newlyDispatched.Add(runResult);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -73,6 +104,14 @@ public sealed class ProjectAnalysisManager(
             }
         }
 
-        return completed;
+        if (newlyDispatched.Count > 0)
+        {
+            return new AnalysisDispatchResult(AnalysisDispatchStatus.AnalysisCompleted, newlyDispatched.Count, newlyDispatched);
+        }
+
+        return new AnalysisDispatchResult(
+            hasSuppressed ? AnalysisDispatchStatus.Suppressed : AnalysisDispatchStatus.NoWork,
+            0,
+            []);
     }
 }

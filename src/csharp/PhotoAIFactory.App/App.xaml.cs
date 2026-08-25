@@ -22,10 +22,13 @@ public partial class App : Microsoft.UI.Xaml.Application
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
         var navigationService = new WinUiNavigationService();
+        var windowService = new WinUiWindowService();
 
         var builder = PhotoAIFactoryHost.CreateBuilder();
         builder.Services.AddSingleton<INavigationService>(navigationService);
         builder.Services.AddSingleton(navigationService);
+        builder.Services.AddSingleton<IWindowService>(windowService);
+        builder.Services.AddSingleton<IFolderPickerService, WinUiFolderPickerService>();
 
         host = builder.Build();
 
@@ -35,6 +38,8 @@ public partial class App : Microsoft.UI.Xaml.Application
             host.Services.GetRequiredService<ShellViewModel>(),
             navigationService,
             host.Services);
+
+        windowService.RegisterMainWindow(mainWindow);
 
         mainWindow.Closed += (_, _) =>
         {

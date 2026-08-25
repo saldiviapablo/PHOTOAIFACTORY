@@ -1,5 +1,5 @@
 {
-    "audit_timestamp_utc":  "2026-08-24T03:31:46Z",
+    "audit_timestamp_utc":  "2026-08-25T05:17:12Z",
     "schema_version":  2,
     "components_count":  12,
     "components":  [
@@ -52,16 +52,16 @@
                            "component_id":  "python-ai-worker",
                            "display_name":  "PHOTO AI FACTORY Python AI Worker",
                            "kind":  "ExternalEngine",
-                           "payload_format":  "DirectoryBundle",
+                           "payload_format":  "ZipArchive",
                            "version":  "0.1.0",
                            "source_url":  null,
-                           "payload_sha256":  "fafb7a05726b237d366b61cac23f32dfd8a2d7604bf26e1fbef4faacd9cf97f0",
-                           "installed_artifact_sha256":  "fafb7a05726b237d366b61cac23f32dfd8a2d7604bf26e1fbef4faacd9cf97f0",
-                           "payload_size_bytes":  150000000,
+                           "payload_sha256":  "b18ec85ae34a45377d81e8f24f2a18e60eb1fe21746fe46305301892582d335c",
+                           "installed_artifact_sha256":  "2abac80b3185c263a834fe7df1d4292dc2c8db4e5539e3d7cde86970da15d0ab",
+                           "payload_size_bytes":  40595,
                            "license_id":  "Proprietary",
                            "redistribution_status":  "Approved",
                            "is_required":  true,
-                           "verification_status":  "SOURCE_REACHABLE"
+                           "verification_status":  "INSTALLED_VERIFIED"
                        },
                        {
                            "component_id":  "darktable-engine",

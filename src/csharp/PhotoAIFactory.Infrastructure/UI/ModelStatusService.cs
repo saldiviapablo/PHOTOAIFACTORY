@@ -8,17 +8,59 @@ public sealed class ModelStatusService(
     IComponentHealthTracker healthTracker,
     IAppPaths paths) : IModelStatusService
 {
+    private static readonly (string ComponentName, string DisplayName)[] KnownCatalog =
+    [
+        ("IngestionRuntime", "Ingestion Runtime"),
+        ("PythonWorker", "Python AI Worker"),
+        ("ComfyUI", "ComfyUI Runtime"),
+        ("Darktable", "Darktable CLI")
+    ];
+
     public Task<IReadOnlyList<ComponentHealthCardDto>> GetComponentStatusesAsync(CancellationToken cancellationToken = default)
     {
-        var statuses = healthTracker.GetAllStatuses();
-        var cards = statuses.Select(s => new ComponentHealthCardDto(
-            s.ComponentName,
-            GetDisplayName(s.ComponentName),
-            s.State,
-            s.Reason ?? (s.State == ComponentHealthState.Healthy ? "Operational" : s.State.ToString()),
-            s.CircuitBreakerOpen,
-            s.TotalRestarts,
-            s.LastCheckedUtc)).ToList();
+        var existingStatuses = healthTracker.GetAllStatuses()
+            .ToDictionary(s => s.ComponentName, StringComparer.OrdinalIgnoreCase);
+
+        var cards = new List<ComponentHealthCardDto>();
+
+        foreach (var (compName, dispName) in KnownCatalog)
+        {
+            if (existingStatuses.TryGetValue(compName, out var s))
+            {
+                cards.Add(new ComponentHealthCardDto(
+                    s.ComponentName,
+                    dispName,
+                    s.State,
+                    s.Reason ?? (s.State == ComponentHealthState.Healthy ? "Operational" : s.State.ToString()),
+                    s.CircuitBreakerOpen,
+                    s.TotalRestarts,
+                    s.LastCheckedUtc));
+                existingStatuses.Remove(compName);
+            }
+            else
+            {
+                cards.Add(new ComponentHealthCardDto(
+                    compName,
+                    dispName,
+                    ComponentHealthState.Standby,
+                    "Standby (On-Demand)",
+                    false,
+                    0,
+                    DateTimeOffset.UtcNow));
+            }
+        }
+
+        foreach (var s in existingStatuses.Values)
+        {
+            cards.Add(new ComponentHealthCardDto(
+                s.ComponentName,
+                GetDisplayName(s.ComponentName),
+                s.State,
+                s.Reason ?? (s.State == ComponentHealthState.Healthy ? "Operational" : s.State.ToString()),
+                s.CircuitBreakerOpen,
+                s.TotalRestarts,
+                s.LastCheckedUtc));
+        }
 
         return Task.FromResult<IReadOnlyList<ComponentHealthCardDto>>(cards);
     }

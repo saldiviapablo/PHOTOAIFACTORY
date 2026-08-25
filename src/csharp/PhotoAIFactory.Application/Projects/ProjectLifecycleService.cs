@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using PhotoAIFactory.Application.Health;
 using PhotoAIFactory.Domain;
 using PhotoAIFactory.Domain.Projects;
 
@@ -12,7 +13,12 @@ public interface IProjectWorkStatus
 
 public static class ProjectDispatchGuard
 {
-    public static bool CanDispatchNextJob(ProjectState state) => state == ProjectState.Running;
+    public static bool CanDispatchNextJob(ProjectState state, IComponentHealthTracker? healthTracker = null, string componentName = "IngestionRuntime")
+    {
+        if (state != ProjectState.Running) return false;
+        if (healthTracker != null && healthTracker.IsStageBlocked(componentName)) return false;
+        return true;
+    }
 }
 
 public enum LifecycleResultStatus
@@ -172,6 +178,56 @@ public sealed class ProjectLifecycleService
             current, ProjectState.Running, "COMPONENT_HEALTH_RESTORED_RESUMED", operationId, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<LifecycleResult> EnterPauseRequestedAsync(
+        ProjectId projectId,
+        string operationId,
+        long? expectedRevision = null,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateOperationId(operationId);
+        var current = await OpenAsync(projectId, cancellationToken).ConfigureAwait(false);
+        if (current is null) return new(LifecycleResultStatus.NotFound, null);
+        if (expectedRevision is not null && current.StateRevision != expectedRevision)
+            return Conflict(current);
+        if (current.State is ProjectState.Paused or ProjectState.PauseRequested)
+            return new(LifecycleResultStatus.AlreadyInDesiredState, current);
+        if (current.State is not (ProjectState.Running or ProjectState.BlockedStorage or ProjectState.ComponentUnhealthy))
+            return new(LifecycleResultStatus.InvalidTransition, current);
+
+        var requested = await TransitionAsync(
+            current, ProjectState.PauseRequested, "PAUSE_REQUESTED", operationId, cancellationToken).ConfigureAwait(false);
+        if (requested.Status == LifecycleResultStatus.Transitioned)
+        {
+            Log(PauseRequestedEvent, requested.Project!, "Project pause requested");
+        }
+        return requested;
+    }
+
+    public async Task<LifecycleResult> EnterStopRequestedAsync(
+        ProjectId projectId,
+        string operationId,
+        long? expectedRevision = null,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateOperationId(operationId);
+        var current = await OpenAsync(projectId, cancellationToken).ConfigureAwait(false);
+        if (current is null) return new(LifecycleResultStatus.NotFound, null);
+        if (expectedRevision is not null && current.StateRevision != expectedRevision)
+            return Conflict(current);
+        if (current.State is ProjectState.Stopped or ProjectState.StopRequested)
+            return new(LifecycleResultStatus.AlreadyInDesiredState, current);
+        if (current.State is not (ProjectState.Running or ProjectState.PauseRequested or ProjectState.Paused or ProjectState.BlockedStorage or ProjectState.ComponentUnhealthy))
+            return new(LifecycleResultStatus.InvalidTransition, current);
+
+        var requested = await TransitionAsync(
+            current, ProjectState.StopRequested, "STOP_REQUESTED", operationId, cancellationToken).ConfigureAwait(false);
+        if (requested.Status == LifecycleResultStatus.Transitioned)
+        {
+            Log(StopRequestedEvent, requested.Project!, "Project stop requested");
+        }
+        return requested;
+    }
+
     public async Task<LifecycleResult> RequestPauseAsync(
         ProjectId projectId,
         string operationId,
@@ -265,7 +321,7 @@ public sealed class ProjectLifecycleService
         return result;
     }
 
-    private async Task<Project?> OpenAsync(ProjectId projectId, CancellationToken cancellationToken) =>
+    public async Task<Project?> OpenAsync(ProjectId projectId, CancellationToken cancellationToken = default) =>
         (await stores.Open(projectId).GetAsync(projectId, cancellationToken).ConfigureAwait(false))?.Project;
 
     private async Task<LifecycleResult> TransitionAsync(

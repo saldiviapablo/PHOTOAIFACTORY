@@ -78,6 +78,12 @@ public sealed class AnalysisOrchestrator(
                 await store.ListQueueAsync(projectId, cancellationToken).ConfigureAwait(false));
         }
 
+        if (job.State == JobState.Error)
+        {
+            throw new InvalidOperationException(
+                $"Cannot start analysis on Job {job.Id.Value} because it is in terminal Error state.");
+        }
+
         try
         {
             if (job.State != JobState.Analyzing)

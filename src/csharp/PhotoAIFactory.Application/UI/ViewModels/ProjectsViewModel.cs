@@ -73,7 +73,7 @@ public sealed class ProjectsViewModel : ObservableObject
         ErrorMessage = null;
         try
         {
-            var list = await projectQuery.ListProjectsAsync().ConfigureAwait(false);
+            var list = await projectQuery.ListProjectsAsync();
             Projects.Clear();
             foreach (var p in list)
             {

@@ -31,6 +31,7 @@ public sealed class SqliteQaStore(SqliteProjectDatabase database) : IQaStore
                 j.quality_reprocess_count,
                 j.parent_job_id
             FROM jobs j
+            JOIN project_config_versions pcv ON pcv.config_version_id = j.processing_config_id
             LEFT JOIN comfy_executions ce ON ce.job_id = j.job_id
             LEFT JOIN feedback_passes fp ON fp.job_id = j.job_id AND fp.pass_number = 2
             LEFT JOIN processing_passes pp ON pp.job_id = j.job_id
@@ -39,7 +40,12 @@ public sealed class SqliteQaStore(SqliteProjectDatabase database) : IQaStore
               AND j.state IN ('QA', 'PROCESSING', 'RETRYING', 'INTERRUPTED')
               AND EXISTS (
                   SELECT 1 FROM job_checkpoints c
-                  WHERE c.job_id = j.job_id AND c.stage_name = 'COMFYUI_COMPLETE'
+                  WHERE c.job_id = j.job_id
+                    AND c.stage_name = CASE
+                        WHEN json_extract(pcv.config_json, '$.comfyui.mode') != 'OFF' THEN 'COMFYUI_COMPLETE'
+                        WHEN json_extract(pcv.config_json, '$.reveal_mode') = 'FEEDBACK' THEN 'DARKTABLE_PASS2_COMPLETE'
+                        ELSE 'BASIC_REVEAL_COMPLETE'
+                    END
               )
               AND NOT EXISTS (
                   SELECT 1 FROM job_checkpoints c
@@ -889,6 +895,274 @@ public sealed class SqliteQaStore(SqliteProjectDatabase database) : IQaStore
 
             await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
             return nextRetries;
+        }
+        catch
+        {
+            await transaction.RollbackAsync(CancellationToken.None).ConfigureAwait(false);
+            throw;
+        }
+    }
+
+    public async Task ApprovePreselectionReviewAsync(
+        JobId jobId,
+        string operationId,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default)
+    {
+        await database.InitializeAsync(cancellationToken).ConfigureAwait(false);
+        await using var writeLock = await database.Writer.EnterAsync(cancellationToken)
+            .ConfigureAwait(false);
+        await using var connection = await database.OpenConfiguredConnectionAsync(
+            createIfMissing: true,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+        await using var transaction = (SqliteTransaction)await connection
+            .BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+
+        try
+        {
+            await using var readCmd = connection.CreateCommand();
+            readCmd.Transaction = transaction;
+            readCmd.CommandText = "SELECT project_id, state FROM jobs WHERE job_id = $jobId;";
+            readCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+            await using var reader = await readCmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+
+            if (!await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                throw new InvalidOperationException($"Job {jobId.Value} not found.");
+
+            var projectId = reader.GetString(0);
+            var currentStateStr = reader.GetString(1);
+            var currentState = MapStringToJobState(currentStateStr);
+            await reader.DisposeAsync().ConfigureAwait(false);
+
+            if (currentState != JobState.ReviewPre)
+            {
+                if (currentState is JobState.Queued or JobState.Processing or JobState.Qa or JobState.Completed)
+                {
+                    await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+                    return; // Idempotent
+                }
+                throw new InvalidOperationException($"Job {jobId.Value} is in state {currentState}, expected REVIEW_PRE.");
+            }
+
+            JobStateMachine.EnsureTransition(JobState.ReviewPre, JobState.Queued);
+
+            var nowStr = nowUtc.ToString("O", CultureInfo.InvariantCulture);
+
+            // 1. Update job state to QUEUED
+            await using var updateCmd = connection.CreateCommand();
+            updateCmd.Transaction = transaction;
+            updateCmd.CommandText = """
+                UPDATE jobs
+                SET state = 'QUEUED',
+                    updated_at_utc = $now
+                WHERE job_id = $jobId AND state = 'REVIEW_PRE';
+                """;
+            updateCmd.Parameters.AddWithValue("$now", nowStr);
+            updateCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+            if (await updateCmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) != 1)
+            {
+                throw new InvalidOperationException($"Job {jobId.Value} state update from REVIEW_PRE to QUEUED failed.");
+            }
+
+            // 2. Insert job_state_transitions
+            await using var transCmd = connection.CreateCommand();
+            transCmd.Transaction = transaction;
+            transCmd.CommandText = """
+                INSERT INTO job_state_transitions(
+                    transition_id,
+                    job_id,
+                    from_state,
+                    to_state,
+                    reason,
+                    operation_id,
+                    occurred_at_utc)
+                VALUES(
+                    $id,
+                    $jobId,
+                    'REVIEW_PRE',
+                    'QUEUED',
+                    'PRESELECTION_REVIEW_APPROVED',
+                    $opId,
+                    $now);
+                """;
+            transCmd.Parameters.AddWithValue("$id", Guid.NewGuid().ToString("N"));
+            transCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+            transCmd.Parameters.AddWithValue("$opId", operationId);
+            transCmd.Parameters.AddWithValue("$now", nowStr);
+            await transCmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+
+            // 3. Enqueue in queue_entries if not already present
+            await using var checkQueueCmd = connection.CreateCommand();
+            checkQueueCmd.Transaction = transaction;
+            checkQueueCmd.CommandText = "SELECT COUNT(1) FROM queue_entries WHERE job_id = $jobId;";
+            checkQueueCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+            var queueExists = Convert.ToInt64(await checkQueueCmd.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false), CultureInfo.InvariantCulture) > 0;
+
+            if (!queueExists)
+            {
+                await using var seqCmd = connection.CreateCommand();
+                seqCmd.Transaction = transaction;
+                seqCmd.CommandText = """
+                    SELECT COALESCE(MAX(sequence_number), 0) + 1
+                    FROM queue_entries
+                    WHERE project_id = $projectId;
+                    """;
+                seqCmd.Parameters.AddWithValue("$projectId", projectId);
+                var nextSeq = Convert.ToInt64(await seqCmd.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false), CultureInfo.InvariantCulture);
+
+                await using var queueCmd = connection.CreateCommand();
+                queueCmd.Transaction = transaction;
+                queueCmd.CommandText = """
+                    INSERT INTO queue_entries(
+                        queue_entry_id,
+                        project_id,
+                        job_id,
+                        sequence_number,
+                        process_next,
+                        enqueued_at_utc)
+                    VALUES(
+                        $id,
+                        $projectId,
+                        $jobId,
+                        $seq,
+                        0,
+                        $now);
+                    """;
+                queueCmd.Parameters.AddWithValue("$id", Guid.NewGuid().ToString("N"));
+                queueCmd.Parameters.AddWithValue("$projectId", projectId);
+                queueCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+                queueCmd.Parameters.AddWithValue("$seq", nextSeq);
+                queueCmd.Parameters.AddWithValue("$now", nowStr);
+                await queueCmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            // 4. Resolve review item if one exists
+            await using var reviewCmd = connection.CreateCommand();
+            reviewCmd.Transaction = transaction;
+            reviewCmd.CommandText = """
+                UPDATE review_items
+                SET status = 'APPROVED',
+                    resolution_operation_id = $opId,
+                    resolved_at_utc = $now
+                WHERE job_id = $jobId AND status = 'PENDING';
+                """;
+            reviewCmd.Parameters.AddWithValue("$opId", operationId);
+            reviewCmd.Parameters.AddWithValue("$now", nowStr);
+            reviewCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+            await reviewCmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+
+            await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(CancellationToken.None).ConfigureAwait(false);
+            throw;
+        }
+    }
+
+    public async Task RejectPreselectionReviewAsync(
+        JobId jobId,
+        string operationId,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default)
+    {
+        await database.InitializeAsync(cancellationToken).ConfigureAwait(false);
+        await using var writeLock = await database.Writer.EnterAsync(cancellationToken)
+            .ConfigureAwait(false);
+        await using var connection = await database.OpenConfiguredConnectionAsync(
+            createIfMissing: true,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+        await using var transaction = (SqliteTransaction)await connection
+            .BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+
+        try
+        {
+            await using var readCmd = connection.CreateCommand();
+            readCmd.Transaction = transaction;
+            readCmd.CommandText = "SELECT state FROM jobs WHERE job_id = $jobId;";
+            readCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+            await using var reader = await readCmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+
+            if (!await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                throw new InvalidOperationException($"Job {jobId.Value} not found.");
+
+            var currentStateStr = reader.GetString(0);
+            var currentState = MapStringToJobState(currentStateStr);
+            await reader.DisposeAsync().ConfigureAwait(false);
+
+            if (currentState != JobState.ReviewPre)
+            {
+                if (currentState == JobState.RejectedPre)
+                {
+                    await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+                    return; // Idempotent
+                }
+                throw new InvalidOperationException($"Job {jobId.Value} is in state {currentState}, expected REVIEW_PRE.");
+            }
+
+            JobStateMachine.EnsureTransition(JobState.ReviewPre, JobState.RejectedPre);
+
+            var nowStr = nowUtc.ToString("O", CultureInfo.InvariantCulture);
+
+            // 1. Update job state to REJECTED_PRE
+            await using var updateCmd = connection.CreateCommand();
+            updateCmd.Transaction = transaction;
+            updateCmd.CommandText = """
+                UPDATE jobs
+                SET state = 'REJECTED_PRE',
+                    updated_at_utc = $now
+                WHERE job_id = $jobId AND state = 'REVIEW_PRE';
+                """;
+            updateCmd.Parameters.AddWithValue("$now", nowStr);
+            updateCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+            if (await updateCmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false) != 1)
+            {
+                throw new InvalidOperationException($"Job {jobId.Value} state update from REVIEW_PRE to REJECTED_PRE failed.");
+            }
+
+            // 2. Insert job_state_transitions
+            await using var transCmd = connection.CreateCommand();
+            transCmd.Transaction = transaction;
+            transCmd.CommandText = """
+                INSERT INTO job_state_transitions(
+                    transition_id,
+                    job_id,
+                    from_state,
+                    to_state,
+                    reason,
+                    operation_id,
+                    occurred_at_utc)
+                VALUES(
+                    $id,
+                    $jobId,
+                    'REVIEW_PRE',
+                    'REJECTED_PRE',
+                    'PRESELECTION_REVIEW_REJECTED',
+                    $opId,
+                    $now);
+                """;
+            transCmd.Parameters.AddWithValue("$id", Guid.NewGuid().ToString("N"));
+            transCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+            transCmd.Parameters.AddWithValue("$opId", operationId);
+            transCmd.Parameters.AddWithValue("$now", nowStr);
+            await transCmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+
+            // 3. Resolve review item if one exists
+            await using var reviewCmd = connection.CreateCommand();
+            reviewCmd.Transaction = transaction;
+            reviewCmd.CommandText = """
+                UPDATE review_items
+                SET status = 'REJECTED',
+                    resolution_operation_id = $opId,
+                    resolved_at_utc = $now
+                WHERE job_id = $jobId AND status = 'PENDING';
+                """;
+            reviewCmd.Parameters.AddWithValue("$opId", operationId);
+            reviewCmd.Parameters.AddWithValue("$now", nowStr);
+            reviewCmd.Parameters.AddWithValue("$jobId", jobId.Value);
+            await reviewCmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+
+            await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
         }
         catch
         {

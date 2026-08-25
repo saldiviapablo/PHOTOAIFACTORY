@@ -114,7 +114,7 @@ public sealed class FeedbackOrchestrator(
 
         if (job is null)
         {
-            if (project.Project.State != ProjectState.Running)
+            if (!ProjectDispatchGuard.CanDispatchNextJob(project.Project.State, healthTracker))
                 return new(FeedbackWorkStatus.NoWork, null, null);
 
             var next = await store.PeekNextQueuedAsync(

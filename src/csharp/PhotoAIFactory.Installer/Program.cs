@@ -130,6 +130,29 @@ public static class Program
             throw new FileNotFoundException("PhotoAIFactory.App.exe missing after deployment.", appExe);
         }
 
+        // Deploy bundled components and offline payloads to %LOCALAPPDATA%\PhotoAIFactory
+        try
+        {
+            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var pafDataRoot = Path.Combine(localAppData, "PhotoAIFactory");
+            var localComponentsDir = Path.Combine(pafDataRoot, "components");
+            var bundledComponentsDir = Path.Combine(targetDir, "components");
+            if (Directory.Exists(bundledComponentsDir))
+            {
+                CopyDirectoryRecursive(bundledComponentsDir, localComponentsDir);
+            }
+
+            var bundledPayloadsDir = Path.Combine(targetDir, "payloads");
+            var localPayloadsDir = Path.Combine(pafDataRoot, "payloads");
+            if (Directory.Exists(bundledPayloadsDir))
+            {
+                CopyDirectoryRecursive(bundledPayloadsDir, localPayloadsDir);
+            }
+        }
+        catch
+        {
+        }
+
         // Copy setup tool itself into target directory for uninstaller registration
         var currentExe = Environment.ProcessPath;
         var targetSetup = Path.Combine(targetDir, "PhotoAIFactory-Setup.exe");
@@ -309,6 +332,21 @@ public static class Program
         catch (Exception ex)
         {
             Console.WriteLine($"Warning: Registry key cleanup skipped: {ex.Message}");
+        }
+    }
+
+    private static void CopyDirectoryRecursive(string sourceDir, string targetDir)
+    {
+        Directory.CreateDirectory(targetDir);
+        foreach (var file in Directory.GetFiles(sourceDir))
+        {
+            var destFile = Path.Combine(targetDir, Path.GetFileName(file));
+            File.Copy(file, destFile, overwrite: true);
+        }
+        foreach (var dir in Directory.GetDirectories(sourceDir))
+        {
+            var destSub = Path.Combine(targetDir, Path.GetFileName(dir));
+            CopyDirectoryRecursive(dir, destSub);
         }
     }
 }

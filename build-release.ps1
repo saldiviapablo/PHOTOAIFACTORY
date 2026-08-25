@@ -94,6 +94,70 @@ if ($LASTEXITCODE -ne 0) {
     throw "Dotnet publish for App failed."
 }
 
+# Package and Stage Python AI Worker Component Payload
+Write-Host "Packaging Python AI Worker component payload..." -ForegroundColor Yellow
+$payloadsDir = "$RepoRoot\release\payloads"
+if (-not (Test-Path $payloadsDir)) { New-Item -ItemType Directory -Path $payloadsDir -Force | Out-Null }
+$workerZip = "$payloadsDir\python-ai-worker-0.1.0.zip"
+
+$pyWorkerScript = @"
+import os, zipfile, hashlib, sys
+from pathlib import Path
+repo_root = Path(r'$RepoRoot')
+worker_src = repo_root / 'src' / 'python' / 'ai-worker'
+output_zip = Path(r'$workerZip')
+included_files = []
+for root, dirs, files in os.walk(worker_src):
+    dirs[:] = [d for d in dirs if d not in ['__pycache__', '.venv', '.pytest_cache', 'tests', '.ruff_cache']]
+    for f in sorted(files):
+        if f.endswith(('.pyc', '.pyo', '.pyd')) or f.startswith('.'):
+            continue
+        rel = Path(root, f).relative_to(worker_src)
+        included_files.append((Path(root, f), rel))
+included_files.sort(key=lambda x: str(x[1]).replace('\\', '/'))
+with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zf:
+    for full, rel in included_files:
+        zinfo = zipfile.ZipInfo(str(rel).replace('\\', '/'), date_time=(2026, 8, 24, 0, 0, 0))
+        zinfo.compress_type = zipfile.ZIP_DEFLATED
+        zinfo.external_attr = 0o644 << 16
+        zf.writestr(zinfo, full.read_bytes())
+"@
+python -c "$pyWorkerScript"
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path $workerZip)) {
+    throw "Packaging Python AI Worker component zip failed."
+}
+
+# Stage components and payloads into publish payload
+$stagedComponentsWorker = "$publishDir\components\python-ai-worker\0.1.0"
+New-Item -ItemType Directory -Path $stagedComponentsWorker -Force | Out-Null
+Expand-Archive -Path $workerZip -DestinationPath $stagedComponentsWorker -Force
+
+$stagedPayloads = "$publishDir\payloads"
+New-Item -ItemType Directory -Path $stagedPayloads -Force | Out-Null
+Copy-Item -Path $workerZip -Destination "$stagedPayloads\python-ai-worker-0.1.0.zip" -Force
+
+# RELEASE BUILD GATE: Verify Worker Component Packaging Integrity
+$lockJson = Get-Content $lockPath -Raw | ConvertFrom-Json
+$workerLock = $lockJson.components | Where-Object { $_.component_id -eq "python-ai-worker" }
+if (-not $workerLock) {
+    throw "RELEASE GATE FAILURE: 'python-ai-worker' component is missing in components.lock.json."
+}
+
+$actualZipSha = (Get-FileHash -Path $workerZip -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($actualZipSha -ne $workerLock.payload_sha256.ToLowerInvariant()) {
+    throw "RELEASE GATE FAILURE: Python AI Worker payload SHA-256 mismatch! Expected: $($workerLock.payload_sha256), Got: $actualZipSha"
+}
+
+$stagedEntrypoint = "$stagedComponentsWorker\worker_entrypoint.py"
+if (-not (Test-Path $stagedEntrypoint)) {
+    throw "RELEASE GATE FAILURE: Staged worker entrypoint missing at '$stagedEntrypoint'."
+}
+$actualEntrypointSha = (Get-FileHash -Path $stagedEntrypoint -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($actualEntrypointSha -ne $workerLock.installed_artifact_sha256.ToLowerInvariant()) {
+    throw "RELEASE GATE FAILURE: Staged worker entrypoint SHA-256 mismatch! Expected: $($workerLock.installed_artifact_sha256), Got: $actualEntrypointSha"
+}
+Write-Host "RELEASE GATE PASS: Python AI Worker component payload and staged fileset verified." -ForegroundColor Green
+
 # Create app_payload.zip to embed directly inside PhotoAIFactory.Installer
 $installerProjectDir = "$RepoRoot\src\csharp\PhotoAIFactory.Installer"
 $embeddedPayloadZip = "$installerProjectDir\app_payload.zip"
